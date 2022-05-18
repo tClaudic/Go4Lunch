@@ -9,4 +9,6 @@
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
     <color name="colorError">#F44336</color>
+    <color name="statusBarColor">#80fc3f1b</color>
+
 </resources>
