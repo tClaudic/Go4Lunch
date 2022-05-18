@@ -4,15 +4,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_go4lunch_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_go4lunch_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Go4Lunch">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/title_activity_main"
             android:theme="@style/Theme.Go4Lunch.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
