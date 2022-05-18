@@ -15,11 +15,13 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
+        android:id="@+id/tv_header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="52dp"
         android:text="@string/app_name"
-        android:textSize="30sp"
+        android:textColor="@android:color/white"
+        android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,8 +31,8 @@
         android:id="@+id/nav_header_username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="19dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/header_exemple"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -53,8 +55,7 @@
         android:id="@+id/nav_header_user_email_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginStart="4dp"
         android:text="@string/nav_header_subtitle"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/nav_header_username_tv" />
