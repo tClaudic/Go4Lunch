@@ -49,6 +49,8 @@
     <string name="item_restaurant_name_example">Le Zinc</string>
     <string name="item_restaurant_desc_example">12 rue du Faubourg Poissonnière</string>
     <string name="item_open_restaurant_status_example">Open until 2.30pm</string>
+    <string name="tv_workmate_status_example">Scarlett is eating french(Le Zinc)</string>
+    <string name="workmate_profile_picture">workmate profile picture</string>
 
 
 </resources>
