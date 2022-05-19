@@ -15,12 +15,19 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:actionOverflowButtonStyle">@style/MyActionButtonOverflow</item>
 
         <!-- Encounter ForceDarkMode -->
 
 
         <!-- Customize your theme here. -->
         <item name="colorError">@color/colorError</item>
+    </style>
+
+    <style name="MyActionButtonOverflow" parent="android:Widget.Holo.Light.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_white_search_24</item>
+
+
     </style>
 
     <style name="Theme.Go4Lunch.NoActionBar">
