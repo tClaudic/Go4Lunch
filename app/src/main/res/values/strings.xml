@@ -51,6 +51,11 @@
     <string name="item_open_restaurant_status_example">Open until 2.30pm</string>
     <string name="tv_workmate_status_example">Scarlett is eating french(Le Zinc)</string>
     <string name="workmate_profile_picture">workmate profile picture</string>
+    <string name="restaurant_reservation_button_desc">restaurant reservation button</string>
+    <string name="btn_call_text">CALL</string>
+    <string name="btn_like_text">LIKE</string>
+    <string name="btn_website_text">WEBSITE</string>
+    <string name="restaurant_detail_liked_star_desc">star to display if the restaurant is liked or not</string>
 
 
 </resources>

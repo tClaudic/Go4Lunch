@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/iv_detail_restaurant_picture"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:contentDescription="@string/listview_restaurant_picture_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="percent"
+        app:layout_constraintHeight_percent="0.40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:backgroundTint="@android:color/white"
+        android:contentDescription="@string/restaurant_reservation_button_desc"
+        android:src="@drawable/ic_baseline_check_circle_24"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_detail_restaurant_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_detail_restaurant_picture" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:cardBackgroundColor="@color/primaryColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="percent"
+        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_detail_restaurant_picture">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_detail_restaurant_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/item_restaurant_name_example"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_detail_restaurant_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="14dp"
+                android:src="@drawable/ic_star_outlined_24"
+                app:layout_constraintStart_toEndOf="@+id/tv_detail_restaurant_name"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/restaurant_detail_liked_star_desc" />
+
+            <TextView
+                android:id="@+id/tv_detail_restaurant_adress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/item_restaurant_desc_example"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_detail_restaurant_name" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btn_call_detail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight="percent"
+        android:backgroundTint="@android:color/white"
+        android:drawableTop="@drawable/ic_call_24"
+        android:text="@string/btn_call_text"
+        android:textColor="@color/primaryColor"
+        android:textStyle="bold"
+        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView3"
+        app:layout_constraintWidth="percent"
+        app:layout_constraintWidth_percent="0.333" />
+
+    <Button
+        android:id="@+id/btn_like_detail"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight="percent"
+        android:backgroundTint="@android:color/white"
+        android:drawableTop="@drawable/ic_star_rate_24"
+        android:text="@string/btn_like_text"
+        android:textColor="@color/primaryColor"
+        android:textStyle="bold"
+
+        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintStart_toEndOf="@+id/btn_call_detail"
+        app:layout_constraintTop_toBottomOf="@+id/cardView3"
+        app:layout_constraintWidth="percent"
+        app:layout_constraintWidth_percent="0.333" />
+
+    <Button
+        android:id="@+id/btn_website_detail"
+        android:backgroundTint="@android:color/white"
+        android:drawableTop="@drawable/ic_map_24"
+        android:text="@string/btn_website_text"
+        android:textColor="@color/primaryColor"
+        android:textStyle="bold"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="percent"
+        app:layout_constraintHeight_percent="0.125"
+        app:layout_constraintStart_toEndOf="@+id/btn_like_detail"
+        app:layout_constraintTop_toBottomOf="@+id/cardView3"
+        app:layout_constraintWidth="percent"
+        app:layout_constraintWidth_percent="0.333" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight="percent"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintTop_toBottomOf="@+id/btn_like_detail"
+        tools:listitem="@layout/fragment_workmates_list_item"/>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
