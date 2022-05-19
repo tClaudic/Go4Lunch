@@ -7,7 +7,7 @@
     /// Bottom Navigation Bar ///
     <string name="bottom_map_btn_text">Map View</string>
     <string name="bottom_List_btn_text">List View</string>
-    <string name="bottom_workamtes_btn_text">Workmates</string>
+    <string name="bottom_workmates_btn_text">Workmates</string>
 
     /// MAP VIEW ///
     <string name="mapview_actionbar_title">I\'m Hungry!</string>
@@ -40,6 +40,7 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="header_exemple">John SMITH</string>
+    <string name="go4lunch_logo">Go4Lunch Logo</string>
 
 
 </resources>
