@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_restaurant_picture"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="8dp"
+        android:background="@android:color/holo_blue_bright"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/listview_restaurant_picture_desc" />
+
+    <TextView
+        android:id="@+id/tv_restaurant_range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/restaurant_range_example"
+        app:layout_constraintEnd_toStartOf="@+id/iv_restaurant_picture"
+        app:layout_constraintTop_toTopOf="@+id/iv_restaurant_picture" />
+
+    <TextView
+        android:id="@+id/tv_contributors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/listview_contributors_example"
+        app:layout_constraintEnd_toStartOf="@+id/iv_restaurant_picture"
+        app:layout_constraintTop_toBottomOf="@+id/tv_restaurant_range" />
+
+    <ImageView
+        android:id="@+id/iv_contributors_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/iv_contributors_icon_desc"
+        android:src="@drawable/ic_person_24"
+        app:layout_constraintBottom_toBottomOf="@id/tv_contributors"
+        app:layout_constraintEnd_toStartOf="@+id/tv_contributors" />
+
+    <RatingBar
+        android:id="@+id/rb_restaurant_rating"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:numStars="3"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_restaurant_picture"
+        app:layout_constraintEnd_toStartOf="@+id/iv_restaurant_picture" />
+
+    <TextView
+        android:id="@+id/tv_restaurant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/item_restaurant_name_example"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_restaurant_range" />
+
+    <TextView
+        android:id="@+id/tv_restaurant_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/item_restaurant_desc_example"
+        app:layout_constraintBottom_toBottomOf="@id/iv_contributors_icon"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_restaurant_open_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/item_open_restaurant_status_example"
+        app:layout_constraintBottom_toBottomOf="@+id/rb_restaurant_rating"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

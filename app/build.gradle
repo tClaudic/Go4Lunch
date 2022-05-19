@@ -47,7 +47,8 @@ dependencies {
     implementation 'com.facebook.android:facebook-login:latest.release'
 
     /// GOOGLE LOGIN ///
-
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
+    /// GOOGLE MAP ///
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
 }
