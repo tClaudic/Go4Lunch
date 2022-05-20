@@ -6,22 +6,17 @@
     app:startDestination="@+id/nav_mapView">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.go4lunch.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_restaurantDetail"
+        android:name="com.example.go4lunch.ui.restaurantDetail.RestaurantDetailFragment"
+        android:label="@string/nav_drawer_first_title"
+        tools:layout="@layout/fragment_restaurant_detail" />
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_settings"
         android:name="com.example.go4lunch.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:label="@string/nav_drawer_second_title"
         tools:layout="@layout/fragment_gallery" />
 
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.go4lunch.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
 
     <fragment
         android:id="@+id/nav_mapView"
@@ -39,10 +34,7 @@
         android:id="@+id/nav_workmatesView"
         android:name="com.example.go4lunch.ui.workmatesView.WorkmateListFragment"
         android:label="@string/workmates_actionbar_title"
-        tools:layout="@layout/fragment_workmates_list"/>
+        tools:layout="@layout/fragment_workmates_list" />
 
-    <fragment
-        android:id="@+id/nav_restaurantDetail"
-        android:name="com.example.go4lunch.ui.restaurantDetail.RestaurantDetailFragment"
-        tools:layout="@layout/fragment_restaurant_detail"/>
+
 </navigation>

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_mapView, R.id.nav_listView, R.id.nav_workmatesView, R.id.nav_restaurantDetail)
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_mapView, R.id.nav_listView, R.id.nav_workmatesView)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -57,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()){
-                case R.id.nav_slideshow:
-                case R.id.nav_home:
-                case R.id.nav_gallery:
                 case R.id.nav_restaurantDetail:
+                case R.id.nav_settings:
+                case R.id.nav_logout:
                     hideBottomNavigationBar();
                     break;
                 default: showBottomNavigationBar();
