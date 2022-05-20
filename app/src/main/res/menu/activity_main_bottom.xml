@@ -3,16 +3,16 @@
 
     <group>
         <item
-            android:id="@+id/mapView"
+            android:id="@+id/nav_mapView"
             android:title="@string/bottom_map_btn_text"
             android:icon="@drawable/ic_map_view"/>
 
         <item
-            android:id="@+id/listView"
+            android:id="@+id/nav_listView"
             android:title="@string/bottom_List_btn_text"
             android:icon="@drawable/ic_view_list_24"/>
         <item
-            android:id="@+id/workmatesView"
+            android:id="@+id/nav_workmatesView"
             android:title="@string/bottom_workmates_btn_text"
             android:icon="@drawable/ic_workmates_24"/>
 

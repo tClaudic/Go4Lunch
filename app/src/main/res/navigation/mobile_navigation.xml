@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_mapView">
 
     <fragment
         android:id="@+id/nav_home"
@@ -22,4 +22,27 @@
         android:name="com.example.go4lunch.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_mapView"
+        android:name="com.example.go4lunch.ui.mapView.MapFragment"
+        android:label="@string/mapview_actionbar_title"
+        tools:layout="@layout/fragment_map" />
+
+    <fragment
+        android:id="@+id/nav_listView"
+        android:name="com.example.go4lunch.ui.listView.RestaurantListFragment"
+        android:label="@string/listview_actionbar_title"
+        tools:layout="@layout/fragment_list_view" />
+
+    <fragment
+        android:id="@+id/nav_workmatesView"
+        android:name="com.example.go4lunch.ui.workmatesView.WorkmateListFragment"
+        android:label="@string/workmates_actionbar_title"
+        tools:layout="@layout/fragment_workmates_list"/>
+
+    <fragment
+        android:id="@+id/nav_restaurantDetail"
+        android:name="com.example.go4lunch.ui.restaurantDetail.RestaurantDetailFragment"
+        tools:layout="@layout/fragment_restaurant_detail"/>
 </navigation>
