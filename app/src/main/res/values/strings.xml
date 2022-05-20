@@ -56,6 +56,8 @@
     <string name="btn_like_text">LIKE</string>
     <string name="btn_website_text">WEBSITE</string>
     <string name="restaurant_detail_liked_star_desc">star to display if the restaurant is liked or not</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 
 </resources>

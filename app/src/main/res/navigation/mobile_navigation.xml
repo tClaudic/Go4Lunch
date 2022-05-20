@@ -13,7 +13,6 @@
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.example.go4lunch.ui.gallery.GalleryFragment"
         android:label="@string/nav_drawer_second_title"
         tools:layout="@layout/fragment_gallery" />
 
@@ -35,6 +34,10 @@
         android:name="com.example.go4lunch.ui.workmatesView.WorkmateListFragment"
         android:label="@string/workmates_actionbar_title"
         tools:layout="@layout/fragment_workmates_list" />
+
+    <dialog
+        android:id="@+id/nav_logout"
+        android:name="com.example.go4lunch.ui.logout.LogoutConfirmation"/>
 
 
 </navigation>
