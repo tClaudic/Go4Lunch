@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showActionBar(){
+    private void showActionBar() {
         getSupportActionBar().show();
     }
 
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void hideBottomNavigationBar() {
-        bottomNavigationView.setVisibility(View.INVISIBLE);
+        bottomNavigationView.setVisibility(View.GONE);
     }
 
     public void showBottomNavigationBar() {
