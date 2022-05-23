@@ -58,6 +58,11 @@
     <string name="restaurant_detail_liked_star_desc">star to display if the restaurant is liked or not</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    
+    
+    /// GOOGLE SIGN IN ///
+    <string name="default_web_client_id">485686922043-jika7fcqeun39mh67ae501ahd9uccg5t.apps.googleusercontent.com</string>
+    <string name="default_web_client_key">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</string>
 
 
 </resources>

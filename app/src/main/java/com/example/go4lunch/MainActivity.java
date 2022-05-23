@@ -30,14 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.appBarMain.toolbar);
-
-
         DrawerLayout drawer = binding.drawerLayout;
-
         bottomNavigationView = findViewById(R.id.bottom_navigation_view);
-
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
