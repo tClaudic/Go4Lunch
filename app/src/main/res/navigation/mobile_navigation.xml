@@ -6,6 +6,11 @@
     app:startDestination="@+id/nav_mapView">
 
     <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.go4lunch.ui.authentication.loginFragment"
+        tools:layout="@layout/fragment_login"/>
+
+    <fragment
         android:id="@+id/nav_restaurantDetail"
         android:name="com.example.go4lunch.ui.restaurantDetail.RestaurantDetailFragment"
         android:label="@string/nav_drawer_first_title"
@@ -14,7 +19,8 @@
     <fragment
         android:id="@+id/nav_settings"
         android:label="@string/nav_drawer_second_title"
-        tools:layout="@layout/fragment_gallery" />
+        android:name="com.example.go4lunch.ui.authentication.loginFragment"
+        tools:layout="@layout/fragment_login" />
 
 
     <fragment

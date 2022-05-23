@@ -2,15 +2,11 @@ package com.example.go4lunch;
 
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -25,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     BottomNavigationView bottomNavigationView;
-
 
 
     @Override
@@ -56,13 +51,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
-            switch (navDestination.getId()){
+            switch (navDestination.getId()) {
                 case R.id.nav_restaurantDetail:
-                case R.id.nav_settings:
                 case R.id.nav_logout:
                     hideBottomNavigationBar();
                     break;
-                default: showBottomNavigationBar();
+                case R.id.nav_settings:
+                    hideBottomNavigationBar();
+                    hideToolbar();
+                    break;
+
+                default:
+                    showBottomNavigationBar();
+                    showActionBar();
 
 
             }
@@ -71,15 +72,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void showActionBar(){
+        getSupportActionBar().show();
+    }
 
-    public void hideBottomNavigationBar(){
+
+    public void hideToolbar() {
+        getSupportActionBar().hide();
+    }
+
+
+    public void hideBottomNavigationBar() {
         bottomNavigationView.setVisibility(View.INVISIBLE);
     }
 
-    public void showBottomNavigationBar(){
+    public void showBottomNavigationBar() {
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
-
 
 
     @Override
