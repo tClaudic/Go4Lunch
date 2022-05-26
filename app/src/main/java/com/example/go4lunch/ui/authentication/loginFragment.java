@@ -71,4 +71,8 @@ public class loginFragment extends Fragment {
 
     private void handleSignInResult(Task<GoogleSignInAccount> task) {
     }
+
+    private void logout(){
+
+    }
 }
