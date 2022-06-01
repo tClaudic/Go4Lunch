@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     hideBottomNavigationBar();
                     break;
                 case R.id.nav_settings:
+                case R.id.nav_splashScreen:
                     hideBottomNavigationBar();
                     hideToolbar();
                     break;

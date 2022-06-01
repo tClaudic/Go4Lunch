@@ -18,6 +18,7 @@ public class AuthRepository {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = rootRef.collection(USERS);
+    private User user = new User();
 
 
     MutableLiveData<User> firebaseSignInWithGoogle(AuthCredential authCredential) {
@@ -64,5 +65,35 @@ public class AuthRepository {
             }
         });
         return newUserMutableLiveData;
+    }
+
+    MutableLiveData<User> checkIfUserIsAuthenticatedInFirebase(){
+        MutableLiveData<User> isUserAuthenticateInFirebaseMutableLiveData = new MutableLiveData<>();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null){
+            user.isAuthenticated = false;
+            isUserAuthenticateInFirebaseMutableLiveData.setValue(user);
+        }else {
+            user.uid = firebaseUser.getUid();
+            user.isAuthenticated = true;
+            isUserAuthenticateInFirebaseMutableLiveData.setValue(user);
+        }
+        return isUserAuthenticateInFirebaseMutableLiveData;
+    }
+
+    MutableLiveData<User> addUserToLiveData(String uid){
+        MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+        usersRef.document(uid).get().addOnCompleteListener(userTask ->{
+            if (userTask.isSuccessful()){
+                DocumentSnapshot documentSnapshot = userTask.getResult();
+                if (documentSnapshot.exists()){
+                    User user = documentSnapshot.toObject(User.class);
+                    userMutableLiveData.setValue(user);
+                }else {
+                    Log.e("AddUserToLideData",userTask.getException().getMessage());
+                }
+            }
+        });
+        return userMutableLiveData;
     }
 }

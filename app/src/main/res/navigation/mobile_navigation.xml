@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_mapView">
+    app:startDestination="@+id/nav_splashScreen">
 
     <fragment
         android:id="@+id/nav_login"
@@ -40,6 +40,19 @@
         android:name="com.example.go4lunch.ui.workmatesView.WorkmateListFragment"
         android:label="@string/workmates_actionbar_title"
         tools:layout="@layout/fragment_workmates_list" />
+
+    <fragment
+        android:id="@+id/nav_splashScreen"
+        android:name="com.example.go4lunch.ui.splashScreen.SplashFragment"
+        tools:layout="@layout/fragment_splash_screen">
+        <action
+            android:id="@+id/action_nav_splashScreen_to_nav_login"
+            app:destination="@id/nav_login" />
+        <action
+            android:id="@+id/action_nav_splashScreen_to_nav_mapView"
+            app:destination="@id/nav_mapView"
+            />
+    </fragment>
 
     <dialog
         android:id="@+id/nav_logout"
