@@ -13,12 +13,12 @@ public class User implements Serializable {
     @Exclude
     public boolean isAuthenticated;
     @Exclude
-    boolean isNew, isCreated;
+    public boolean isNew, isCreated;
 
     public User() {
     }
 
-    User(String uid, String name, String email) {
+    public User(String uid, String name, String email) {
         this.uid = uid;
         this.name = name;
         this.email = email;
