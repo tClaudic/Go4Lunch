@@ -44,15 +44,7 @@
     <fragment
         android:id="@+id/nav_splashScreen"
         android:name="com.example.go4lunch.ui.splashScreen.SplashFragment"
-        tools:layout="@layout/fragment_splash_screen">
-        <action
-            android:id="@+id/action_nav_splashScreen_to_nav_login"
-            app:destination="@id/nav_login" />
-        <action
-            android:id="@+id/action_nav_splashScreen_to_nav_mapView"
-            app:destination="@id/nav_mapView"
-            />
-    </fragment>
+        tools:layout="@layout/fragment_splash_screen"/>
 
     <dialog
         android:id="@+id/nav_logout"

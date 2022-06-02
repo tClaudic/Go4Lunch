@@ -1,9 +1,11 @@
 package com.example.go4lunch;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -13,19 +15,25 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.go4lunch.databinding.ActivityMainBinding;
+import com.example.go4lunch.ui.logout.LogoutConfirmation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     BottomNavigationView bottomNavigationView;
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("onStart","onCreate");
 
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -47,11 +55,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()) {
-                case R.id.nav_restaurantDetail:
+
                 case R.id.nav_logout:
+                    showLogOutDialogFragment();
+                    break;
+                case R.id.nav_restaurantDetail:
                     hideBottomNavigationBar();
                     break;
-                case R.id.nav_settings:
+                case R.id.nav_login:
                 case R.id.nav_splashScreen:
                     hideBottomNavigationBar();
                     hideToolbar();
@@ -66,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+    }
+
+    private void showLogOutDialogFragment(){
+        new LogoutConfirmation().show(getSupportFragmentManager(),"");
     }
 
     private void showActionBar() {
@@ -99,5 +114,21 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null){
+            Navigation.findNavController(this,R.id.nav_host_fragment_content_main).navigate(R.id.nav_login);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("onStart","onStart");
+        firebaseAuth.addAuthStateListener(this);
+
     }
 }

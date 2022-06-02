@@ -16,6 +16,8 @@ import com.example.go4lunch.databinding.FragmentLoginBinding;
 import com.example.go4lunch.databinding.FragmentSplashScreenBinding;
 import com.example.go4lunch.ui.authentication.AuthViewModel;
 
+import java.nio.file.attribute.UserPrincipalLookupService;
+
 public class SplashFragment extends Fragment {
 
     private FragmentSplashScreenBinding binding;
@@ -38,11 +40,16 @@ public class SplashFragment extends Fragment {
         authViewModel.checkIfUserIsAuthenticated();
         authViewModel.isUserAuthenticatedLiveData.observe(this, user -> {
             if (!user.isAuthenticated){
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_splashScreen_to_nav_login);
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_login);
             }
             else{
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_splashScreen_to_nav_mapView);
+                getUserFromDatabase(user.uid);
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_mapView);
             }
         });
     }
+    private void getUserFromDatabase(String uid){
+        authViewModel.setUid(uid);
+    }
+
 }

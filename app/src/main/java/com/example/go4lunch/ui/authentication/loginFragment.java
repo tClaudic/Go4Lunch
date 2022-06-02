@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentLoginBinding;
@@ -113,12 +114,14 @@ public class loginFragment extends Fragment {
             if (authenticatedUser.isNew){
                 createNewUser(authenticatedUser);
             }else {
-                goToMainFragment(authenticatedUser);
+                goToMainFragment();
+
             }
         });
     }
 
-    private void goToMainFragment(User authenticatedUser) {
+    private void goToMainFragment() {
+        Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_mapView);
     }
 
     private void createNewUser(User authenticatedUser) {
@@ -127,7 +130,7 @@ public class loginFragment extends Fragment {
             if (user.isCreated){
                 Toast.makeText(getActivity(),"Your account is successfully created",Toast.LENGTH_LONG).show();
             }
-            goToMainFragment(user);
+            goToMainFragment();
         });
     }
 

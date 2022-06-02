@@ -36,7 +36,7 @@ public class AuthViewModel extends AndroidViewModel {
         isUserAuthenticatedLiveData = authRepository.checkIfUserIsAuthenticatedInFirebase();
     }
 
-    void setUid(String uid){
+    public void setUid(String uid){
         userLiveData = authRepository.addUserToLiveData(uid);
     }
 }

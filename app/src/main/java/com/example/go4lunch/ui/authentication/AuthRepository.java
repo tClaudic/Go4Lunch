@@ -13,6 +13,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 public class AuthRepository {
     private static final String USERS = "users";
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -90,7 +92,7 @@ public class AuthRepository {
                     User user = documentSnapshot.toObject(User.class);
                     userMutableLiveData.setValue(user);
                 }else {
-                    Log.e("AddUserToLideData",userTask.getException().getMessage());
+                    Log.e("AddUserToLideData", Objects.requireNonNull(userTask.getException()).getMessage());
                 }
             }
         });
