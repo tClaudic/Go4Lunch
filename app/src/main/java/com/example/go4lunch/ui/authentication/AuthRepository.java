@@ -33,7 +33,8 @@ public class AuthRepository {
                     String uid = firebaseUser.getUid();
                     String name = firebaseUser.getDisplayName();
                     String email = firebaseUser.getEmail();
-                    User user = new User(uid, name, email);
+                    String urlPicture = firebaseUser.getPhotoUrl().toString();
+                    User user = new User(uid, name, email,urlPicture);
                     user.isNew = isNewUser;
                     authenticatedUserMutableLiveData.setValue(user);
                 }
@@ -92,7 +93,7 @@ public class AuthRepository {
                     User user = documentSnapshot.toObject(User.class);
                     userMutableLiveData.setValue(user);
                 }else {
-                    Log.e("AddUserToLideData", Objects.requireNonNull(userTask.getException()).getMessage());
+                    //Log.e("AddUserToLideData", userTask.getException().getMessage());
                 }
             }
         });

@@ -10,6 +10,7 @@ public class User implements Serializable {
     public String name;
     @SuppressWarnings("WeakerAccess")
     public String email;
+    public String urlPicture;
     @Exclude
     public boolean isAuthenticated;
     @Exclude
@@ -18,9 +19,10 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String uid, String name, String email) {
+    public User(String uid, String name, String email,String urlPicture) {
         this.uid = uid;
         this.name = name;
         this.email = email;
+        this.urlPicture = urlPicture;
     }
 }
