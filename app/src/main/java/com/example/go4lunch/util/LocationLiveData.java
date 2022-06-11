@@ -16,15 +16,13 @@ import com.google.android.gms.location.LocationServices;
 
 
 public class LocationLiveData extends LiveData<LocationModel> {
-    private Context context;
+
     public LocationLiveData(Context context) {
-        this.context = context;
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
 
-    private  FusedLocationProviderClient fusedLocationProviderClient;
-
+    private final FusedLocationProviderClient fusedLocationProviderClient;
 
 
     private LocationModel setLocationData(Location location) {
@@ -41,8 +39,8 @@ public class LocationLiveData extends LiveData<LocationModel> {
     };
 
     private LocationRequest setLocationRequest() {
-        LocationRequest locationRequest = new LocationRequest();
-        return locationRequest.setInterval(10000).setFastestInterval(5000).setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        return LocationRequest.create().setInterval(10000).setFastestInterval(5000).setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @SuppressLint("MissingPermission")
