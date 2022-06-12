@@ -60,5 +60,12 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
     /// LOCATION
     implementation 'com.google.android.gms:play-services-location:20.0.0'
+    /// RETROFIT
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
+    //? RXJAVA3
+
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 
 }

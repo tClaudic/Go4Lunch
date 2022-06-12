@@ -1,0 +1,51 @@
+package com.example.go4lunch.model.Repositories;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.example.go4lunch.Rertrofit.ApiCall;
+import com.example.go4lunch.Rertrofit.Go4LunchStreams;
+import com.example.go4lunch.model.NearbySearch.NearbySearch;
+import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
+
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+
+public class PlaceDetailRepository {
+    Disposable disposable;
+
+    ApiCall apiCall;
+    private MutableLiveData<PlaceDetail> nearbySearchMutableLiveData;
+
+    public PlaceDetailRepository() {
+        this.nearbySearchMutableLiveData = new MutableLiveData<>();
+    }
+
+    public void searchNearbyPlace(String placeID) {
+        Go4LunchStreams.streamFetchDetails(placeID).subscribeWith(new DisposableObserver<PlaceDetail>() {
+            @Override
+            public void onNext(@NonNull PlaceDetail placeDetail) {
+                nearbySearchMutableLiveData.postValue(placeDetail);
+
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                nearbySearchMutableLiveData.postValue(null);
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+    }
+
+    public LiveData<PlaceDetail> getPlaceDetailResponse(){
+        return nearbySearchMutableLiveData;
+    }
+}
