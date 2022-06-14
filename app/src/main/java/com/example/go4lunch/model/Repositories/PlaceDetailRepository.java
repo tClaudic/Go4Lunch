@@ -1,5 +1,7 @@
 package com.example.go4lunch.model.Repositories;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -7,6 +9,8 @@ import com.example.go4lunch.Rertrofit.ApiCall;
 import com.example.go4lunch.Rertrofit.Go4LunchStreams;
 import com.example.go4lunch.model.NearbySearch.NearbySearch;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
+
+import java.util.List;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -18,9 +22,11 @@ public class PlaceDetailRepository {
 
     ApiCall apiCall;
     private MutableLiveData<PlaceDetail> nearbySearchMutableLiveData;
+    private MutableLiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
 
     public PlaceDetailRepository() {
         this.nearbySearchMutableLiveData = new MutableLiveData<>();
+        this.nearbyRestaurantsLiveData = new MutableLiveData<>();
     }
 
     public void searchNearbyPlace(String placeID) {
@@ -48,4 +54,22 @@ public class PlaceDetailRepository {
     public LiveData<PlaceDetail> getPlaceDetailResponse(){
         return nearbySearchMutableLiveData;
     }
+
+    public void searchNearbyRestaurants(String location,int Radius,String type){
+        Go4LunchStreams.streamFetchRestaurantsDetails(location,Radius,type).subscribeWith(new DisposableSingleObserver<List<PlaceDetail>>() {
+            @Override
+            public void onSuccess(@NonNull List<PlaceDetail> placeDetails) {
+                nearbyRestaurantsLiveData.postValue(placeDetails);
+                Log.e("placeDetails","nearbyRestaurantsSuccess")
+;            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e("nearbyRestaurantError",e.getMessage());
+            }
+        });
+
+    }
+
+    public LiveData<List<PlaceDetail>> getNearbyRestaurantsResponse(){return  nearbyRestaurantsLiveData;}
 }

@@ -57,7 +57,7 @@ public class Result implements Serializable
     private PlusCode plusCode;
     @SerializedName("rating")
     @Expose
-    private Integer rating;
+    private Double rating;
     @SerializedName("reference")
     @Expose
     private String reference;
@@ -204,11 +204,11 @@ public class Result implements Serializable
         this.plusCode = plusCode;
     }
 
-    public Integer getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
