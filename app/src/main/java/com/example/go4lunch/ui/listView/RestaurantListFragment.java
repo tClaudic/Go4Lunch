@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.go4lunch.databinding.FragmentListViewBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 
@@ -60,7 +61,7 @@ public class RestaurantListFragment extends Fragment {
         recyclerView = binding.rcListView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
-        restaurantListRecyclerViewAdapter = new RestaurantListRecyclerViewAdapter();
+        restaurantListRecyclerViewAdapter = new RestaurantListRecyclerViewAdapter(Glide.with(this));
         recyclerView.setAdapter(restaurantListRecyclerViewAdapter);
     }
 

@@ -1,5 +1,6 @@
 package com.example.go4lunch.ui.listView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.example.go4lunch.BuildConfig;
 import com.example.go4lunch.R;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 
@@ -18,6 +22,11 @@ import java.util.List;
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     List<PlaceDetail> nearbyRestaurantList;
+    final RequestManager glide;
+
+    public RestaurantListRecyclerViewAdapter(RequestManager glide) {
+        this.glide = glide;
+    }
 
 
     @NonNull
@@ -37,8 +46,12 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
         viewViewHolder.tvRestaurantRange.setText("123meters");
         viewViewHolder.rbRestaurantRating.setRating(3);
         viewViewHolder.tvRestaurantOpenStatus.setText(placeDetail.getResult().getBusinessStatus());
-
+        if (placeDetail.getResult().getPhotos() != null) {
+            glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + placeDetail.getResult().getPhotos().get(0).getPhotoReference() + "&key=" + BuildConfig.MAPS_API_KEY).into(viewViewHolder.ivRestaurantPicture);
+        }
     }
+
+
 
     @Override
     public int getItemCount() {
