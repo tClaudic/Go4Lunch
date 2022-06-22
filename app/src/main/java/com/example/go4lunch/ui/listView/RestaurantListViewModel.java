@@ -13,7 +13,7 @@ import java.util.List;
 
 public class RestaurantListViewModel extends AndroidViewModel {
 
-    LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
+    public LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
     PlaceDetailRepository placeDetailRepository;
 
     public RestaurantListViewModel(@NonNull Application application) {
