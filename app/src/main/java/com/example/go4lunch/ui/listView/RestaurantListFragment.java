@@ -1,15 +1,20 @@
 package com.example.go4lunch.ui.listView;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,18 +22,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.databinding.FragmentListViewBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantListFragment extends Fragment {
+
     FragmentListViewBinding binding;
     RestaurantListViewModel restaurantListViewModel;
     public RecyclerView recyclerView;
     RestaurantListRecyclerViewAdapter restaurantListRecyclerViewAdapter;
-    String location = "47.6507, -2.0839";
-    public List<PlaceDetail> nearbyRestaurantList = new ArrayList<>();
 
+    public List<PlaceDetail> nearbyRestaurantList = new ArrayList<>();
+    public FusedLocationProviderClient fusedLocationProviderClient;
 
 
     @Nullable
@@ -37,32 +45,61 @@ public class RestaurantListFragment extends Fragment {
         binding = FragmentListViewBinding.inflate(getLayoutInflater());
         configureRecyclerView();
         initViewModel();
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+        checkLocationPermissions();
         return binding.getRoot();
     }
 
-    private void initViewModel(){
+    private void initViewModel() {
         restaurantListViewModel = new ViewModelProvider(this).get(RestaurantListViewModel.class);
         restaurantListViewModel.init();
-        restaurantListViewModel.searchNearbyRestaurants(location,5000,"restaurant");
-        restaurantListViewModel.nearbyRestaurantsLiveData.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
-            @Override
-            public void onChanged(List<PlaceDetail> placeDetails) {
-                restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
-            }
-        });
-
 
     }
 
 
-
-
-    private void configureRecyclerView(){
+    private void configureRecyclerView() {
         recyclerView = binding.rcListView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         restaurantListRecyclerViewAdapter = new RestaurantListRecyclerViewAdapter(Glide.with(this));
         recyclerView.setAdapter(restaurantListRecyclerViewAdapter);
+    }
+
+    private void checkLocationPermissions() {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            getUserLocation();
+        } else {
+            askLocationPermission();
+        }
+    }
+    private void observeNearbyRestaurant(Location location){
+        String userLocation = location.getLatitude() +","+ location.getLongitude();
+        Log.e("LocationString",userLocation);
+        restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
+        restaurantListViewModel.nearbyRestaurantsLiveData.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+            @Override
+            public void onChanged(List<PlaceDetail> placeDetails) {
+                restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
+                Log.e("onChanged", String.valueOf(placeDetails.size()));
+            }
+        });
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private void getUserLocation() {
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+            Log.e("Lattitude", String.valueOf(location.getLatitude()));
+            Log.e("Longitude", String.valueOf(location.getLongitude()));
+
+            observeNearbyRestaurant(location);
+        });
+    }
+
+    private void askLocationPermission() {
+        ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},44);
     }
 
 

@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -84,15 +85,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void getUserLocation() {
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
             Log.e("Lattitude", String.valueOf(location.getLatitude()));
             Log.e("Longitude", String.valueOf(location.getLongitude()));
             updateCameraZoomWithNewLocation(location);
             observeNearbyRestaurant(location);
-
-
-
         });
     }
 
@@ -141,8 +140,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
+        googleMap.setMyLocationEnabled(false);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.map_style));
     }
 }
