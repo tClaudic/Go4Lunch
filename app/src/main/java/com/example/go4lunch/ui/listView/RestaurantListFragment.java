@@ -93,7 +93,7 @@ public class RestaurantListFragment extends Fragment {
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
             Log.e("Lattitude", String.valueOf(location.getLatitude()));
             Log.e("Longitude", String.valueOf(location.getLongitude()));
-
+            restaurantListRecyclerViewAdapter.setUserLocation(location);
             observeNearbyRestaurant(location);
         });
     }

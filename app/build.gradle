@@ -66,6 +66,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
     //? RXJAVA3
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    /// STRING
+    implementation  'org.apache.commons:commons-lang3:3.0'
 
 
 }
