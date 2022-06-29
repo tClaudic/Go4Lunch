@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:numStars="3"
+        android:progressTint="@color/ratingColorStar"
         app:layout_constraintBottom_toBottomOf="@+id/iv_restaurant_picture"
         app:layout_constraintEnd_toStartOf="@+id/iv_restaurant_picture" />
 
