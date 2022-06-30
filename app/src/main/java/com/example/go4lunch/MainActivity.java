@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     showLogOutDialogFragment();
                     break;
                 case R.id.nav_restaurantDetail:
-                    hideBottomNavigationBar();
-                    break;
                 case R.id.nav_login:
                 case R.id.nav_splashScreen:
                     hideBottomNavigationBar();

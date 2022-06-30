@@ -56,7 +56,7 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void initViewModel() {
-        restaurantListViewModel = new ViewModelProvider(this).get(RestaurantListViewModel.class);
+        restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
         restaurantListViewModel.init();
 
     }
