@@ -34,6 +34,9 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     }
 
 
+    public PlaceDetail getPlaceDetail(int position){
+        return nearbyRestaurantList.get(position);
+    }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
