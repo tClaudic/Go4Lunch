@@ -65,14 +65,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void initLocationButton(){
-        binding.btnLocation.setOnClickListener(view -> {
-            getUserLocation();
-        });
+        binding.btnLocation.setOnClickListener(view -> getUserLocation());
     }
 
 
     private void initMapViewModel() {
-        mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
+        mapViewModel = new ViewModelProvider(requireActivity()).get(MapViewModel.class);
     }
 
     private void checkLocationPermissions(){
@@ -122,7 +120,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void initRestaurantListViewModel(){
-        restaurantListViewModel = new ViewModelProvider(this).get(RestaurantListViewModel.class);
+        restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
         restaurantListViewModel.init();
 
     }
