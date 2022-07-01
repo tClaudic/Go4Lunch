@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="14dp"
-                android:src="@drawable/ic_star_outlined_24"
+                android:src="@drawable/ic_unlike_restaurant_star"
                 app:layout_constraintStart_toEndOf="@+id/tv_detail_restaurant_name"
                 app:layout_constraintTop_toTopOf="parent"
                 android:contentDescription="@string/restaurant_detail_liked_star_desc" />

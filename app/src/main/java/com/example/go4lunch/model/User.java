@@ -3,6 +3,7 @@ package com.example.go4lunch.model;
 import com.google.firebase.firestore.Exclude;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class User implements Serializable {
 
@@ -11,6 +12,8 @@ public class User implements Serializable {
     @SuppressWarnings("WeakerAccess")
     public String email;
     public String urlPicture;
+
+    public List<String> likes;
     @Exclude
     public boolean isAuthenticated;
     @Exclude
@@ -19,10 +22,11 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String uid, String name, String email,String urlPicture) {
+    public User(String uid, String name, String email,String urlPicture,List<String>likes) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.urlPicture = urlPicture;
+        this.likes = likes;
     }
 }

@@ -13,6 +13,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class AuthRepository {
@@ -34,7 +37,9 @@ public class AuthRepository {
                     String name = firebaseUser.getDisplayName();
                     String email = firebaseUser.getEmail();
                     String urlPicture = firebaseUser.getPhotoUrl().toString();
-                    User user = new User(uid, name, email,urlPicture);
+                    List<String> likes = new ArrayList<>();
+                    likes.add("fdffsfsfs");
+                    User user = new User(uid, name, email,urlPicture,likes);
                     user.isNew = isNewUser;
                     authenticatedUserMutableLiveData.setValue(user);
                 }
