@@ -2,10 +2,14 @@ package com.example.go4lunch.ui.authentication;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.go4lunch.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -24,6 +28,35 @@ public class AuthRepository {
     private FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
     private CollectionReference usersRef = rootRef.collection(USERS);
     private User user = new User();
+
+    MutableLiveData<User> firebaseSignInWithFacebook(AuthCredential authCredential){
+        MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
+        firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    if (firebaseUser != null) {
+                        String uid = firebaseUser.getUid();
+                        String name = firebaseUser.getDisplayName();
+                        String email = firebaseUser.getEmail();
+                        String urlPicture = firebaseUser.getPhotoUrl().toString();
+                        List<String> likes = new ArrayList<>();
+                        likes.add("fdffsfsfs");
+                        User user = new User(uid, name, email, urlPicture, likes);
+                        user.isNew = isNewUser;
+                        authenticatedUserMutableLiveData.setValue(user);
+                    }
+                }else {
+                    Log.e("authrepo", task.getException().getMessage());
+                }
+
+
+            }
+        });
+        return authenticatedUserMutableLiveData;
+    }
 
 
     MutableLiveData<User> firebaseSignInWithGoogle(AuthCredential authCredential) {
