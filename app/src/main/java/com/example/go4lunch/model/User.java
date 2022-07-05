@@ -12,7 +12,7 @@ public class User implements Serializable {
     @SuppressWarnings("WeakerAccess")
     public String email;
     public String urlPicture;
-
+    public String restaurantChoice;
     public List<String> likes;
     @Exclude
     public boolean isAuthenticated;
@@ -22,7 +22,7 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String uid, String name, String email,String urlPicture,List<String>likes) {
+    public User(String uid, String name, String email,String urlPicture,String restaurantChoice,List<String>likes) {
         this.uid = uid;
         this.name = name;
         this.email = email;

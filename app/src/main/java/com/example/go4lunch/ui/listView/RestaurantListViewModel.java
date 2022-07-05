@@ -9,6 +9,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.Repositories.PlaceDetailRepository;
+import com.example.go4lunch.model.Repositories.UserRepository;
+import com.example.go4lunch.model.User;
 
 import java.util.List;
 
@@ -16,6 +18,8 @@ public class RestaurantListViewModel extends AndroidViewModel {
 
     public LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
     PlaceDetailRepository placeDetailRepository;
+    UserRepository userRepository;
+    MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<PlaceDetail> selected = new MutableLiveData<PlaceDetail>();
 
     public RestaurantListViewModel(@NonNull Application application) {
@@ -24,7 +28,13 @@ public class RestaurantListViewModel extends AndroidViewModel {
 
     public void init(){
         placeDetailRepository = new PlaceDetailRepository();
+        userRepository = new UserRepository();
         nearbyRestaurantsLiveData = placeDetailRepository.getNearbyRestaurantsResponse();
+        getUsersList();
+    }
+
+    public void getUsersList(){
+        usersListMutableLiveData = userRepository.getUsersListMutableLiveData();
     }
 
     public void searchNearbyRestaurants(String location,int Radius,String type){

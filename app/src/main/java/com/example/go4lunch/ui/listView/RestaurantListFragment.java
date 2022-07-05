@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentListViewBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
+import com.example.go4lunch.model.User;
 import com.example.go4lunch.util.ItemClickSupport;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -49,6 +50,7 @@ public class RestaurantListFragment extends Fragment {
         binding = FragmentListViewBinding.inflate(getLayoutInflater());
         configureRecyclerView();
         initViewModel();
+        observeUsersList();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         checkLocationPermissions();
         initOnClickRecyclerView();
@@ -89,6 +91,16 @@ public class RestaurantListFragment extends Fragment {
             askLocationPermission();
         }
     }
+
+    private void observeUsersList(){
+        restaurantListViewModel.usersListMutableLiveData.observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                restaurantListRecyclerViewAdapter.setUsersList(users);
+            }
+        });
+    }
+
     private void observeNearbyRestaurant(Location location){
         String userLocation = location.getLatitude() +","+ location.getLongitude();
         Log.e("LocationString",userLocation);

@@ -3,10 +3,12 @@ package com.example.go4lunch.util;
 import android.location.Location;
 
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
+import com.example.go4lunch.model.User;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class RestaurantListHelper {
 
@@ -69,6 +71,16 @@ public class RestaurantListHelper {
             return (float) (restaurantRating/5 * 3);
         }
         else return 0;
+    }
+
+    public static int howManyUsersLunchAtThisRestaurant(List<User> users,PlaceDetail placeDetail){
+        int result = 0;
+        for (User user: users){
+            if (user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
+                result++;
+            }
+        }
+        return result;
     }
 
 

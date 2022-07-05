@@ -18,6 +18,7 @@ import com.bumptech.glide.RequestManager;
 import com.example.go4lunch.BuildConfig;
 import com.example.go4lunch.R;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
+import com.example.go4lunch.model.User;
 import com.example.go4lunch.util.RestaurantListHelper;
 import com.google.firebase.database.collection.LLRBNode;
 
@@ -28,6 +29,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     List<PlaceDetail> nearbyRestaurantList;
     final RequestManager glide;
     Location userLocation;
+    List<User> usersList;
 
     public RestaurantListRecyclerViewAdapter(RequestManager glide) {
         this.glide = glide;
@@ -53,6 +55,7 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
         viewViewHolder.tvRestaurantContributors.setText("2");
         viewViewHolder.tvRestaurantRange.setText(RestaurantListHelper.sumDistanceBetweenTwoLocation(userLocation, placeDetail));
         viewViewHolder.rbRestaurantRating.setRating(RestaurantListHelper.divideRatingResultBy3(placeDetail));
+        viewViewHolder.tvRestaurantContributors.setText(RestaurantListHelper.howManyUsersLunchAtThisRestaurant(usersList,placeDetail));
         if (RestaurantListHelper.formatCloseHour(placeDetail).contains("Closing soon")){
             viewViewHolder.tvRestaurantOpenStatus.setTypeface(null,Typeface.BOLD);
             viewViewHolder.tvRestaurantOpenStatus.setTextColor(Color.parseColor("#c00000"));
@@ -77,6 +80,12 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     public void setNearbyRestaurantList(List<PlaceDetail> restaurantList) {
         this.nearbyRestaurantList = restaurantList;
         notifyDataSetChanged();
+    }
+
+    public void setUsersList(List<User> usersList){
+        this.usersList = usersList;
+        notifyDataSetChanged();
+
     }
 
 

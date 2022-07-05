@@ -11,7 +11,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -35,7 +34,7 @@ public class UserRepository {
         usersListMutableLiveData = new MutableLiveData<>();
     }
 
-    public void getUsersListMutableLiveData() {
+    public MutableLiveData<List<User>> getUsersListMutableLiveData() {
         usersRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -44,9 +43,11 @@ public class UserRepository {
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
                     userList.add(documentSnapshot.toObject(User.class));
                 }
+                usersListMutableLiveData.setValue(userList);
             }
 
         });
+        return usersListMutableLiveData;
     }
 
     public void removeUserLike(String userId,String restaurantID){
