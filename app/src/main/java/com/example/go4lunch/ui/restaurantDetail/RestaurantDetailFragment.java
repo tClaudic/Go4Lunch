@@ -58,7 +58,6 @@ public class RestaurantDetailFragment extends Fragment {
                     @Override
                     public void onChanged(User user) {
                         currentUser = user;
-                        Log.e("usercolpme", user.likes.get(4));
                         updateStarColor(user, placeDetail);
                     }
                 });
@@ -75,6 +74,7 @@ public class RestaurantDetailFragment extends Fragment {
         setCallBtn(placeDetail);
         setWebsiteBtn(placeDetail);
         setLikeBtn(placeDetail);
+        setRestaurantChoiceBtn();
     }
 
     private void setCallBtn(PlaceDetail placeDetail) {
@@ -95,6 +95,18 @@ public class RestaurantDetailFragment extends Fragment {
 
     }
 
+    private void setRestaurantChoiceBtn(){
+        binding.btnRestaurantChoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!currentUser.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
+                   restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
+                   restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
+                }else restaurantDetailViewModel.removePlaceId(currentUser.uid);
+            }
+        });
+    }
+
     private void setWebsiteBtn(PlaceDetail placeDetail) {
         binding.btnWebsiteDetail.setOnClickListener(view -> {
             if (placeDetail.getResult().getWebsite() != null) {
@@ -109,8 +121,7 @@ public class RestaurantDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 restaurantDetailViewModel.addUserRestaurantLike(currentUser.uid, placeDetail.getResult().getPlaceId());
-                binding.ivDetailRestaurantLike.setColorFilter(R.color.ratingColorStar);
-
+                updateStarColor(currentUser,placeDetail);
             }
         });
     }

@@ -42,10 +42,11 @@ public class AuthRepository {
                         String name = firebaseUser.getDisplayName();
                         String email = firebaseUser.getEmail();
                         String urlPicture = firebaseUser.getPhotoUrl().toString();
-                        String placeId = "";
+                        String placeId = " ";
+                        String restaurantChoiceName = " ";
                         List<String> likes = new ArrayList<>();
                         likes.add("fdffsfsfs");
-                        User user = new User(uid, name, email, urlPicture,placeId , likes);
+                        User user = new User(uid, name, email, urlPicture,placeId,restaurantChoiceName, likes);
                         user.isNew = isNewUser;
                         authenticatedUserMutableLiveData.setValue(user);
                     }
@@ -71,10 +72,11 @@ public class AuthRepository {
                     String name = firebaseUser.getDisplayName();
                     String email = firebaseUser.getEmail();
                     String urlPicture = firebaseUser.getPhotoUrl().toString();
-                    String placeId = "";
+                    String placeId = " ";
+                    String restaurantChoiceName = "";
                     List<String> likes = new ArrayList<>();
                     likes.add("fdffsfsfs");
-                    User user = new User(uid, name, email,urlPicture,placeId ,likes);
+                    User user = new User(uid, name, email,urlPicture,placeId,restaurantChoiceName ,likes);
                     user.isNew = isNewUser;
                     authenticatedUserMutableLiveData.setValue(user);
                 }

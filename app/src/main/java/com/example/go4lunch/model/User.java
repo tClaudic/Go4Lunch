@@ -13,6 +13,7 @@ public class User implements Serializable {
     public String email;
     public String urlPicture;
     public String restaurantChoice;
+    public String restaurantChoiceName;
     public List<String> likes;
     @Exclude
     public boolean isAuthenticated;
@@ -22,11 +23,13 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String uid, String name, String email,String urlPicture,String restaurantChoice,List<String>likes) {
+    public User(String uid, String name, String email,String urlPicture,String restaurantChoice,String restaurantChoiceName,List<String>likes) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.urlPicture = urlPicture;
+        this.restaurantChoice = restaurantChoice;
+        this.restaurantChoiceName =restaurantChoiceName;
         this.likes = likes;
     }
 }

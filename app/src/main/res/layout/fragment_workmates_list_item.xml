@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/iv_workmate_picture"
+            android:id="@+id/iv_workmate_picture_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/workmate_profile_picture" />

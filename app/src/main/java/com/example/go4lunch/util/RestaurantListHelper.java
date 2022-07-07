@@ -1,6 +1,7 @@
 package com.example.go4lunch.util;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
@@ -73,14 +74,15 @@ public class RestaurantListHelper {
         else return 0;
     }
 
-    public static int howManyUsersLunchAtThisRestaurant(List<User> users,PlaceDetail placeDetail){
+    public static String howManyUsersLunchAtThisRestaurant(List<User> users,PlaceDetail placeDetail){
+        Log.e("placeDetailTest",String.valueOf(users.size()));
         int result = 0;
         for (User user: users){
-            if (user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
+            if (user.restaurantChoice == placeDetail.getResult().getPlaceId()){
                 result++;
             }
         }
-        return result;
+        return String.valueOf(result);
     }
 
 

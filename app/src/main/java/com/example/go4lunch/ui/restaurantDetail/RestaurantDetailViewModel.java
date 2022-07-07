@@ -39,6 +39,19 @@ public class RestaurantDetailViewModel extends AndroidViewModel {
         placeDetailRepository.searchNearbyPlace(placeId);
     }
 
+    public void setPlaceId(String userId, String placeId){
+        userRepository.addRestaurant(userId, placeId);
+    }
+
+
+    public void setRestaurantChoiceName(String userId,String restaurantName){
+        userRepository.addRestaurantChoiceName(userId,restaurantName);
+    }
+
+    public void removePlaceId(String userId){
+        userRepository.removeRestaurantChoice(userId);
+    }
+
     public void getAuthenticatedUser(){
         userRepository.getAuthenticatedUserMutableLiveData();
     }

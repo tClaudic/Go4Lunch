@@ -61,7 +61,23 @@ public class UserRepository {
                 Log.e("succesLike", String.valueOf(task.isSuccessful()));
             }
         });
+    }
 
+    public void addRestaurant(String userId, String restaurantID){
+        usersRef.document(userId).update("placeID",restaurantID).addOnCompleteListener(task -> Log.e("addrestaurant", String.valueOf(task.isSuccessful())));
+    }
+
+    public void addRestaurantChoiceName(String userId,String restaurantChoiceName){
+        usersRef.document(userId).update("restaurantChoiceName",restaurantChoiceName).addOnCompleteListener(task -> Log.e("addRestaurantChoiceName", String.valueOf(task.isSuccessful())));
+    }
+
+    public void removeRestaurantChoice(String uid){
+        usersRef.document(uid).update("placeId","").addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+            }
+        });
     }
 
     public MutableLiveData<User> getAuthenticatedUserMutableLiveData(){
