@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="workmate_restaurant_no_choice">n\'a pas encore choisi</string>
+    <string name="workmate_restaurant_choice">mange à</string>
+</resources>

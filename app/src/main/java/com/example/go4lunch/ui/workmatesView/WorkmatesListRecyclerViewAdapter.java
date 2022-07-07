@@ -1,5 +1,6 @@
 package com.example.go4lunch.ui.workmatesView;
 
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,12 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
         notifyDataSetChanged();
     }
 
+    public boolean getUserChoice(User user){
+        if (user.restaurantChoiceName.isEmpty() || user.restaurantChoiceName == null){
+            return false;
+        }else return true;
+    }
+
 
     @NonNull
     @Override
@@ -45,7 +52,15 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
         User user = usersList.get(position);
         Log.e("urlTest", user.urlPicture);
         glide.load(user.urlPicture).into(viewHolder.ivUserPicture);
-        viewHolder.tvUserChoice.setText(user.restaurantChoiceName);
+        if (getUserChoice(user)){
+            String restaurantChoiceString = ((ViewHolder) holder).tvUserChoice.getContext().getString(R.string.workmate_restaurant_choice);
+              viewHolder.tvUserChoice.setText(user.name + " " + restaurantChoiceString + " " + user.restaurantChoiceName);
+              viewHolder.tvUserChoice.setTypeface(null, Typeface.BOLD);
+        }else {
+            String restaurantNoChoice = viewHolder.tvUserChoice.getContext().getString(R.string.workmate_restaurant_no_choice);
+            viewHolder.tvUserChoice.setText(user.name + restaurantNoChoice);
+            viewHolder.tvUserChoice.setTypeface(null,Typeface.ITALIC);
+        }
 
 
     }

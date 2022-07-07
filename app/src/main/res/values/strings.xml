@@ -1,7 +1,7 @@
 <resources>
 
     /// Login Page ///
-    <string name="app_name" translatable="false">Go4Lunch</string>
+    <string name="app_name">Go4Lunch</string>
     <string name="app_slogan" translatable="false">Find a nice restaurant and invite your co-workers for lunch!</string>
 
     /// Bottom Navigation Bar ///
@@ -61,6 +61,8 @@
     <string name="facebook_app_id">2826630187580441</string>
     <string name="facebook_client_token">50995227bbb35b2c841f8d8dd600ef31</string>
     <string name="fb_login_protocol_scheme">fb2826630187580441</string>
+    <string name="workmate_restaurant_no_choice">hasn\'t decided yet</string>
+    <string name="workmate_restaurant_choice">is eating at</string>
 
 
 </resources>
