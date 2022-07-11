@@ -56,7 +56,7 @@ public class UserRepository {
     }
 
     public Task<QuerySnapshot> getUsersByRestaurantChoice(String restaurantId) {
-        return usersRef.whereEqualTo("placeId", restaurantId).get();
+        return usersRef.whereEqualTo("restaurantChoice", restaurantId).get();
     }
 
     public void addLike(String userID, String restaurantId) {

@@ -7,7 +7,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.go4lunch.model.Repositories.UserRepository;
 import com.example.go4lunch.model.User;
@@ -28,25 +27,27 @@ public class AlertReceiver extends BroadcastReceiver {
     List<User> usersList = new ArrayList<>();
     String usersListString = "";
     private Context context;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         getAuthenticatedUser();
-        Log.e("Notification","Notification Happened");
+        Log.e("Notification", "Notification Happened");
     }
 
-    public void getAuthenticatedUser(){
+    public void getAuthenticatedUser() {
         userRepository.getAuthenticatedUser().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                 currentAuthenticatedUser = task.getResult().toObject(User.class);
+                currentAuthenticatedUser = task.getResult().toObject(User.class);
                 if (currentAuthenticatedUser != null) {
                     userRepository.getUsersByRestaurantChoice(currentAuthenticatedUser.restaurantChoice).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            for (QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()){
+                            for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
                                 usersList.add(queryDocumentSnapshot.toObject(User.class));
                             }
+                            Log.e("userListSizeNotificatio", String.valueOf(usersList.size()));
                             setupUsersStringForNotification();
                             sendNotification();
                         }
@@ -57,17 +58,16 @@ public class AlertReceiver extends BroadcastReceiver {
     }
 
 
-
-    public void sendNotification(){
+    public void sendNotification() {
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        NotificationCompat.Builder notificationBuilder = notificationHelper.getChannelNotification(currentAuthenticatedUser,usersListString);
-        notificationHelper.getNotificationManager().notify(1,notificationBuilder.build());
+        NotificationCompat.Builder notificationBuilder = notificationHelper.getChannelNotification(currentAuthenticatedUser, usersListString);
+        notificationHelper.getNotificationManager().notify(1, notificationBuilder.build());
     }
 
-    public void setupUsersStringForNotification(){
+    public void setupUsersStringForNotification() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-          usersListString = usersList.stream().map(User::getName).collect(Collectors.joining(","));
-        }else usersListString = usersList.toString();
+            usersListString = usersList.stream().map(User::getName).collect(Collectors.joining(","));
+        } else usersListString = usersList.toString();
     }
 
 
