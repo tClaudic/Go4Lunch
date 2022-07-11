@@ -27,7 +27,6 @@
     <style name="MyActionButtonOverflow" parent="android:Widget.Holo.Light.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_white_search_24</item>
 
-
     </style>
 
     <style name="Theme.Go4Lunch.NoActionBar">

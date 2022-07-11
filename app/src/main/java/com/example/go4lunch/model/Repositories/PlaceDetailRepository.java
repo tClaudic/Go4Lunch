@@ -18,9 +18,7 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 
 public class PlaceDetailRepository {
-    Disposable disposable;
 
-    ApiCall apiCall;
     private MutableLiveData<PlaceDetail> nearbySearchMutableLiveData;
     private MutableLiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
 

@@ -1,5 +1,8 @@
 package com.example.go4lunch.ui.restaurantDetail;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.BuildConfig;
+import com.example.go4lunch.Notification.AlertReceiver;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
@@ -41,6 +45,7 @@ public class RestaurantDetailFragment extends Fragment {
 
 
     private void initViewModel() {
+
         restaurantDetailViewModel = new ViewModelProvider(requireActivity()).get(RestaurantDetailViewModel.class);
         restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
         restaurantDetailViewModel.init();
@@ -102,9 +107,17 @@ public class RestaurantDetailFragment extends Fragment {
                 if (!currentUser.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
                    restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
                    restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
+                   setupNotification();
                 }else restaurantDetailViewModel.removePlaceId(currentUser.uid);
             }
         });
+    }
+
+    private void setupNotification(){
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getContext(),AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),0,intent,0);
+        alarmManager.setExact(AlarmManager.RTC, System.currentTimeMillis() + (5 * 1000),pendingIntent);
     }
 
     private void setWebsiteBtn(PlaceDetail placeDetail) {

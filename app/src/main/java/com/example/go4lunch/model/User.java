@@ -23,13 +23,21 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String uid, String name, String email,String urlPicture,String restaurantChoice,String restaurantChoiceName,List<String>likes) {
+    public User(String uid, String name, String email, String urlPicture, String restaurantChoice, String restaurantChoiceName, List<String> likes) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.urlPicture = urlPicture;
         this.restaurantChoice = restaurantChoice;
-        this.restaurantChoiceName =restaurantChoiceName;
+        this.restaurantChoiceName = restaurantChoiceName;
         this.likes = likes;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

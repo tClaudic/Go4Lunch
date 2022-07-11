@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_go4lunch_launcher"
@@ -48,6 +50,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
+        <receiver android:name=".Notification.AlertReceiver" />
 
     </application>
 

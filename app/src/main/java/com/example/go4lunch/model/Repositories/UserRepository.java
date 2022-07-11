@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,7 +41,7 @@ public class UserRepository {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 Log.e("getAllUsersTest", String.valueOf(task.getResult()));
                 List<User> userList = new ArrayList<>();
-                for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                     userList.add(documentSnapshot.toObject(User.class));
                 }
                 usersListMutableLiveData.setValue(userList);
@@ -50,11 +51,15 @@ public class UserRepository {
         return usersListMutableLiveData;
     }
 
-    public void removeUserLike(String userId,String restaurantID){
+    public void removeUserLike(String userId, String restaurantID) {
 
     }
 
-    public void addLike(String userID,String restaurantId){
+    public Task<QuerySnapshot> getUsersByRestaurantChoice(String restaurantId) {
+        return usersRef.whereEqualTo("placeId", restaurantId).get();
+    }
+
+    public void addLike(String userID, String restaurantId) {
         usersRef.document(userID).update("likes", FieldValue.arrayUnion(restaurantId)).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -63,16 +68,16 @@ public class UserRepository {
         });
     }
 
-    public void addRestaurant(String userId, String restaurantID){
-        usersRef.document(userId).update("placeID",restaurantID).addOnCompleteListener(task -> Log.e("addrestaurant", String.valueOf(task.isSuccessful())));
+    public void addRestaurant(String userId, String restaurantID) {
+        usersRef.document(userId).update("restaurantChoice", restaurantID).addOnCompleteListener(task -> Log.e("addrestaurant", String.valueOf(task.isSuccessful())));
     }
 
-    public void addRestaurantChoiceName(String userId,String restaurantChoiceName){
-        usersRef.document(userId).update("restaurantChoiceName",restaurantChoiceName).addOnCompleteListener(task -> Log.e("addRestaurantChoiceName", String.valueOf(task.isSuccessful())));
+    public void addRestaurantChoiceName(String userId, String restaurantChoiceName) {
+        usersRef.document(userId).update("restaurantChoiceName", restaurantChoiceName).addOnCompleteListener(task -> Log.e("addRestaurantChoiceName", String.valueOf(task.isSuccessful())));
     }
 
-    public void removeRestaurantChoice(String uid){
-        usersRef.document(uid).update("placeId","").addOnCompleteListener(new OnCompleteListener<Void>() {
+    public void removeRestaurantChoice(String uid) {
+        usersRef.document(uid).update("placeId", "").addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
@@ -80,22 +85,28 @@ public class UserRepository {
         });
     }
 
-    public MutableLiveData<User> getAuthenticatedUserMutableLiveData(){
+    public Task<DocumentSnapshot> getAuthenticatedUser() {
+
+        DocumentReference documentReference = usersRef.document(firebaseAuth.getUid());
+        return documentReference.get();
+
+    }
+
+    public MutableLiveData<User> getAuthenticatedUserMutableLiveData() {
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
-        if (firebaseAuth.getCurrentUser() != null){
+        if (firebaseAuth.getCurrentUser() != null) {
             DocumentReference documentReference = usersRef.document(firebaseAuth.getUid());
             documentReference.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     User user = task.getResult().toObject(User.class);
                     authenticatedUser.setValue(user);
-                }else {
+                } else {
                     Log.e("getAuthenticatedUser", Objects.requireNonNull(task.getException()).getMessage());
                 }
             });
         }
         return authenticatedUser;
     }
-
 
 
 }
