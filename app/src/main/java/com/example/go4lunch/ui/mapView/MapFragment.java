@@ -49,6 +49,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap googleMap;
     RestaurantListViewModel restaurantListViewModel;
     private List<User> userList;
+    String locationString;
 
 
     @Nullable
@@ -57,7 +58,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         binding = FragmentMapBinding.inflate(getLayoutInflater());
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        setHasOptionsMenu(true);
         initRestaurantListViewModel();
         initLocationButton();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
@@ -97,7 +98,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void searchNearbyRestaurantWithAutocomplete(String query) {
-
+        restaurantListViewModel.searchNearbyRestaurantWithAutocomplete(query,locationString,5000);
+        restaurantListViewModel.autoCompleteNearbyRestaurantList.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+            @Override
+            public void onChanged(List<PlaceDetail> placeDetails) {
+                updateMapWithRestaurantMarker(placeDetails,userList);
+            }
+        });
     }
 
     private void initLocationButton() {
@@ -120,6 +127,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
             Log.e("Lattitude", String.valueOf(location.getLatitude()));
             Log.e("Longitude", String.valueOf(location.getLongitude()));
+            locationString = String.valueOf(location.getLatitude() +","+ location.getLongitude());
             updateCameraZoomWithNewLocation(location);
             observeNearbyRestaurant(location);
         });
