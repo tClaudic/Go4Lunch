@@ -57,6 +57,7 @@ public class Go4LunchStreams {
         return streamFetchAutocomplete(input, location, radius)
                 .flatMapIterable((Function<PlaceAutocomplete, List<Prediction>>) PlaceAutocomplete::getPredictions)
                 .flatMap((Function<Prediction, ObservableSource<PlaceDetail>>) prediction -> streamFetchDetails(prediction.getPlaceId()))
+                .filter(placeDetail -> placeDetail.getResult().getTypes().contains("restaurant"))
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers

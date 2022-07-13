@@ -49,6 +49,10 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         PlaceDetail placeDetail = nearbyRestaurantList.get(position);
+        if (placeDetail.getResult().getTypes().contains("restaurant")){
+            Log.e("filterTest",placeDetail.getResult().getName());
+        }
+        Log.e("typeTest",placeDetail.getResult().getTypes().toString());
         ViewHolder viewViewHolder = (ViewHolder) holder;
         viewViewHolder.tvRestaurantName.setText(placeDetail.getResult().getName());
         viewViewHolder.tvRestaurantAddress.setText(placeDetail.getResult().getFormattedAddress());
