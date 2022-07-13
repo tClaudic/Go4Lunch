@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.go4lunch.MainActivity;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentMapBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
@@ -31,12 +30,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.List;
-import java.util.Objects;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -45,8 +40,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public FusedLocationProviderClient fusedLocationProviderClient;
     private GoogleMap googleMap;
     RestaurantListViewModel restaurantListViewModel;
-
-
 
 
     @Nullable
@@ -64,7 +57,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return binding.getRoot();
     }
 
-    private void initLocationButton(){
+    private void initLocationButton() {
         binding.btnLocation.setOnClickListener(view -> getUserLocation());
     }
 
@@ -73,12 +66,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapViewModel = new ViewModelProvider(requireActivity()).get(MapViewModel.class);
     }
 
-    private void checkLocationPermissions(){
+    private void checkLocationPermissions() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-        == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-        == PackageManager.PERMISSION_GRANTED){
+                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
             getUserLocation();
-        }else {
+        } else {
             askLocationPermission();
         }
     }
@@ -93,41 +86,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void updateCameraZoomWithNewLocation(Location location){
-        LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+    private void updateCameraZoomWithNewLocation(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
 
     private void updateMapWithRestaurantMarker(List<PlaceDetail> placeDetails) {
-        if (googleMap != null){
+        if (googleMap != null) {
             googleMap.clear();
         }
-        for (PlaceDetail placeDetail:placeDetails){
+        for (PlaceDetail placeDetail : placeDetails) {
 
-            MarkerOptions options = new MarkerOptions().position(new LatLng(placeDetail.getResult().getGeometry().getLocation().getLat(),placeDetail.getResult().getGeometry().getLocation().getLng()))
+            MarkerOptions options = new MarkerOptions().position(new LatLng(placeDetail.getResult().getGeometry().getLocation().getLat(), placeDetail.getResult().getGeometry().getLocation().getLng()))
                     .title(placeDetail.getResult().getName());
             googleMap.addMarker(options).setTag(placeDetail.getResult().getPlaceId());
         }
-
-
-
-
-
     }
 
     private void askLocationPermission() {
-        ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},44);
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
     }
 
-    private void initRestaurantListViewModel(){
+    private void initRestaurantListViewModel() {
         restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
         restaurantListViewModel.init();
 
     }
-    private void observeNearbyRestaurant(Location location){
-        String userLocation = location.getLatitude() +","+ location.getLongitude();
-        Log.e("LocationString",userLocation);
-        restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
+
+    private void observeNearbyRestaurant(Location location) {
+        String userLocation = location.getLatitude() + "," + location.getLongitude();
+        Log.e("LocationString", userLocation);
+        restaurantListViewModel.searchNearbyRestaurants(userLocation, 5000, "restaurant");
         restaurantListViewModel.nearbyRestaurantsLiveData.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
@@ -144,6 +133,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.googleMap = googleMap;
         googleMap.setMyLocationEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.map_style));
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style));
     }
 }

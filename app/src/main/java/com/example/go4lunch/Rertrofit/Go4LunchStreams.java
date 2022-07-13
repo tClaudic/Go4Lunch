@@ -8,6 +8,7 @@ import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;

@@ -57,6 +57,9 @@ public class RestaurantListHelper {
         int hour = calendar.get(Calendar.HOUR);
         String weekDayText = StringUtils.substringAfterLast(rawWeekDayText, "–");
         weekDayText = StringUtils.substringBefore(weekDayText, ":").trim();
+        if (weekDayText.isEmpty()){
+            return false;
+        }
         int restaurantClosedHour = Integer.parseInt(weekDayText);
         int result = restaurantClosedHour - hour;
         if (result <= 1) {

@@ -21,6 +21,7 @@ public class RestaurantListViewModel extends AndroidViewModel {
     UserRepository userRepository;
     MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<PlaceDetail> selected = new MutableLiveData<PlaceDetail>();
+    LiveData<List<PlaceDetail>> autoCompleteNearbyRestaurantList = new MutableLiveData<>();
 
     public RestaurantListViewModel(@NonNull Application application) {
         super(application);
@@ -30,6 +31,7 @@ public class RestaurantListViewModel extends AndroidViewModel {
         placeDetailRepository = new PlaceDetailRepository();
         userRepository = new UserRepository();
         nearbyRestaurantsLiveData = placeDetailRepository.getNearbyRestaurantsResponse();
+        autoCompleteNearbyRestaurantList = placeDetailRepository.getNearbySearchAutocompleteLiveData();
         getUsersList();
     }
 
@@ -39,6 +41,10 @@ public class RestaurantListViewModel extends AndroidViewModel {
 
     public void searchNearbyRestaurants(String location,int Radius,String type){
         placeDetailRepository.searchNearbyRestaurants(location, Radius, type);
+    }
+
+    public void searchNearbyRestaurantWithAutocomplete(String query, String location, int radius){
+        placeDetailRepository.searchNearbyRestaurantWithAutoComplete(query, location, radius);
     }
 
     public void select(PlaceDetail placeDetail){
