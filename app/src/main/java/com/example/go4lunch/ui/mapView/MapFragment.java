@@ -26,6 +26,7 @@ import com.example.go4lunch.databinding.FragmentMapBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
+import com.example.go4lunch.ui.restaurantDetail.RestaurantDetailViewModel;
 import com.example.go4lunch.util.RestaurantListHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -48,6 +49,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public FusedLocationProviderClient fusedLocationProviderClient;
     private GoogleMap googleMap;
     RestaurantListViewModel restaurantListViewModel;
+    RestaurantDetailViewModel restaurantDetailViewModel;
     private List<User> userList;
     String locationString;
 
@@ -67,6 +69,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return binding.getRoot();
     }
+
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -163,6 +166,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void initRestaurantListViewModel() {
         restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
         restaurantListViewModel.init();
+
 
 
     }

@@ -3,8 +3,11 @@ package com.example.go4lunch.model.Repositories;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.go4lunch.Rertrofit.Go4LunchStreams;
+import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -55,6 +58,8 @@ public class UserRepository {
 
     }
 
+
+
     public Task<QuerySnapshot> getUsersByRestaurantChoice(String restaurantId) {
         return usersRef.whereEqualTo("restaurantChoice", restaurantId).get();
     }
@@ -91,6 +96,7 @@ public class UserRepository {
         return documentReference.get();
 
     }
+
 
     public MutableLiveData<User> getAuthenticatedUserMutableLiveData() {
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();

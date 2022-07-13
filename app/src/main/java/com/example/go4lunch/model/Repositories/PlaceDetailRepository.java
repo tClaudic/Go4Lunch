@@ -20,6 +20,7 @@ public class PlaceDetailRepository {
     private MutableLiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
     private MutableLiveData<List<PlaceDetail>> nearbySearchAutocompleteLiveData;
 
+
     public PlaceDetailRepository() {
         this.nearbySearchMutableLiveData = new MutableLiveData<>();
         this.nearbyRestaurantsLiveData = new MutableLiveData<>();
@@ -68,6 +69,9 @@ public class PlaceDetailRepository {
         });
 
     }
+
+
+
 
     public LiveData<List<PlaceDetail>> getNearbyRestaurantsResponse() {
         return nearbyRestaurantsLiveData;

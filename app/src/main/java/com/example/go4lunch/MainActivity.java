@@ -3,13 +3,16 @@ package com.example.go4lunch;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -19,8 +22,12 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.databinding.ActivityMainBinding;
+import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
+import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.authentication.AuthViewModel;
+import com.example.go4lunch.ui.listView.RestaurantListViewModel;
 import com.example.go4lunch.ui.logout.LogoutConfirmation;
+import com.example.go4lunch.ui.restaurantDetail.RestaurantDetailViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,23 +45,28 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private AuthViewModel authViewModel;
     private FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+    private User currentAuthenticatedUser;
+    private RestaurantListViewModel restaurantListViewModel;
+    private RestaurantDetailViewModel restaurantDetailViewModel;
+    DrawerLayout drawer;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("onStart", "onCreate");
-
         initAuthViewModel();
+        initViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
-        DrawerLayout drawer = binding.drawerLayout;
+        drawer = binding.drawerLayout;
+
         bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_mapView, R.id.nav_listView, R.id.nav_workmatesView)
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_mapView, R.id.nav_listView, R.id.nav_workmatesView,R.id.nav_restaurantDetail)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -63,14 +75,21 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                setupNavigationToRestaurantDetail();
+                return false;
+            }
+        });
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()) {
 
                 case R.id.nav_logout:
                     showLogOutDialogFragment();
                     break;
-                case R.id.nav_restaurantDetail:
                 case R.id.nav_login:
+                case R.id.nav_restaurantDetail:
                 case R.id.nav_splashScreen:
                     hideBottomNavigationBar();
                     hideToolbar();
@@ -85,6 +104,40 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         });
 
+    }
+
+    private void initViewModel() {
+        restaurantListViewModel = new ViewModelProvider(this).get(RestaurantListViewModel.class);
+        restaurantListViewModel.init();
+        restaurantDetailViewModel = new ViewModelProvider(this).get(RestaurantDetailViewModel.class);
+        restaurantDetailViewModel.init();
+
+    }
+
+
+    private void setupNavigationToRestaurantDetail(){
+        if (checkIfUserHasRestaurantChoice()){
+            Log.e("userRestaurantChoice",currentAuthenticatedUser.restaurantChoice);
+            restaurantDetailViewModel.searchRestaurantDetail(currentAuthenticatedUser.restaurantChoice);
+            restaurantDetailViewModel.restaurantDetail.observe(this, new Observer<PlaceDetail>() {
+                @Override
+                public void onChanged(PlaceDetail placeDetail) {
+                    restaurantListViewModel.select(placeDetail);
+                    Navigation.findNavController(getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main).getView()).navigate(R.id.nav_restaurantDetail);
+                    drawer.close();
+                }
+            });
+
+
+        }else {
+            Toast.makeText(this,"You don't have choose a restaurant yet!",Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+
+    private Boolean checkIfUserHasRestaurantChoice(){
+        return !currentAuthenticatedUser.restaurantChoice.isEmpty();
     }
 
     private void showLogOutDialogFragment() {
@@ -114,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -143,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         if (firebaseUser != null) {
             authViewModel.setUid(firebaseUser.getUid());
             authViewModel.userLiveData.observe(this, user -> {
+                currentAuthenticatedUser = user;
                 userName.setText(user.name);
                 userEmail.setText(user.email);
                 Glide.with(this).load(user.urlPicture).circleCrop().into(userPicture);
@@ -163,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private void initAuthViewModel() {
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+
     }
 
     @Override
