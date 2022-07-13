@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentMapBinding;
@@ -155,9 +156,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             } else {
                 options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_pin));
             }
-            googleMap.addMarker(options).setTag(placeDetail.getResult().getPlaceId());
+            googleMap.addMarker(options).setTag(placeDetail);
+            googleMap.setOnInfoWindowClickListener( marker -> {
+                restaurantListViewModel.select((PlaceDetail) marker.getTag());
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_restaurantDetail);
+            });
         }
     }
+
+
 
     private void askLocationPermission() {
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
