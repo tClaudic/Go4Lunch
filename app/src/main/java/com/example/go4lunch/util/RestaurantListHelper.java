@@ -57,7 +57,7 @@ public class RestaurantListHelper {
         int hour = calendar.get(Calendar.HOUR);
         String weekDayText = StringUtils.substringAfterLast(rawWeekDayText, "–");
         weekDayText = StringUtils.substringBefore(weekDayText, ":").trim();
-        if (weekDayText.isEmpty()){
+        if (weekDayText.isEmpty()) {
             return false;
         }
         int restaurantClosedHour = Integer.parseInt(weekDayText);
@@ -69,25 +69,32 @@ public class RestaurantListHelper {
 
     }
 
-    public static float divideRatingResultBy3(PlaceDetail placeDetail){
+    public static float divideRatingResultBy3(PlaceDetail placeDetail) {
         Double restaurantRating = placeDetail.getResult().getRating();
-        if (restaurantRating != null){
-            return (float) (restaurantRating/5 * 3);
-        }
-        else return 0;
+        if (restaurantRating != null) {
+            return (float) (restaurantRating / 5 * 3);
+        } else return 0;
     }
 
-    public static String howManyUsersLunchAtThisRestaurant(List<User> users,PlaceDetail placeDetail){
-        Log.e("placeDetailTest",String.valueOf(users.size()));
+    public static Boolean UserGoIntoRestaurant(PlaceDetail placeDetail, List<User> usersList) {
+        for (User user : usersList) {
+            if (user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())) {
+                return true;
+            } else return false;
+        }
+        return false;
+    }
+
+    public static String howManyUsersLunchAtThisRestaurant(List<User> users, PlaceDetail placeDetail) {
+        Log.e("placeDetailTest", String.valueOf(users.size()));
         int result = 0;
-        for (User user: users){
-            if (user.restaurantChoice == placeDetail.getResult().getPlaceId()){
+        for (User user : users) {
+            if (user.restaurantChoice == placeDetail.getResult().getPlaceId()) {
                 result++;
             }
         }
         return String.valueOf(result);
     }
-
 
 
 }

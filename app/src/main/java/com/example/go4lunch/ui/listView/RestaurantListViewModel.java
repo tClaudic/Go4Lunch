@@ -19,7 +19,7 @@ public class RestaurantListViewModel extends AndroidViewModel {
     public LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
     PlaceDetailRepository placeDetailRepository;
     UserRepository userRepository;
-    MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<PlaceDetail> selected = new MutableLiveData<PlaceDetail>();
     LiveData<List<PlaceDetail>> autoCompleteNearbyRestaurantList = new MutableLiveData<>();
 
