@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class RestaurantListHelper {
 
@@ -89,7 +90,7 @@ public class RestaurantListHelper {
         Log.e("placeDetailTest", String.valueOf(users.size()));
         int result = 0;
         for (User user : users) {
-            if (user.restaurantChoice == placeDetail.getResult().getPlaceId()) {
+            if (Objects.equals(user.restaurantChoice, placeDetail.getResult().getPlaceId())) {
                 result++;
             }
         }

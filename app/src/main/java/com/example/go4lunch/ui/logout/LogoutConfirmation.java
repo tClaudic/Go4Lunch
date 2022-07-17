@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LogoutConfirmation extends DialogFragment {
 
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

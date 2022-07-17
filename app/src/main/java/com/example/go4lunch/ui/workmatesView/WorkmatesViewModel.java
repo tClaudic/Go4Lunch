@@ -12,8 +12,9 @@ import com.example.go4lunch.model.User;
 import java.util.List;
 
 public class WorkmatesViewModel extends AndroidViewModel {
-    MutableLiveData<List<User>> userListMutableLiveData = new MutableLiveData<>();
-    UserRepository userRepository;
+    public MutableLiveData<List<User>> userListMutableLiveData = new MutableLiveData<>();
+    public UserRepository userRepository;
+    public MutableLiveData<List<User>> filteredUsersList = new MutableLiveData<>();
     public WorkmatesViewModel(@NonNull Application application) {
         super(application);
     }
@@ -21,6 +22,10 @@ public class WorkmatesViewModel extends AndroidViewModel {
     public void init(){
         userRepository = new UserRepository();
         userListMutableLiveData = userRepository.getUsersListMutableLiveData();
+    }
+
+    public void getFilteredUsersByRestaurantChoiceName(String restaurantChoice){
+        filteredUsersList = userRepository.getUsersFilteredListMutableLiveData(restaurantChoice);
     }
 
 }

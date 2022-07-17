@@ -48,6 +48,9 @@
                 android:id="@+id/tv_detail_restaurant_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="220dp"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/item_restaurant_name_example"
@@ -68,7 +71,9 @@
 
             <TextView
                 android:id="@+id/tv_detail_restaurant_adress"
-                android:layout_width="wrap_content"
+                android:layout_width="280dp"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
@@ -131,6 +136,7 @@
         app:layout_constraintWidth_percent="0.333" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_workmates_place_detail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintHeight="percent"

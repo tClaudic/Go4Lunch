@@ -41,12 +41,12 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final int SEARCH_QUERY_THRESHOLD = 3;
     public FragmentMapBinding binding;
-    public MapViewModel mapViewModel;
     public FusedLocationProviderClient fusedLocationProviderClient;
     private GoogleMap googleMap;
     RestaurantListViewModel restaurantListViewModel;
@@ -60,7 +60,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentMapBinding.inflate(getLayoutInflater());
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
         setHasOptionsMenu(true);
         initRestaurantListViewModel();
         initLocationButton();
@@ -83,7 +85,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.e("OnQueryTextSubmit", "true");
                 if (query.length() >= SEARCH_QUERY_THRESHOLD) {
                     searchNearbyRestaurantWithAutocomplete(query);
                 }
@@ -92,7 +93,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.e("OnQeuryTextChange", "true");
                 if (newText.length() >= SEARCH_QUERY_THRESHOLD) {
                     searchNearbyRestaurantWithAutocomplete(newText);
                 }
@@ -117,8 +117,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
     private void checkLocationPermissions() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             getUserLocation();
         } else {
@@ -167,7 +167,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
     private void askLocationPermission() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
     }
 
     private void initRestaurantListViewModel() {
@@ -207,6 +207,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.googleMap = googleMap;
         googleMap.setMyLocationEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style));
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireActivity(), R.raw.map_style));
     }
 }

@@ -60,7 +60,12 @@ public class RestaurantDetailViewModel extends AndroidViewModel {
         userRepository.getAuthenticatedUserMutableLiveData();
     }
 
-    public void addUserRestaurantLike(String userId,String restaurandId){
-        userRepository.addLike(userId,restaurandId);
+    public void addUserRestaurantLike(String userId,String restaurantId){
+        userRepository.addLike(userId,restaurantId);
+    }
+
+
+    public void removeUserRestaurantLike(String userId, String restaurantId){
+        userRepository.removeUserLike(userId,restaurantId);
     }
 }

@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.BuildConfig;
@@ -25,6 +27,10 @@ import com.example.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
+import com.example.go4lunch.ui.workmatesView.WorkmatesListRecyclerViewAdapter;
+import com.example.go4lunch.ui.workmatesView.WorkmatesViewModel;
+
+import java.util.List;
 
 public class RestaurantDetailFragment extends Fragment {
 
@@ -33,6 +39,10 @@ public class RestaurantDetailFragment extends Fragment {
     RestaurantDetailViewModel restaurantDetailViewModel;
     User currentUser;
     PlaceDetail placeDetail;
+    List<User> usersList;
+    RecyclerView recyclerView;
+    WorkmatesListRecyclerViewAdapter workmatesListRecyclerViewAdapter;
+    WorkmatesViewModel workmatesViewModel;
 
 
     @Nullable
@@ -40,12 +50,29 @@ public class RestaurantDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentRestaurantDetailBinding.inflate(getLayoutInflater());
         initViewModel();
+        initWorkmatesViewModel();
+        configureWorkmatesRecyclerView();
+        observeUsersList();
         return binding.getRoot();
+    }
+
+    private void initWorkmatesViewModel() {
+        workmatesViewModel = new ViewModelProvider(requireActivity()).get(WorkmatesViewModel.class);
+        workmatesViewModel.init();
+    }
+
+    private void observeUsersList() {
+        workmatesViewModel.filteredUsersList.observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                Log.e("detaiLUsers", String.valueOf(users.size()));
+                workmatesListRecyclerViewAdapter.setUsersList(users);
+            }
+        });
     }
 
 
     private void initViewModel() {
-
         restaurantDetailViewModel = new ViewModelProvider(requireActivity()).get(RestaurantDetailViewModel.class);
         restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
         restaurantDetailViewModel.init();
@@ -55,6 +82,7 @@ public class RestaurantDetailFragment extends Fragment {
                     public void onChanged(PlaceDetail placeDetail1) {
                         RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail1);
                         placeDetail = placeDetail1;
+                        workmatesViewModel.getFilteredUsersByRestaurantChoiceName(placeDetail1.getResult().getPlaceId());
                         Log.e("placedetail", placeDetail1.getResult().getPlaceId());
                     }
                 });
@@ -100,24 +128,24 @@ public class RestaurantDetailFragment extends Fragment {
 
     }
 
-    private void setRestaurantChoiceBtn(){
+    private void setRestaurantChoiceBtn() {
         binding.btnRestaurantChoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!currentUser.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
-                   restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
-                   restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
-                   setupNotification();
-                }else restaurantDetailViewModel.removePlaceId(currentUser.uid);
+                if (!currentUser.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())) {
+                    restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
+                    restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
+                    setupNotification();
+                } else restaurantDetailViewModel.removePlaceId(currentUser.uid);
             }
         });
     }
 
-    private void setupNotification(){
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getContext(),AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),0,intent,0);
-        alarmManager.setExact(AlarmManager.RTC, System.currentTimeMillis() + (5 * 1000),pendingIntent);
+    private void setupNotification() {
+        AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getContext(), AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC, System.currentTimeMillis() + (5 * 1000), pendingIntent);
     }
 
     private void setWebsiteBtn(PlaceDetail placeDetail) {
@@ -129,12 +157,26 @@ public class RestaurantDetailFragment extends Fragment {
         });
     }
 
+    private void configureWorkmatesRecyclerView() {
+        recyclerView = binding.rcWorkmatesPlaceDetail;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        workmatesListRecyclerViewAdapter = new WorkmatesListRecyclerViewAdapter(Glide.with(this));
+        recyclerView.setAdapter(workmatesListRecyclerViewAdapter);
+    }
+
     private void setLikeBtn(PlaceDetail placeDetail) {
         binding.btnLikeDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                restaurantDetailViewModel.addUserRestaurantLike(currentUser.uid, placeDetail.getResult().getPlaceId());
-                updateStarColor(currentUser,placeDetail);
+                if (!currentUser.likes.contains(placeDetail.getResult().getPlaceId())) {
+                    restaurantDetailViewModel.addUserRestaurantLike(currentUser.uid, placeDetail.getResult().getPlaceId());
+                    currentUser.likes.add(placeDetail.getResult().getPlaceId());
+                } else {
+                    restaurantDetailViewModel.removeUserRestaurantLike(currentUser.uid, placeDetail.getResult().getPlaceId());
+                    currentUser.likes.remove(placeDetail.getResult().getPlaceId());
+                }
+                updateStarColor(currentUser, placeDetail);
             }
         });
     }

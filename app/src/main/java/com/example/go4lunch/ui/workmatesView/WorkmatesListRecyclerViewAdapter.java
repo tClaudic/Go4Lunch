@@ -1,5 +1,6 @@
 package com.example.go4lunch.ui.workmatesView;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
         return new ViewHolder(rootView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;

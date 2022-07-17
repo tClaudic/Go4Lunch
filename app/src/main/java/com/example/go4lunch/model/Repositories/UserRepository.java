@@ -3,11 +3,8 @@ package com.example.go4lunch.model.Repositories;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.go4lunch.Rertrofit.Go4LunchStreams;
-import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,6 +28,7 @@ public class UserRepository {
     MutableLiveData<List<User>> usersListMutableLiveData;
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private CollectionReference usersRef = firebaseFirestore.collection(COLLECTION_NAME);
+    MutableLiveData<List<User>> usersFilteredListMutableLiveData = new MutableLiveData<>();
 
 
     public UserRepository() {
@@ -47,17 +45,38 @@ public class UserRepository {
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                     userList.add(documentSnapshot.toObject(User.class));
                 }
-                usersListMutableLiveData.setValue(userList);
+                usersListMutableLiveData.postValue(userList);
             }
 
         });
         return usersListMutableLiveData;
     }
 
+    public MutableLiveData<List<User>> getUsersFilteredListMutableLiveData(String restaurantChoice) {
+        Log.e("testrestochoice",restaurantChoice);
+        usersRef.whereEqualTo("restaurantChoice", restaurantChoice).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                Log.e("getAllUsersTest", String.valueOf(task.isSuccessful()));
+                List<User> userList = new ArrayList<>();
+                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                    userList.add(documentSnapshot.toObject(User.class));
+                }
+                Log.e("usersFilterTestoutside", String.valueOf(userList.size()));
+                if (!userList.isEmpty()) {
+                    usersFilteredListMutableLiveData.setValue(userList);
+                    Log.e("usersFilterTest", String.valueOf(userList.size()));
+                }
+
+            }
+        });
+
+        return usersFilteredListMutableLiveData;
+    }
+
     public void removeUserLike(String userId, String restaurantID) {
 
     }
-
 
 
     public Task<QuerySnapshot> getUsersByRestaurantChoice(String restaurantId) {
