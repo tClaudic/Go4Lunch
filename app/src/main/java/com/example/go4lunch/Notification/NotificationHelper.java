@@ -17,11 +17,9 @@ public class NotificationHelper extends ContextWrapper {
     public static final String channelID = "channelID";
     public static final String channelName = "channelName";
     NotificationManager notificationManager;
-    Context context;
 
     public NotificationHelper(Context base) {
         super(base);
-        context = base;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             createChannel();
         }
@@ -36,7 +34,7 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationManager getNotificationManager(){
         if (notificationManager == null){
-            notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
         return notificationManager;
     }

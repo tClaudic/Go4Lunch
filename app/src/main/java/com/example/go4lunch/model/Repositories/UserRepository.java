@@ -24,6 +24,7 @@ import java.util.Objects;
 public class UserRepository {
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
     private static final String COLLECTION_NAME = "users";
     MutableLiveData<List<User>> usersListMutableLiveData;
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -53,7 +54,7 @@ public class UserRepository {
     }
 
     public MutableLiveData<List<User>> getUsersFilteredListMutableLiveData(String restaurantChoice) {
-        Log.e("testrestochoice",restaurantChoice);
+        Log.e("testrestochoice", restaurantChoice);
         usersRef.whereEqualTo("restaurantChoice", restaurantChoice).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -111,7 +112,7 @@ public class UserRepository {
 
     public Task<DocumentSnapshot> getAuthenticatedUser() {
 
-        DocumentReference documentReference = usersRef.document(firebaseAuth.getUid());
+        DocumentReference documentReference = usersRef.document(Objects.requireNonNull(firebaseAuth.getUid()));
         return documentReference.get();
 
     }
@@ -120,7 +121,7 @@ public class UserRepository {
     public MutableLiveData<User> getAuthenticatedUserMutableLiveData() {
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
         if (firebaseAuth.getCurrentUser() != null) {
-            DocumentReference documentReference = usersRef.document(firebaseAuth.getUid());
+            DocumentReference documentReference = usersRef.document(Objects.requireNonNull(firebaseAuth.getUid()));
             documentReference.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     User user = task.getResult().toObject(User.class);

@@ -52,7 +52,6 @@ public class RestaurantDetailFragment extends Fragment {
         initViewModel();
         initWorkmatesViewModel();
         configureWorkmatesRecyclerView();
-        observeUsersList();
         return binding.getRoot();
     }
 
@@ -61,15 +60,7 @@ public class RestaurantDetailFragment extends Fragment {
         workmatesViewModel.init();
     }
 
-    private void observeUsersList() {
-        workmatesViewModel.filteredUsersList.observe(getViewLifecycleOwner(), new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                Log.e("detaiLUsers", String.valueOf(users.size()));
-                workmatesListRecyclerViewAdapter.setUsersList(users);
-            }
-        });
-    }
+
 
 
     private void initViewModel() {
@@ -83,6 +74,12 @@ public class RestaurantDetailFragment extends Fragment {
                         RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail1);
                         placeDetail = placeDetail1;
                         workmatesViewModel.getFilteredUsersByRestaurantChoiceName(placeDetail1.getResult().getPlaceId());
+                        workmatesViewModel.getFilteredUsersListLiveData().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+                            @Override
+                            public void onChanged(List<User> users) {
+                                workmatesListRecyclerViewAdapter.setUsersList(users);
+                            }
+                        });
                         Log.e("placedetail", placeDetail1.getResult().getPlaceId());
                     }
                 });
