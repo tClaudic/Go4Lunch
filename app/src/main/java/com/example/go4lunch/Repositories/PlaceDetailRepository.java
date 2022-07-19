@@ -1,4 +1,4 @@
-package com.example.go4lunch.model.Repositories;
+package com.example.go4lunch.Repositories;
 
 import android.util.Log;
 

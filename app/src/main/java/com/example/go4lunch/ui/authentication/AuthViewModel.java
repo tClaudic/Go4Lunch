@@ -6,10 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.go4lunch.Repositories.AuthRepository;
 import com.example.go4lunch.model.User;
 import com.google.firebase.auth.AuthCredential;
-
-import java.nio.file.attribute.UserPrincipalLookupService;
 
 public class AuthViewModel extends AndroidViewModel {
 

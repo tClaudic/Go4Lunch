@@ -1,4 +1,4 @@
-package com.example.go4lunch.ui.authentication;
+package com.example.go4lunch.Repositories;
 
 import android.util.Log;
 
@@ -29,7 +29,7 @@ public class AuthRepository {
     private CollectionReference usersRef = rootRef.collection(USERS);
     private User user = new User();
 
-    MutableLiveData<User> firebaseSignInWithFacebook(AuthCredential authCredential){
+    public MutableLiveData<User> firebaseSignInWithFacebook(AuthCredential authCredential){
         MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -61,7 +61,7 @@ public class AuthRepository {
     }
 
 
-    MutableLiveData<User> firebaseSignInWithGoogle(AuthCredential authCredential) {
+    public MutableLiveData<User> firebaseSignInWithGoogle(AuthCredential authCredential) {
         MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(authTask -> {
             if (authTask.isSuccessful()) {
@@ -87,7 +87,7 @@ public class AuthRepository {
         return authenticatedUserMutableLiveData;
     }
 
-    MutableLiveData<User> createUserInFirestoreIfNoExist(User authenticatedUser) {
+    public MutableLiveData<User> createUserInFirestoreIfNoExist(User authenticatedUser) {
         MutableLiveData<User> newUserMutableLiveData = new MutableLiveData<>();
         DocumentReference uidRef = usersRef.document(authenticatedUser.uid);
         uidRef.get().addOnCompleteListener(uidTask -> {
@@ -112,7 +112,7 @@ public class AuthRepository {
         return newUserMutableLiveData;
     }
 
-    MutableLiveData<User> checkIfUserIsAuthenticatedInFirebase(){
+    public MutableLiveData<User> checkIfUserIsAuthenticatedInFirebase(){
         MutableLiveData<User> isUserAuthenticateInFirebaseMutableLiveData = new MutableLiveData<>();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser == null){
@@ -126,7 +126,7 @@ public class AuthRepository {
         return isUserAuthenticateInFirebaseMutableLiveData;
     }
 
-    MutableLiveData<User> addUserToLiveData(String uid){
+    public MutableLiveData<User> addUserToLiveData(String uid){
         MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
         usersRef.document(uid).get().addOnCompleteListener(userTask ->{
             if (userTask.isSuccessful()){

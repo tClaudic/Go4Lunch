@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.go4lunch.model.Repositories.UserRepository;
+import com.example.go4lunch.Repositories.UserRepository;
 import com.example.go4lunch.model.User;
 
 import java.util.List;

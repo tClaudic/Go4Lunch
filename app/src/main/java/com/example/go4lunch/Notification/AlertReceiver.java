@@ -8,7 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.example.go4lunch.model.Repositories.UserRepository;
+import com.example.go4lunch.Repositories.UserRepository;
 import com.example.go4lunch.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
