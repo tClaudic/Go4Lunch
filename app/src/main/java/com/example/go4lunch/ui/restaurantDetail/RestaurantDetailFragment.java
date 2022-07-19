@@ -1,5 +1,6 @@
 package com.example.go4lunch.ui.restaurantDetail;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -30,6 +31,8 @@ import com.example.go4lunch.ui.listView.RestaurantListViewModel;
 import com.example.go4lunch.ui.workmatesView.WorkmatesListRecyclerViewAdapter;
 import com.example.go4lunch.ui.workmatesView.WorkmatesViewModel;
 
+
+import java.util.Calendar;
 import java.util.List;
 
 public class RestaurantDetailFragment extends Fragment {
@@ -138,11 +141,16 @@ public class RestaurantDetailFragment extends Fragment {
         });
     }
 
+    @SuppressLint("MissingPermission")
     private void setupNotification() {
         AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getContext(), AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
-        alarmManager.setExact(AlarmManager.RTC, System.currentTimeMillis() + (5 * 1000), pendingIntent);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY , 17);
+        calendar.set(Calendar.MINUTE,40);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
     private void setWebsiteBtn(PlaceDetail placeDetail) {
