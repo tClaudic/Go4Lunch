@@ -81,7 +81,7 @@ public class RestaurantListHelper {
         for (User user : usersList) {
             if (user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())) {
                 return true;
-            } else return false;
+            }
         }
         return false;
     }

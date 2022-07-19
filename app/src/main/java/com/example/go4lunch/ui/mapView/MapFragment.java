@@ -224,6 +224,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         for (PlaceDetail placeDetail : placeDetails) {
+            Log.e("userlsitmaptest", String.valueOf(userList.contains(placeDetail.getResult().getPlaceId())));
             MarkerOptions options = new MarkerOptions().position(new LatLng(placeDetail.getResult().getGeometry().getLocation().getLat(), placeDetail.getResult().getGeometry().getLocation().getLng()))
                     .title(placeDetail.getResult().getName());
             if (RestaurantListHelper.UserGoIntoRestaurant(placeDetail, userList)) {
