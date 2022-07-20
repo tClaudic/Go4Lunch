@@ -70,29 +70,9 @@ public class loginFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void initFacebookCallback(){
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.e("success",loginResult.getAccessToken().getToken());
 
-            }
-
-            @Override
-            public void onCancel() {
-                Log.e("cancel","cancel");
-
-            }
-
-            @Override
-            public void onError(@NonNull FacebookException e) {
-                Log.e("error",e.getMessage());
-            }
-        });
-    }
 
     private void initFacebookLogin(){
-        LoginButton loginButton = binding.btnFacebookLogin;
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -111,7 +91,7 @@ public class loginFragment extends Fragment {
                 Log.e("error",e.getMessage());
             }
         });
-        loginButton.setOnClickListener(new View.OnClickListener() {
+       binding.btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LoginManager.getInstance().logInWithReadPermissions(loginFragment.this,callbackManager, Arrays.asList("public_profile","email"));

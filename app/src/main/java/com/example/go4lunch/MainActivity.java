@@ -78,8 +78,12 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                setupNavigationToRestaurantDetail();
-                return false;
+                if (item.getItemId() == R.id.nav_restaurantDetail){
+                setupNavigationToRestaurantDetail();}
+                if (item.getItemId() == R.id.nav_logout){
+                    showLogOutDialogFragment();
+                }
+                return true;
             }
         });
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
@@ -163,13 +167,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
 
-        return true;
-    }
 
     @Override
     public boolean onSupportNavigateUp() {
