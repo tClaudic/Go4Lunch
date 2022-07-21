@@ -45,8 +45,8 @@ public class AuthRepository {
                         String name = firebaseUser.getDisplayName();
                         String email = firebaseUser.getEmail();
                         String urlPicture = firebaseUser.getPhotoUrl().toString();
-                        String restaurantChoice = " ";
-                        String restaurantChoiceName = " ";
+                        String restaurantChoice = "";
+                        String restaurantChoiceName = "";
                         List<String> likes = new ArrayList<>();
                         likes.add("fdffsfsfs");
                         User user = new User(uid, name, email, urlPicture,restaurantChoice,restaurantChoiceName, likes);
@@ -78,7 +78,7 @@ public class AuthRepository {
                     String name = firebaseUser.getDisplayName();
                     String email = firebaseUser.getEmail();
                     String urlPicture = firebaseUser.getPhotoUrl().toString();
-                    String restaurantChoice = " ";
+                    String restaurantChoice = "";
                     String restaurantChoiceName = "";
                     List<String> likes = new ArrayList<>();
                     likes.add("fdffsfsfs");
