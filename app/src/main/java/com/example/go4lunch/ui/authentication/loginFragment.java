@@ -120,8 +120,7 @@ public class loginFragment extends Fragment {
     }
 
     private void initSignInButton() {
-        SignInButton googleSignInButton = binding.ntmGoogleLogin;
-        googleSignInButton.setOnClickListener(view -> signIn());
+        binding.ntmGoogleLogin.setOnClickListener(view -> signIn());
 
     }
 
@@ -159,11 +158,13 @@ public class loginFragment extends Fragment {
 
     private void signInWithFacebookAuthCredential(AuthCredential authCredential){
         authViewModel.signInWithFacebook(authCredential);
+        Log.e("testUser","testUserBeforeAdded");
         authViewModel.authenticatedUserLiveData.observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 if (user.isNew){
                     createNewUser(user);
+                    Log.e("new user","new user");
                 }else {
                     goToMainFragment();
                 }

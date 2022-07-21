@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.go4lunch.Repositories.AuthRepository;
 import com.example.go4lunch.model.User;
@@ -13,7 +14,7 @@ import com.google.firebase.auth.AuthCredential;
 public class AuthViewModel extends AndroidViewModel {
 
     private AuthRepository authRepository;
-    LiveData<User> authenticatedUserLiveData;
+    LiveData<User> authenticatedUserLiveData = new MutableLiveData<>();
     LiveData<User> createdUserLiveData;
     public LiveData<User> isUserAuthenticatedLiveData;
     public LiveData<User> userLiveData;

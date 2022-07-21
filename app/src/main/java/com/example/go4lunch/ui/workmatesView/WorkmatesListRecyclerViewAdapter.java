@@ -34,9 +34,7 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
     }
 
     public boolean getUserChoice(User user){
-        if (user.restaurantChoiceName.isEmpty() || user.restaurantChoiceName == null){
-            return false;
-        }else return true;
+        return !user.restaurantChoiceName.isEmpty() && user.restaurantChoiceName != null;
     }
 
 
@@ -60,7 +58,7 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
               viewHolder.tvUserChoice.setTypeface(null, Typeface.BOLD);
         }else {
             String restaurantNoChoice = viewHolder.tvUserChoice.getContext().getString(R.string.workmate_restaurant_no_choice);
-            viewHolder.tvUserChoice.setText(user.name + restaurantNoChoice);
+            viewHolder.tvUserChoice.setText(user.name + " " + restaurantNoChoice);
             viewHolder.tvUserChoice.setTypeface(null,Typeface.ITALIC);
         }
 

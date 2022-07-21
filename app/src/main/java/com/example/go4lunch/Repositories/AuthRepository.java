@@ -35,9 +35,12 @@ public class AuthRepository {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    Log.e("fbtest",task.getResult().getUser().getDisplayName().toString());
                     boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+                    Log.e("suerbool", String.valueOf(isNewUser));
                     FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                     if (firebaseUser != null) {
+                        Log.e("user != null","!=null");
                         String uid = firebaseUser.getUid();
                         String name = firebaseUser.getDisplayName();
                         String email = firebaseUser.getEmail();
@@ -49,6 +52,9 @@ public class AuthRepository {
                         User user = new User(uid, name, email, urlPicture,restaurantChoice,restaurantChoiceName, likes);
                         user.isNew = isNewUser;
                         authenticatedUserMutableLiveData.setValue(user);
+                        if (isNewUser){
+                            createUserInFirestoreIfNoExist(user);
+                        }
                     }
                 }else {
                     Log.e("authrepo", task.getException().getMessage());
@@ -88,6 +94,7 @@ public class AuthRepository {
     }
 
     public MutableLiveData<User> createUserInFirestoreIfNoExist(User authenticatedUser) {
+        Log.e("fbcreationTest","fbcreationtest");
         MutableLiveData<User> newUserMutableLiveData = new MutableLiveData<>();
         DocumentReference uidRef = usersRef.document(authenticatedUser.uid);
         uidRef.get().addOnCompleteListener(uidTask -> {
