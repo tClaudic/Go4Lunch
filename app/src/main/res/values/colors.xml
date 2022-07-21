@@ -11,5 +11,6 @@
     <color name="ratingColorStar">#FFEB3B</color>
     <color name="colorError">#F44336</color>
     <color name="statusBarColor">#80fc3f1b</color>
+    <color name="restaurantChoiceBtnColor">#5CF19E</color>
 
 </resources>

@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,6 +38,7 @@ import com.example.go4lunch.ui.workmatesView.WorkmatesViewModel;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class RestaurantDetailFragment extends Fragment {
 
@@ -92,6 +97,7 @@ public class RestaurantDetailFragment extends Fragment {
                     public void onChanged(User user) {
                         currentUser = user;
                         updateStarColor(user, placeDetail);
+                        updateRestaurantButton(currentUser);
                     }
                 });
     }
@@ -108,6 +114,20 @@ public class RestaurantDetailFragment extends Fragment {
         setWebsiteBtn(placeDetail);
         setLikeBtn(placeDetail);
         setRestaurantChoiceBtn();
+    }
+    private void updateRestaurantButton(User user){
+        if (user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
+            DrawableCompat.setTint(
+                    binding.btnRestaurantChoice.getDrawable(),
+                    ContextCompat.getColor(requireContext(),R.color.restaurantChoiceBtnColor)
+            );
+        }else {
+            DrawableCompat.setTint(
+                    binding.btnRestaurantChoice.getDrawable(),
+                    ContextCompat.getColor(requireContext(),R.color.secondaryTextColor)
+            );
+        }
+
     }
 
     private void setCallBtn(PlaceDetail placeDetail) {
@@ -136,7 +156,8 @@ public class RestaurantDetailFragment extends Fragment {
                     restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
                     restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
                     setupNotification();
-                } else restaurantDetailViewModel.removePlaceId(currentUser.uid);
+                } else {restaurantDetailViewModel.removePlaceId(currentUser.uid);
+                currentUser.restaurantChoice = "";}
             }
         });
     }
@@ -184,5 +205,6 @@ public class RestaurantDetailFragment extends Fragment {
                 updateStarColor(currentUser, placeDetail);
             }
         });
+        updateRestaurantButton(currentUser);
     }
 }
