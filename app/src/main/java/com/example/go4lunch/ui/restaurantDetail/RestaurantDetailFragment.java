@@ -116,7 +116,7 @@ public class RestaurantDetailFragment extends Fragment {
         setRestaurantChoiceBtn();
     }
     private void updateRestaurantButton(User user){
-        if (user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
+        if (user.restaurantChoice != null && user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
             DrawableCompat.setTint(
                     binding.btnRestaurantChoice.getDrawable(),
                     ContextCompat.getColor(requireContext(),R.color.restaurantChoiceBtnColor)
@@ -205,6 +205,5 @@ public class RestaurantDetailFragment extends Fragment {
                 updateStarColor(currentUser, placeDetail);
             }
         });
-        updateRestaurantButton(currentUser);
     }
 }
