@@ -169,8 +169,8 @@ public class RestaurantDetailFragment extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY , 17);
-        calendar.set(Calendar.MINUTE,40);
+        calendar.set(Calendar.HOUR_OF_DAY , 12);
+        calendar.set(Calendar.MINUTE,56);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
