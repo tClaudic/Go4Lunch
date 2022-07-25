@@ -37,12 +37,19 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.OAuthProvider;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class loginFragment extends Fragment {
 
@@ -51,6 +58,7 @@ public class loginFragment extends Fragment {
     private FragmentLoginBinding binding;
     private AuthViewModel authViewModel;
     private final CallbackManager callbackManager = CallbackManager.Factory.create();
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,11 +74,55 @@ public class loginFragment extends Fragment {
         initSignInButton();
         initFacebookLogin();
         initGoogleSignInClient();
+        setupTwitterLoginButton();
         initAuthViewModel();
         return binding.getRoot();
     }
 
+    private void setupTwitterLoginButton(){
+        binding.btnTwitterLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initTwitterLogin();
+            }
+        });
+    }
 
+
+
+
+
+    private void initTwitterLogin(){
+        OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
+        provider.addCustomParameter("lang", "fr");
+        firebaseAuth.startActivityForSignInWithProvider(requireActivity(),provider.build()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(AuthResult authResult) {
+                getTwitterCredentialsAndSignIn(authResult.getCredential());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("TwitterError",e.getMessage());
+            }
+        });
+
+    }
+
+    private void getTwitterCredentialsAndSignIn(AuthCredential authCredential){
+        authViewModel.signInWithTwitter(authCredential);
+        authViewModel.authenticatedUserLiveData.observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if (user.isNew){
+                    createNewUser(user);
+                    Log.e("new user","new user");
+                }else {
+                    goToMainFragment();
+                }
+            }
+        });
+    }
 
     private void initFacebookLogin(){
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

@@ -29,6 +29,44 @@ public class AuthRepository {
     private CollectionReference usersRef = rootRef.collection(USERS);
     private User user = new User();
 
+
+    public MutableLiveData<User> firebaseSignInWithTwitter(AuthCredential authCredential) {
+        MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
+        firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.e("fbtest",task.getResult().getUser().getDisplayName().toString());
+                    boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+                    Log.e("suerbool", String.valueOf(isNewUser));
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    if (firebaseUser != null) {
+                        Log.e("user != null","!=null");
+                        String uid = firebaseUser.getUid();
+                        String name = firebaseUser.getDisplayName();
+                        String email = firebaseUser.getEmail();
+                        String urlPicture = firebaseUser.getPhotoUrl().toString();
+                        String restaurantChoice = "";
+                        String restaurantChoiceName = "";
+                        List<String> likes = new ArrayList<>();
+                        likes.add("fdffsfsfs");
+                        User user = new User(uid, name, email, urlPicture,restaurantChoice,restaurantChoiceName, likes);
+                        user.isNew = isNewUser;
+                        authenticatedUserMutableLiveData.setValue(user);
+                        createUserInFirestoreIfNoExist(user);
+
+                    }
+                }else {
+                    Log.e("authrepo", task.getException().getMessage());
+                }
+
+
+            }
+        });
+        return authenticatedUserMutableLiveData;
+    }
+
+
     public MutableLiveData<User> firebaseSignInWithFacebook(AuthCredential authCredential){
         MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -52,9 +90,8 @@ public class AuthRepository {
                         User user = new User(uid, name, email, urlPicture,restaurantChoice,restaurantChoiceName, likes);
                         user.isNew = isNewUser;
                         authenticatedUserMutableLiveData.setValue(user);
-                        if (isNewUser){
-                            createUserInFirestoreIfNoExist(user);
-                        }
+                        createUserInFirestoreIfNoExist(user);
+
                     }
                 }else {
                     Log.e("authrepo", task.getException().getMessage());

@@ -33,6 +33,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_go4lunch_logo" />
 
+
+
     <TextView
         android:id="@+id/et_app_slogan"
         android:layout_width="wrap_content"
@@ -79,6 +81,24 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_facebook_login"
+        app:layout_constraintVertical_bias="0.026" />
+
+    <Button
+        android:id="@+id/btn_twitter_login"
+        android:layout_width="260dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        app:buttonSize="wide"
+        android:text="Sign in with Twitter"
+        android:textSize="14sp"
+        android:textAllCaps="false"
+        android:backgroundTint="#00acee"
+        android:drawableLeft="@drawable/ic_twitter_circled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ntm_google_login"
         app:layout_constraintVertical_bias="0.026" />
 
 

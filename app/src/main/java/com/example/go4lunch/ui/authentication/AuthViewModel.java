@@ -27,6 +27,9 @@ public class AuthViewModel extends AndroidViewModel {
     void signInWithGoogle(AuthCredential authCredential){
         authenticatedUserLiveData = authRepository.firebaseSignInWithGoogle(authCredential);
     }
+    void signInWithTwitter(AuthCredential authCredential){
+        authenticatedUserLiveData = authRepository.firebaseSignInWithTwitter(authCredential);
+    }
 
     void signInWithFacebook(AuthCredential authCredential){
         authenticatedUserLiveData = authRepository.firebaseSignInWithFacebook(authCredential);
