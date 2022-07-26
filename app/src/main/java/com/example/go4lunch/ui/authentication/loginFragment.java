@@ -89,6 +89,15 @@ public class loginFragment extends Fragment {
     }
 
 
+    private void initEmailLogin(){
+        binding.btnEmailLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
 
 
 
