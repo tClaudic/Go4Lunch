@@ -76,6 +76,7 @@ public class loginFragment extends Fragment {
         initGoogleSignInClient();
         setupTwitterLoginButton();
         initAuthViewModel();
+        initEmailLogin();
         return binding.getRoot();
     }
 
@@ -93,7 +94,7 @@ public class loginFragment extends Fragment {
         binding.btnEmailLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_email_login);
             }
         });
     }

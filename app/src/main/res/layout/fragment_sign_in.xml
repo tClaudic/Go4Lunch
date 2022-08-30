@@ -6,45 +6,54 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/tv_register_email"
+        android:id="@+id/et_register_email"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="264dp"
         android:hint="email"
-        android:text="TextView"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/custom_input"
+        android:drawableStart="@drawable/custom_email_icon"
+        android:drawablePadding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/tv_register_password"
+        android:id="@+id/et_register_password"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:hint="password"
-        android:text="TextView"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/custom_input"
+        android:drawableStart="@drawable/custom_lock_icon"
+        android:drawablePadding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_register_email" />
+        app:layout_constraintTop_toBottomOf="@+id/et_register_email" />
 
     <Button
-        android:id="@+id/btn_custom_login"
+        android:id="@+id/btn_SignUp"
         android:layout_width="260dp"
         android:layout_height="60dp"
         android:layout_marginTop="72dp"
-        android:text="Login"
+        android:text="Sign Up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_register_password" />
+        app:layout_constraintTop_toBottomOf="@+id/et_register_password" />
 
-    <Button
-        android:id="@+id/btn_custom_register"
-        android:layout_width="260dp"
-        android:layout_height="60dp"
-        android:text="Register"
+    <TextView
+        android:id="@+id/tv_goToSignIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already Registered ? Sign In "
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/btn_SignUp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_custom_login" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

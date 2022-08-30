@@ -47,8 +47,8 @@
 
     <fragment
         android:id="@+id/nav_email_login"
-        android:name="com.example.go4lunch.ui.authentication.EmailLoginFragment"
-        tools:layout="@layout/fragment_register"/>
+        android:name="com.example.go4lunch.ui.authentication.EmailSignInFragment"
+        tools:layout="@layout/fragment_sign_in"/>
 
     <fragment
         android:id="@+id/nav_splashScreen"

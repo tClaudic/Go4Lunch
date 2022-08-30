@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 setupNavigationToRestaurantDetail();}
                 if (item.getItemId() == R.id.nav_logout){
                     showLogOutDialogFragment();
+                    drawer.close();
                 }
                 return true;
             }
@@ -91,10 +92,12 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
                 case R.id.nav_logout:
                     showLogOutDialogFragment();
+                    drawer.close();
                     break;
                 case R.id.nav_login:
                 case R.id.nav_restaurantDetail:
                 case R.id.nav_splashScreen:
+                case R.id.nav_email_login:
                     hideBottomNavigationBar();
                     hideToolbar();
                     break;

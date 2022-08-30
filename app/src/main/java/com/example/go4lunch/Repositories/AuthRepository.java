@@ -30,6 +30,43 @@ public class AuthRepository {
     private User user = new User();
 
 
+
+
+    public MutableLiveData<User> firebaseSignInWithEmailAndPassword(String email, String password){
+        MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    Log.e("sucessfull","sucess");
+                    boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
+                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    if (firebaseUser != null){
+                        String uid = firebaseUser.getUid();
+                        String name = firebaseUser.getDisplayName();
+                        String email = firebaseUser.getEmail();
+                        String urlPicture;
+                        if (firebaseUser.getPhotoUrl() == null){
+                             urlPicture = "https://firebasestorage.googleapis.com/v0/b/go4lunch-10136.appspot.com/o/istockphoto-1223671392-170667a.jpg?alt=media&token=6d5a3228-24ad-4aad-8391-441e020ec9e2";
+                        }else {
+                         urlPicture = Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString();}
+                        String restaurantChoice = "";
+                        String restaurantChoiceName = "";
+                        List<String> likes = new ArrayList<>();
+                        likes.add("fdffsfsfs");
+                        User user = new User(uid, name, email, urlPicture,restaurantChoice,restaurantChoiceName, likes);
+                        user.isNew = isNewUser;
+                        authenticatedUserMutableLiveData.setValue(user);
+                        createUserInFirestoreIfNoExist(user);
+                        Log.e("test", "login with email");
+                    }
+                    else {Log.e("emailAuth",task.getException().getMessage());}
+                }
+            }
+        });
+        return authenticatedUserMutableLiveData;
+    }
+
     public MutableLiveData<User> firebaseSignInWithTwitter(AuthCredential authCredential) {
         MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
