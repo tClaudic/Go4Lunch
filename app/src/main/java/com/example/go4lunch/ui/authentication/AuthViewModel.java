@@ -24,8 +24,8 @@ public class AuthViewModel extends AndroidViewModel {
         authRepository = new AuthRepository();
     }
 
-    void signInWithMailAndPassword(String mail, String password){
-        authenticatedUserLiveData = authRepository.firebaseSignInWithEmailAndPassword(mail, password);
+    void signUpWithMailAndPassword(String mail, String password){
+        authenticatedUserLiveData = authRepository.firebaseSignUpWithEmailAndPassword(mail, password);
     }
 
     void signInWithGoogle(AuthCredential authCredential){

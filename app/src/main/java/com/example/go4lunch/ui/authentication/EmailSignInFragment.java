@@ -44,20 +44,10 @@ public class EmailSignInFragment extends Fragment {
                 Log.e("email",emailLogin);
                 String passwordLogin = binding.etRegisterPassword.getText().toString();
                 Log.e("password",passwordLogin);
-                authViewModel.signInWithMailAndPassword(emailLogin,passwordLogin);
+                authViewModel.signUpWithMailAndPassword(emailLogin,passwordLogin);
             }
         });
 
     }
 
-    private void setupRegisterButton(){
-        binding.btnSignUp .setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String emailRegister = binding.etRegisterEmail.getText().toString();
-                String passwordRegister = binding.etRegisterPassword.getText().toString();
-
-            }
-        });
-    }
 }

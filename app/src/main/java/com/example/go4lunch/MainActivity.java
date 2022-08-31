@@ -2,7 +2,6 @@ package com.example.go4lunch;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 case R.id.nav_login:
                 case R.id.nav_restaurantDetail:
                 case R.id.nav_splashScreen:
-                case R.id.nav_email_login:
+                case R.id.nav_SignInFragment:
                     hideBottomNavigationBar();
                     hideToolbar();
                     break;
