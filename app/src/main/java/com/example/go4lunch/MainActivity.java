@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     drawer.close();
                     break;
                 case R.id.nav_login:
+                case R.id.emailSignUpFragment:
                 case R.id.nav_restaurantDetail:
                 case R.id.nav_splashScreen:
                 case R.id.nav_SignInFragment:

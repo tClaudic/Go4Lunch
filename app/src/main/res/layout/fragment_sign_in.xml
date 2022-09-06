@@ -5,52 +5,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_register_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:errorEnabled="true"
+        app:helperText="Email"
+        android:layout_marginTop="300dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:startIconDrawable="@drawable/custom_email_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/et_register_email"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="264dp"
-        android:hint="email"
+        android:layout_height="wrap_content"
+         />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_register_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/custom_lock_icon"
+        app:errorEnabled="true"
+        android:layout_marginTop="20dp"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_email_icon"
-        android:drawablePadding="12dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
+        app:layout_constraintTop_toBottomOf="@+id/til_register_email">
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/et_register_password"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:hint="password"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_lock_icon"
-        android:drawablePadding="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_register_email" />
+        android:layout_height="wrap_content"
+         />
+</com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btn_SignUp"
         android:layout_width="260dp"
         android:layout_height="60dp"
-        android:layout_marginTop="72dp"
-        android:text="Sign Up"
+        android:layout_marginTop="40dp"
+        android:text="Sign In"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_register_password" />
+        app:layout_constraintTop_toBottomOf="@+id/til_register_password" />
 
     <TextView
         android:id="@+id/tv_goToSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Already Registered ? Sign In "
+        android:text="Not Registered Yet ? Sign Up "
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/btn_SignUp"
         app:layout_constraintEnd_toEndOf="parent"

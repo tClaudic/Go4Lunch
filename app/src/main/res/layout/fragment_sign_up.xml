@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,101 +10,158 @@
         android:id="@+id/iv_profile_icon"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginBottom="120dp"
+        android:layout_marginTop="28dp"
         android:background="@drawable/ic_logo4lunch_primarycolor"
-        app:layout_constraintBottom_toTopOf="@+id/edt_register_username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/edt_register_username"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_register_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="340dp"
-        android:background="@drawable/custom_input"
+        android:layout_marginTop="64dp"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:errorEnabled="true"
+        app:helperText="Username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:hint="username"/>
+        app:layout_constraintTop_toBottomOf="@+id/iv_profile_icon"
+        app:startIconDrawable="@drawable/ic_username">
 
-    <EditText
-        android:id="@+id/edt_register_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_email_icon"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_register_username"
-        android:hint="email"/>
 
-    <EditText
-        android:id="@+id/edt_register_email_confirmation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_email_icon"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edt_register_email"
-        android:hint="email confirmation"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_register_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/edt_register_password"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_register_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_lock_icon"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:errorEnabled="true"
+        app:helperText="Email"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edt_register_email_confirmation"
-        android:hint="password"/>
-    <EditText
-        android:id="@+id/edt_register_password_confirmation"
+        app:layout_constraintTop_toBottomOf="@+id/til_register_username"
+        app:startIconDrawable="@drawable/custom_email_icon">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_register_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_register_email_confirmation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/custom_input"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:drawableStart="@drawable/custom_lock_icon"
-        android:inputType="textPassword"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:errorEnabled="true"
+        app:helperText="Email confirmation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/til_register_email"
+        app:startIconDrawable="@drawable/custom_email_icon">
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_register_email_confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_register_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/custom_lock_icon"
+        app:errorEnabled="true"
+        app:helperText="Password"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edt_register_password"
-        android:hint="password confirmation"/>
+        app:layout_constraintTop_toBottomOf="@+id/til_register_email_confirmation">
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_register_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_register_password_confirmation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/custom_lock_icon"
+        app:errorEnabled="true"
+        app:helperText="Password"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/til_register_password">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_register_password_confirmation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
-        android:id="@+id/btn_register_confirmation"
+        android:id="@+id/btn_SignUp"
         android:layout_width="260dp"
         android:layout_height="60dp"
-        android:layout_marginTop="84dp"
-        android:text="register"
+        android:layout_marginTop="40dp"
+        android:text="Sign Up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_register_password_confirmation" />
+        app:layout_constraintTop_toBottomOf="@+id/til_register_password_confirmation" />
 
     <TextView
-        android:id="@+id/et_moveToSignIn"
+        android:id="@+id/tv_goToSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Already Registered ? Sign in"
+        android:layout_marginTop="16dp"
+        android:text="Already Registered ? Sign In "
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/btn_register_confirmation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_SignUp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

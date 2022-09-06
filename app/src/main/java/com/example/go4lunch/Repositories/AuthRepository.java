@@ -29,6 +29,11 @@ public class AuthRepository {
     private User user = new User();
 
 
+    public MutableLiveData<Boolean> isUserLogged(){
+        MutableLiveData<Boolean> userLoggedLiveData = new MutableLiveData<>();
+        return userLoggedLiveData;
+    }
+
     public MutableLiveData<User> firebaseSignInWithEmailAndPassword(String email, String password) {
         MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
