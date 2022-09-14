@@ -38,7 +38,7 @@ public class SplashFragment extends Fragment {
 
     private void checkIfUserIsAuthenticated(){
         authViewModel.checkIfUserIsAuthenticated();
-        authViewModel.isUserAuthenticatedLiveData.observe(this, user -> {
+        authViewModel.isUserAuthenticatedLiveData.observe(getViewLifecycleOwner(), user -> {
             if (!user.isAuthenticated){
                 Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_login);
             }

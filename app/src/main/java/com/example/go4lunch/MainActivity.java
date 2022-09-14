@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.nav_login);
         } else {
             dbUserEvent();
+            //Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.nav_mapView);
         }
     }
 

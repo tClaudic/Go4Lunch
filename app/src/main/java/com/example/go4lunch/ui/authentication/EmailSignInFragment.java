@@ -38,6 +38,7 @@ public class EmailSignInFragment extends Fragment {
         initViewModel();
         setupLoginButton();
         setupNavToSignUp();
+        test();
         return binding.getRoot();
     }
 
@@ -55,14 +56,31 @@ public class EmailSignInFragment extends Fragment {
         Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_mapView);
     }
 
+    public void test(){
+        authViewModel.testUser.observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if (user.isAuthenticated){
+                    goToMainFragment();
+                }
+                else {
+                    Toast.makeText(getContext(),"Check your email or your password",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+    }
+
     public void observeLoggedUser(){
+        authViewModel.checkIfUserIsAuthenticated();
         authViewModel.authenticatedUserLiveData.observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                Log.e("test","LoggedUser" + user.email);
-                if (user != null){
+                if (user.isAuthenticated){
                     goToMainFragment();
                 }
+                Log.e("test","LoggedUser" + user.email);
+                goToMainFragment();
             }
         });
     }
@@ -83,9 +101,9 @@ public class EmailSignInFragment extends Fragment {
                 resetErrorMessage();
                 if (emailFormatVerification() && passwordVerification()) {
                     Toast.makeText(getContext(), "all is okay", Toast.LENGTH_LONG).show();
-                    authViewModel.signInWithMailAndPassword(binding.etRegisterEmail.getText().toString(), binding.etRegisterPassword.getText().toString());
+                    authViewModel.testEmailSignIn(binding.etRegisterEmail.getText().toString(), binding.etRegisterPassword.getText().toString());
                 }
-                observeLoggedUser();
+
 
             }
         });

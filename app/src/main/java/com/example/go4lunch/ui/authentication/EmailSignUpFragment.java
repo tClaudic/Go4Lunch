@@ -1,6 +1,7 @@
 package com.example.go4lunch.ui.authentication;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,6 +18,7 @@ import androidx.navigation.Navigation;
 
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentSignUpBinding;
+import com.example.go4lunch.model.User;
 
 
 import java.util.regex.Matcher;
@@ -55,7 +58,6 @@ public class EmailSignUpFragment extends Fragment {
 
     public void initViewModel(){
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-
     }
 
     public void setSignInNavTextView(){
@@ -73,16 +75,35 @@ public class EmailSignUpFragment extends Fragment {
                 resetErrorMessage();
                 if (usernameVerification() & emailFormatVerification() & passwordLengthCheck()){
                     Toast.makeText(getContext(),"all is okay",Toast.LENGTH_LONG).show();
+                    authViewModel.signUpWithMailAndPassword(binding.edtRegisterEmail.getText().toString(),binding.etRegisterPassword.getText().toString(),binding.edtRegisterUsername.getText().toString());
+                    observeLoggedUser();
                 }
 
             }
         });
     }
 
+
+    public void observeLoggedUser(){
+        authViewModel.checkIfUserIsAuthenticated();
+        authViewModel.authenticatedUserLiveData.observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                Log.e("test","LoggedUser" + user.email);
+                if (user != null){
+                    goToMainFragment();
+                }
+            }
+        });
+    }
+    public void goToMainFragment(){
+        Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_mapView);
+    }
+
     public boolean usernameVerification(){
         String regex = "^[a-z0-9_-]{3,15}$";
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(binding.edtRegisterUsername.getText().toString());
+        Matcher matcher = pattern.matcher(binding.edtRegisterUsername.getText().toString().trim());
         if (binding.edtRegisterUsername.getText().toString().isEmpty()){
             binding.tilRegisterUsername.setError("You cannot let this field empty");
             return false;
@@ -95,21 +116,25 @@ public class EmailSignUpFragment extends Fragment {
     }
 
     public boolean emailFormatVerification(){
-       String regex = "^(.+)@(.+)$";
+       String regex = "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(binding.edtRegisterEmail.getText().toString());
-        if (binding.edtRegisterEmail.getText().toString().equalsIgnoreCase(binding.edtRegisterEmailConfirmation.toString())){
+        Log.e("equaltest", String.valueOf(binding.edtRegisterEmail.getText().toString().trim().equals(binding.edtRegisterEmailConfirmation.getText().toString().trim())));
+        Log.e("mail1test", String.valueOf(binding.edtRegisterEmail.getText().toString().trim().length()));
+        Log.e("mail2test", String.valueOf(binding.edtRegisterEmailConfirmation.getText().toString().trim().length()));
+        if (binding.edtRegisterEmail.getText().toString().trim().equals(binding.edtRegisterEmailConfirmation.getText().toString().trim())){
             if (matcher.matches()){
                 return true;
             }else {
                 binding.tilRegisterEmail.setError("Email is the wrong format pls follow : aaaa@aaaa.aa");
+                return false;
             }
 
         }else {
             binding.tilRegisterEmail.setError("Emails are not the same");
             binding.tilRegisterEmailConfirmation.setError("Emails are not the same");
+            return false;
         }
-        return false;
     }
 
 

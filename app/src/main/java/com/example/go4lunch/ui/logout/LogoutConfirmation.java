@@ -7,12 +7,16 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.go4lunch.R;
+import com.example.go4lunch.ui.authentication.AuthViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LogoutConfirmation extends DialogFragment {
+
+
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     @NonNull
@@ -26,6 +30,8 @@ public class LogoutConfirmation extends DialogFragment {
                 })
                 .create();
     }
+
+
 
     private void signOuFirebase(){
         firebaseAuth.signOut();

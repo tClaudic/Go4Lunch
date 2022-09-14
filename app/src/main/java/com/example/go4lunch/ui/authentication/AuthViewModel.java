@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.go4lunch.Repositories.AuthRepository;
 import com.example.go4lunch.model.User;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AuthViewModel extends AndroidViewModel {
 
@@ -18,14 +19,29 @@ public class AuthViewModel extends AndroidViewModel {
     LiveData<User> createdUserLiveData;
     public LiveData<User> isUserAuthenticatedLiveData;
     public LiveData<User> userLiveData;
+    public LiveData<FirebaseUser> firebaseUserLiveData;
+    public LiveData<User> testUser;
 
     public AuthViewModel(@NonNull Application application) {
         super(application);
         authRepository = new AuthRepository();
+        testUser = authRepository.getAuthenticatedUserResponse();
+
     }
 
-    void signUpWithMailAndPassword(String mail, String password){
-        authenticatedUserLiveData = authRepository.firebaseSignUpWithEmailAndPassword(mail, password);
+
+
+
+    void testEmailSignIn(String email,String password){
+        authRepository.signInWithEmail(email, password);
+    }
+
+    void checkFirebaseUserLiveData(){
+        firebaseUserLiveData = authRepository.getFirebaseUserMutableLiveData();
+    }
+
+    void signUpWithMailAndPassword(String mail, String password, String username){
+        authenticatedUserLiveData = authRepository.firebaseSignUpWithEmailAndPassword(mail, password, username);
     }
 
     void signInWithMailAndPassword(String mail, String password){

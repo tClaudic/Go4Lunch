@@ -40,6 +40,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
 
@@ -74,7 +75,7 @@ public class loginFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void setupTwitterLoginButton(){
+    private void setupTwitterLoginButton() {
         binding.btnTwitterLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,7 +85,7 @@ public class loginFragment extends Fragment {
     }
 
 
-    private void initEmailLogin(){
+    private void initEmailLogin() {
         binding.btnEmailLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,12 +95,10 @@ public class loginFragment extends Fragment {
     }
 
 
-
-
-    private void initTwitterLogin(){
+    private void initTwitterLogin() {
         OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
         provider.addCustomParameter("lang", "fr");
-        firebaseAuth.startActivityForSignInWithProvider(requireActivity(),provider.build()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+        firebaseAuth.startActivityForSignInWithProvider(requireActivity(), provider.build()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
                 getTwitterCredentialsAndSignIn(authResult.getCredential());
@@ -107,55 +106,67 @@ public class loginFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e("TwitterError",e.getMessage());
+                Log.e("TwitterError", e.getMessage());
             }
         });
 
     }
 
-    private void getTwitterCredentialsAndSignIn(AuthCredential authCredential){
-        authViewModel.signInWithTwitter(authCredential);
-        authViewModel.authenticatedUserLiveData.observe(this, new Observer<User>() {
+    private void checkIfUserIsLogged() {
+        authViewModel.checkFirebaseUserLiveData();
+        authViewModel.firebaseUserLiveData.observe(this, new Observer<FirebaseUser>() {
             @Override
-            public void onChanged(User user) {
-                if (user.isNew){
-                    createNewUser(user);
-                    Log.e("new user","new user");
-                }else {
+            public void onChanged(FirebaseUser firebaseUser) {
+                Log.e("checkIfUserIsLogged", String.valueOf(firebaseAuth.getCurrentUser().getDisplayName()));
+                if (firebaseUser != null) {
                     goToMainFragment();
                 }
             }
         });
     }
 
-    private void initFacebookLogin(){
+    private void getTwitterCredentialsAndSignIn(AuthCredential authCredential) {
+        authViewModel.signInWithTwitter(authCredential);
+        authViewModel.authenticatedUserLiveData.observe(this, user ->
+        {
+            if (user.isNew) {
+                createNewUser(user);
+            } else {
+                Log.e("twitterSuccess", "TwitterSuccessLoginElse");
+                goToMainFragment();
+            }
+
+        });
+    }
+
+    private void initFacebookLogin() {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.e("success",loginResult.getAccessToken().getToken());
+                Log.e("success", loginResult.getAccessToken().getToken());
                 getFacebookCredential(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
-                Log.e("cancel","cancel");
+                Log.e("cancel", "cancel");
 
             }
 
             @Override
             public void onError(@NonNull FacebookException e) {
-                Log.e("error",e.getMessage());
+                Log.e("error", e.getMessage());
             }
         });
-       binding.btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
+        binding.btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LoginManager.getInstance().logInWithReadPermissions(loginFragment.this,callbackManager, Arrays.asList("public_profile","email"));
+                LoginManager.getInstance().logInWithReadPermissions(loginFragment.this, callbackManager, Arrays.asList("public_profile", "email"));
             }
         });
     }
 
-    private void getFacebookCredential(AccessToken token){
+    private void getFacebookCredential(AccessToken token) {
         AuthCredential authCredential = FacebookAuthProvider.getCredential(token.getToken());
         signInWithFacebookAuthCredential(authCredential);
     }
@@ -209,19 +220,20 @@ public class loginFragment extends Fragment {
         String googleTokenId = googleSignInAccount.getIdToken();
         AuthCredential authCredential = GoogleAuthProvider.getCredential(googleTokenId, null);
         signInWithGoogleAuthCredential(authCredential);
-
     }
 
-    private void signInWithFacebookAuthCredential(AuthCredential authCredential){
+    private void signInWithFacebookAuthCredential(AuthCredential authCredential) {
         authViewModel.signInWithFacebook(authCredential);
-        Log.e("testUser","testUserBeforeAdded");
+        Log.e("testUser", "testUserBeforeAdded");
+        authViewModel.checkIfUserIsAuthenticated();
         authViewModel.authenticatedUserLiveData.observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                if (user.isNew){
+                if (user.isNew) {
                     createNewUser(user);
-                    Log.e("new user","new user");
-                }else {
+                    Log.e("new user", "new user");
+                } else {
+                    Log.e("facebook", "SignInWithFacebookElse");
                     goToMainFragment();
                 }
             }
@@ -230,10 +242,12 @@ public class loginFragment extends Fragment {
 
     private void signInWithGoogleAuthCredential(AuthCredential authCredential) {
         authViewModel.signInWithGoogle(authCredential);
-        authViewModel.authenticatedUserLiveData.observe(this, authenticatedUser ->{
-            if (authenticatedUser.isNew){
+        authViewModel.checkIfUserIsAuthenticated();
+        authViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
+            if (authenticatedUser.isNew) {
                 createNewUser(authenticatedUser);
-            }else {
+            } else {
+                Log.e("google", "signInWithGoogleElse");
                 goToMainFragment();
 
             }
@@ -247,13 +261,12 @@ public class loginFragment extends Fragment {
     private void createNewUser(User authenticatedUser) {
         authViewModel.createUser(authenticatedUser);
         authViewModel.createdUserLiveData.observe(this, user -> {
-            if (user.isCreated){
-                Toast.makeText(getActivity(),"Your account is successfully created",Toast.LENGTH_LONG).show();
+            if (user.isCreated) {
+                Toast.makeText(getActivity(), "Your account is successfully created", Toast.LENGTH_LONG).show();
             }
             goToMainFragment();
         });
     }
-
 
 
     private void logout() {
