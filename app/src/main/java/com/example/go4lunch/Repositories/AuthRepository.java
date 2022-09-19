@@ -35,6 +35,7 @@ public class AuthRepository {
 
 
 
+
     public AuthRepository() {
         this.authenticatedUser = new MutableLiveData<>();
     }
@@ -146,6 +147,39 @@ public class AuthRepository {
         return authenticatedUserMutableLiveData;
     }
 
+    public void signInWithTwitterTest(AuthCredential authCredential){
+        firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    FirebaseUser firebaseUser = task.getResult().getUser();
+                    String uid = firebaseUser.getUid();
+                    String name = firebaseUser.getDisplayName();
+                    String email = firebaseUser.getEmail();
+                    String urlPicture = firebaseUser.getPhotoUrl().toString();
+                    String restaurantChoice = "";
+                    String restaurantChoiceName = "";
+                    List<String> likes = new ArrayList<>();
+                    likes.add("fdffsfsfs");
+                    User user = new User(uid, name, email, urlPicture, restaurantChoice, restaurantChoiceName, likes);
+                  if (task.getResult().getAdditionalUserInfo().isNewUser()){
+                      createUserInFirestoreIfNoExist(user);
+                      Log.e("fuckyou","fuckyou");
+                  }else {
+                      Log.e("success","twitterelsesuccess");
+
+                      user.isAuthenticated = true;
+                      authenticatedUser.postValue(user);
+
+                  }
+                }else {
+                    Log.e("errortwitter","errortwitter");
+                }
+
+            }
+        });
+    }
+
     public MutableLiveData<User> firebaseSignInWithTwitter(AuthCredential authCredential) {
         MutableLiveData<User> authenticatedUserMutableLiveData = new MutableLiveData<>();
         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -168,7 +202,7 @@ public class AuthRepository {
                         User user = new User(uid, name, email, urlPicture, restaurantChoice, restaurantChoiceName, likes);
                         user.isNew = isNewUser;
                         user.isAuthenticated = true;
-                        authenticatedUserMutableLiveData.setValue(user);
+                        authenticatedUserMutableLiveData.postValue(user);
                         createUserInFirestoreIfNoExist(user);
 
                     }

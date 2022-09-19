@@ -18,7 +18,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentLoginBinding;
@@ -40,13 +43,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
 
 import java.util.Arrays;
 
-public class loginFragment extends Fragment {
+public class loginFragment extends Fragment implements FirebaseAuth.AuthStateListener {
 
     private static final int RC_SIGN_IN = 123;
     private GoogleSignInClient googleSignInClient;
@@ -54,13 +56,21 @@ public class loginFragment extends Fragment {
     private AuthViewModel authViewModel;
     private final CallbackManager callbackManager = CallbackManager.Factory.create();
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private NavHostFragment navHostFragment;
+    private NavController navCo;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
+
+    private void setupNavController() {
+        navHostFragment = (NavHostFragment) getParentFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
+        navCo = navHostFragment.getNavController();
+    }
 
     @Nullable
     @Override
@@ -72,7 +82,15 @@ public class loginFragment extends Fragment {
         setupTwitterLoginButton();
         initAuthViewModel();
         initEmailLogin();
+        checkIfUserIsLogged();
+        firebaseAuth.addAuthStateListener(this);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("onresume", "onresume");
     }
 
     private void setupTwitterLoginButton() {
@@ -113,12 +131,13 @@ public class loginFragment extends Fragment {
     }
 
     private void checkIfUserIsLogged() {
+        Log.e("test", "test");
         authViewModel.checkFirebaseUserLiveData();
-        authViewModel.firebaseUserLiveData.observe(this, new Observer<FirebaseUser>() {
+        authViewModel.testUser.observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
-            public void onChanged(FirebaseUser firebaseUser) {
-                Log.e("checkIfUserIsLogged", String.valueOf(firebaseAuth.getCurrentUser().getDisplayName()));
-                if (firebaseUser != null) {
+            public void onChanged(User user) {
+                Log.e("changed", "changed");
+                if (user.isAuthenticated) {
                     goToMainFragment();
                 }
             }
@@ -126,17 +145,7 @@ public class loginFragment extends Fragment {
     }
 
     private void getTwitterCredentialsAndSignIn(AuthCredential authCredential) {
-        authViewModel.signInWithTwitter(authCredential);
-        authViewModel.authenticatedUserLiveData.observe(this, user ->
-        {
-            if (user.isNew) {
-                createNewUser(user);
-            } else {
-                Log.e("twitterSuccess", "TwitterSuccessLoginElse");
-                goToMainFragment();
-            }
-
-        });
+        authViewModel.twitterTest(authCredential);
     }
 
     private void initFacebookLogin() {
@@ -255,7 +264,9 @@ public class loginFragment extends Fragment {
     }
 
     private void goToMainFragment() {
-        Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_mapView);
+        NavHostFragment.findNavController(this).navigate(R.id.nav_mapView);
+
+
     }
 
     private void createNewUser(User authenticatedUser) {
@@ -271,5 +282,18 @@ public class loginFragment extends Fragment {
 
     private void logout() {
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        Log.e("test", "onauthstagechanged");
+        if (firebaseAuth.getCurrentUser() != null) {
+            goToMainFragment();
+        }
     }
 }
