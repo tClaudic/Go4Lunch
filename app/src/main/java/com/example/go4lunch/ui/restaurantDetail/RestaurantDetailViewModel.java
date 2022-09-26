@@ -12,6 +12,8 @@ import com.example.go4lunch.Repositories.PlaceDetailRepository;
 import com.example.go4lunch.Repositories.UserRepository;
 import com.example.go4lunch.model.User;
 
+import java.util.List;
+
 public class RestaurantDetailViewModel extends AndroidViewModel {
 
     private PlaceDetailRepository placeDetailRepository;

@@ -181,8 +181,8 @@ public class RestaurantListFragment extends Fragment {
     private void observeNearbyRestaurant(Location location){
         String userLocation = location.getLatitude() +","+ location.getLongitude();
         Log.e("LocationString",userLocation);
-        restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
-        restaurantListViewModel.nearbyRestaurantsLiveData.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        //restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
+        restaurantListViewModel.getAllRestaurants(userLocation,5000,"restaurant").observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);

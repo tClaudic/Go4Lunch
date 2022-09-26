@@ -53,6 +53,23 @@ public class PlaceDetailRepository {
         return nearbySearchMutableLiveData;
     }
 
+
+    public MutableLiveData<List<PlaceDetail>> getNearbyRestaurantsLiveData(String location, int Radius, String type){
+        MutableLiveData<List<PlaceDetail>> nearbyRestaurantLiveData = new MutableLiveData<>();
+        Go4LunchStreams.streamFetchRestaurantsDetails(location, Radius, type).subscribeWith(new DisposableSingleObserver<List<PlaceDetail>>() {
+            @Override
+            public void onSuccess(@NonNull List<PlaceDetail> placeDetails) {
+                nearbyRestaurantLiveData.postValue(placeDetails);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                nearbyRestaurantLiveData.postValue(null);
+            }
+        });
+        return nearbyRestaurantLiveData;
+    }
+
     public void searchNearbyRestaurants(String location, int Radius, String type) {
         Go4LunchStreams.streamFetchRestaurantsDetails(location, Radius, type).subscribeWith(new DisposableSingleObserver<List<PlaceDetail>>() {
             @Override

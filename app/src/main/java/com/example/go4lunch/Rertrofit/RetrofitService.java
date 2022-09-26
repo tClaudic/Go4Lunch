@@ -13,4 +13,8 @@ public class RetrofitService {
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build();
+
+   public static ApiCall getApiCall(){
+       return retrofit.create(ApiCall.class);
+   }
 }

@@ -35,6 +35,10 @@ public class RestaurantListViewModel extends AndroidViewModel {
         getUsersList();
     }
 
+    public LiveData<List<PlaceDetail>> getAllRestaurants(String location,int Radius, String type){
+        return placeDetailRepository.getNearbyRestaurantsLiveData(location, Radius, type);
+    }
+
     public void getUsersList(){
         usersListMutableLiveData = userRepository.getUsersListMutableLiveData();
     }
