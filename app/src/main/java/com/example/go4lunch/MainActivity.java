@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.example.go4lunch.databinding.ActivityMainBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
+import com.example.go4lunch.ui.ViewModelFactory;
 import com.example.go4lunch.ui.authentication.AuthViewModel;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
 import com.example.go4lunch.ui.logout.LogoutConfirmation;
@@ -115,9 +116,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     private void initViewModel() {
-        restaurantListViewModel = new ViewModelProvider(this).get(RestaurantListViewModel.class);
+        restaurantListViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
         restaurantListViewModel.init();
-        restaurantDetailViewModel = new ViewModelProvider(this).get(RestaurantDetailViewModel.class);
+        restaurantDetailViewModel = new ViewModelProvider(this,ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
         restaurantDetailViewModel.init();
 
     }

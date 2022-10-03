@@ -26,7 +26,7 @@ public class WorkmatesViewModel extends AndroidViewModel {
 
     public void init(){
         userRepositoryTest = new UserRepositoryTest(FirebaseFirestore.getInstance());
-        userRepository = new UserRepository();
+        userRepository = new UserRepository(FirebaseFirestore.getInstance());
         //userListMutableLiveData = userRepository.getUsersListMutableLiveData();
         userListMutableLiveData = userRepositoryTest.getFirebaseUsersList();
     }

@@ -24,28 +24,45 @@ public class UserRepositoryTest {
         this.firebaseFirestore = firebaseFirestore;
     }
 
+
+    public void getUsers() {
+        firebaseFirestore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+            }
+        });
+    }
+
     public List<User> transformFirestoreData(@NonNull Task<QuerySnapshot> task) {
         List<User> userList = new ArrayList<>();
+
+
         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
             userList.add(documentSnapshot.toObject(User.class));
+
         }
         return userList;
     }
 
     public MutableLiveData<List<User>> getFirebaseUsersList() {
-        MutableLiveData<List<User>> usersList = new MutableLiveData<List<User>>();
+        MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<List<User>>();
         firebaseFirestore.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<User> userList = new ArrayList<>();
-                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                    userList.add(documentSnapshot.toObject(User.class));
+                if (task.isSuccessful()) {
+                    List<User> userList = new ArrayList<>();
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        userList.add(documentSnapshot.toObject(User.class));
+                    }
+                    usersListMutableLiveData.postValue(userList);
                 }
-                    usersList.postValue(userList);
-
+                if (task.isCanceled()) {
+                    usersListMutableLiveData.postValue(null);
+                }
             }
         });
-        return usersList;
+        return usersListMutableLiveData;
     }
 
     public MutableLiveData<List<User>> getAllUsersList() {

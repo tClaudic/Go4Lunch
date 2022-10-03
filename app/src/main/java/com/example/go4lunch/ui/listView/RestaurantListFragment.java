@@ -34,6 +34,7 @@ import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentListViewBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
+import com.example.go4lunch.ui.ViewModelFactory;
 import com.example.go4lunch.util.ItemClickSupport;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -70,7 +71,6 @@ public class RestaurantListFragment extends Fragment {
         checkLocationPermissions();
         initOnClickRecyclerView();
         configureOnSwipeFresh();
-        observeSearchAutoCompleteResult();
         return binding.getRoot();
     }
 
@@ -88,7 +88,7 @@ public class RestaurantListFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 Log.e("OnQueryTextSubmit","true");
                 if (query.length() >= SEARCH_QUERY_THRESHOLD){
-                    searchNearbyRestaurantWithAutocomplete(query);
+                    observeNearbyRestaurantsWithAutoComplete(query);
                 }
                 return false;
             }
@@ -97,29 +97,25 @@ public class RestaurantListFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 Log.e("OnQeuryTextChange","true");
                 if (newText.length() >= SEARCH_QUERY_THRESHOLD){
-                    searchNearbyRestaurantWithAutocomplete(newText);
+                    observeNearbyRestaurantsWithAutoComplete(newText);
                 }
                 return true;
             }
         });
     }
 
-    private void observeSearchAutoCompleteResult(){
-        restaurantListViewModel.autoCompleteNearbyRestaurantList.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+    private void observeNearbyRestaurantsWithAutoComplete(String query){
+        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,5000).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
-                Log.e("autoCompleteTest", String.valueOf(placeDetails.size()));
                 restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
             }
         });
     }
 
-    private void searchNearbyRestaurantWithAutocomplete(String query){
-        restaurantListViewModel.searchNearbyRestaurantWithAutocomplete(query,locationString,5000);
-    }
 
     private void initViewModel() {
-        restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
+        restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
         restaurantListViewModel.init();
 
     }

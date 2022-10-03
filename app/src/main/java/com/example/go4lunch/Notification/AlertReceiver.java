@@ -13,6 +13,7 @@ import com.example.go4lunch.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class AlertReceiver extends BroadcastReceiver {
 
-    UserRepository userRepository = new UserRepository();
+    UserRepository userRepository = new UserRepository(FirebaseFirestore.getInstance());
     User currentAuthenticatedUser = new User();
     List<User> usersList = new ArrayList<>();
     String usersListString = "";

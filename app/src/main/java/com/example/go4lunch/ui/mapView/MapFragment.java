@@ -76,10 +76,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
         setHasOptionsMenu(true);
         initRestaurantListViewModel();
+        observeUsersList();
         initLocationButton();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         checkLocationPermissions();
-        observeUsersList();
+
         return binding.getRoot();
     }
 
@@ -112,15 +113,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void searchNearbyRestaurantWithAutocomplete(String query) {
-        restaurantListViewModel.searchNearbyRestaurantWithAutocomplete(query,locationString,5000);
-        restaurantListViewModel.autoCompleteNearbyRestaurantList.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,5000).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 if (placeDetails != null){
-                updateMapWithRestaurantMarker(placeDetails,userList);
-                updateMapCameraWithAutocompleteResult(placeDetails.get(0));
+                    updateMapWithRestaurantMarker(placeDetails,userList);
+                    updateMapCameraWithAutocompleteResult(placeDetails.get(0));
                 }
-
             }
         });
     }
@@ -129,7 +128,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
         Log.e("onResume","ONREsume");
-        getUserLocation();
+        //getUserLocation();
     }
 
     private void initLocationButton() {
@@ -260,6 +259,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(List<User> users) {
                 userList = users;
+                Log.e("usersize", String.valueOf(userList.size()));
             }
         });
     }
@@ -267,14 +267,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void observeNearbyRestaurant(Location location) {
         String userLocation = location.getLatitude() + "," + location.getLongitude();
         Log.e("LocationString", userLocation);
-        restaurantListViewModel.searchNearbyRestaurants(userLocation, 5000, "restaurant");
-        restaurantListViewModel.nearbyRestaurantsLiveData.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        restaurantListViewModel.getAllRestaurants(userLocation,5000,"restaurants").observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 updateMapWithRestaurantMarker(placeDetails, userList);
                 Log.e("onChanged", String.valueOf(placeDetails.size()));
             }
         });
+
     }
 
 

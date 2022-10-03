@@ -6,29 +6,27 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.Repositories.PlaceDetailRepository;
 import com.example.go4lunch.Repositories.UserRepository;
 import com.example.go4lunch.model.User;
 
-import java.util.List;
+public class RestaurantDetailViewModel extends ViewModel {
 
-public class RestaurantDetailViewModel extends AndroidViewModel {
-
-    private PlaceDetailRepository placeDetailRepository;
-    private UserRepository userRepository;
+    private final PlaceDetailRepository placeDetailRepository;
+    private final UserRepository userRepository;
 
     public LiveData<PlaceDetail> restaurantDetail;
     public MutableLiveData<User> authenticatedUser;
 
-    public RestaurantDetailViewModel(@NonNull Application application) {
-        super(application);
+    public RestaurantDetailViewModel(PlaceDetailRepository placeDetailRepository,UserRepository userRepository) {
+        this.placeDetailRepository = placeDetailRepository;
+        this.userRepository = userRepository;
     }
 
     public void init(){
-        placeDetailRepository = new PlaceDetailRepository();
-        userRepository = new UserRepository();
 
         authenticatedUser = userRepository.getAuthenticatedUserMutableLiveData();
         restaurantDetail = placeDetailRepository.getPlaceDetailResponse();

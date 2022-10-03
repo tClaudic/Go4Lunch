@@ -32,10 +32,13 @@ public class UserRepository {
     MutableLiveData<List<User>> usersFilteredListMutableLiveData = new MutableLiveData<>();
 
 
-    public UserRepository() {
-        this.firebaseFirestore = FirebaseFirestore.getInstance();
+    public UserRepository(FirebaseFirestore firebaseFirestore) {
+        this.firebaseFirestore = firebaseFirestore;
         usersListMutableLiveData = new MutableLiveData<>();
     }
+
+
+
 
     public MutableLiveData<List<User>> getUsersListMutableLiveData() {
         usersRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.Repositories.PlaceDetailRepository;
@@ -14,42 +15,40 @@ import com.example.go4lunch.model.User;
 
 import java.util.List;
 
-public class RestaurantListViewModel extends AndroidViewModel {
+public class RestaurantListViewModel extends ViewModel {
 
     public LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
-    PlaceDetailRepository placeDetailRepository;
+    private final PlaceDetailRepository placeDetailRepository;
     UserRepository userRepository;
-    public MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<List<User>> usersListMutableLiveData;
     private final MutableLiveData<PlaceDetail> selected = new MutableLiveData<PlaceDetail>();
-    public LiveData<List<PlaceDetail>> autoCompleteNearbyRestaurantList = new MutableLiveData<>();
 
-    public RestaurantListViewModel(@NonNull Application application) {
-        super(application);
+    public RestaurantListViewModel(PlaceDetailRepository placeDetailRepository,UserRepository userRepository) {
+        this.placeDetailRepository = placeDetailRepository;
+        this.userRepository = userRepository;
     }
 
     public void init(){
-        placeDetailRepository = new PlaceDetailRepository();
-        userRepository = new UserRepository();
-        nearbyRestaurantsLiveData = placeDetailRepository.getNearbyRestaurantsResponse();
-        autoCompleteNearbyRestaurantList = placeDetailRepository.getNearbySearchAutocompleteLiveData();
-        getUsersList();
+        getUsersLists();
+
     }
 
     public LiveData<List<PlaceDetail>> getAllRestaurants(String location,int Radius, String type){
-        return placeDetailRepository.getNearbyRestaurantsLiveData(location, Radius, type);
+        nearbyRestaurantsLiveData = placeDetailRepository.getNearbyRestaurantsLiveData(location, Radius, type);
+        return nearbyRestaurantsLiveData;
     }
 
-    public void getUsersList(){
+
+
+    public LiveData<List<User>> getUsersLists(){
         usersListMutableLiveData = userRepository.getUsersListMutableLiveData();
+        return usersListMutableLiveData;
     }
 
-    public void searchNearbyRestaurants(String location,int Radius,String type){
-        placeDetailRepository.searchNearbyRestaurants(location, Radius, type);
+    public LiveData<List<PlaceDetail>> getAutoCompleteNearbyRestaurantList(String query,String location,int radius){
+       return placeDetailRepository.getNearbyRestaurantListWithAutoComplete(query, location, radius);
     }
 
-    public void searchNearbyRestaurantWithAutocomplete(String query, String location, int radius){
-        placeDetailRepository.searchNearbyRestaurantWithAutoComplete(query, location, radius);
-    }
 
     public void select(PlaceDetail placeDetail){
         selected.setValue(placeDetail);

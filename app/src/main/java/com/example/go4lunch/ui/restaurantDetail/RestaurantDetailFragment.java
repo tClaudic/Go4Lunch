@@ -31,6 +31,7 @@ import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentRestaurantDetailBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
+import com.example.go4lunch.ui.ViewModelFactory;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
 import com.example.go4lunch.ui.workmatesView.WorkmatesListRecyclerViewAdapter;
 import com.example.go4lunch.ui.workmatesView.WorkmatesViewModel;
@@ -72,8 +73,8 @@ public class RestaurantDetailFragment extends Fragment {
 
 
     private void initViewModel() {
-        restaurantDetailViewModel = new ViewModelProvider(requireActivity()).get(RestaurantDetailViewModel.class);
-        restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
+        restaurantDetailViewModel = new ViewModelProvider(requireActivity(),ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
+        restaurantListViewModel = new ViewModelProvider(requireActivity(),ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
         restaurantDetailViewModel.init();
         restaurantListViewModel.getSelected().observe(getViewLifecycleOwner(),
                 new Observer<PlaceDetail>() {

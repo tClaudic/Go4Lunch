@@ -14,7 +14,7 @@ public class RetrofitService {
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build();
 
-   public static ApiCall getApiCall(){
-       return retrofit.create(ApiCall.class);
+   public static GooglePlaceApiCall getGooglePlaceApiCall(){
+       return retrofit.create(GooglePlaceApiCall.class);
    }
 }

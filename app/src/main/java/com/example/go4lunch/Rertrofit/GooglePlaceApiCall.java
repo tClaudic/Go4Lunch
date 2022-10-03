@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.core.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface ApiCall {
+public interface GooglePlaceApiCall {
 
     String key = BuildConfig.MAPS_API_KEY;
 
