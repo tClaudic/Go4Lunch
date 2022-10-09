@@ -41,7 +41,7 @@ public class WorkmatesViewModelTest {
     }
 
     @Test
-    public void test() {
+    public void getUsersListMutableLiveData_onSuccess_returnUsersList() {
         LiveDataTestUtils.observeForTesting(workmatesViewModel.userListMutableLiveData, liveData -> {
             assertEquals(getUsersList(),liveData.getValue());
         });

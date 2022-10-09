@@ -49,14 +49,14 @@ public class RestaurantDetailViewModelTest {
     }
 
     @Test
-    public void observeAuthenticatedUser(){
+    public void getAuthenticatedUser_onObserve_returnUser(){
         LiveDataTestUtils.observeForTesting(restaurantDetailViewModel.authenticatedUser, liveData -> {
             assertEquals(user,liveData.getValue());
         });
     }
 
     @Test
-    public void test(){
+    public void getUsersListFilteredByRestaurantChoice_onObserve_returnFilteredUsersList(){
         MutableLiveData<List<User>> getUserListByRestaurantChoice = new MutableLiveData<>();
         getUserListByRestaurantChoice.setValue(getDefaultUserList());
         given(userRepository.getUsersFilteredListMutableLiveData(anyString())).willReturn(getUserListByRestaurantChoice);
@@ -66,7 +66,7 @@ public class RestaurantDetailViewModelTest {
     }
 
     @Test
-    public void test1(){
+    public void getAuthenticatedLiveDataUser_onObserve_returnUser(){
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
         authenticatedUser.setValue(user);
         given(userRepository.getAuthenticatedUserMutableLiveData()).willReturn(authenticatedUser);
@@ -76,7 +76,7 @@ public class RestaurantDetailViewModelTest {
     }
 
     @Test
-    public void getSelected(){
+    public void getRestaurantDetailByUserChoice_onObserve_returnPlaceDetail(){
         MutableLiveData<PlaceDetail> placeDetailMutableLiveData = new MutableLiveData<>();
         placeDetailMutableLiveData.setValue(placeDetail);
         given(placeDetailRepository.searchNearbyPlace(anyString())).willReturn(placeDetailMutableLiveData);

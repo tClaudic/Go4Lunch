@@ -50,14 +50,14 @@ public class RestaurantListViewModelTest {
     }
 
     @Test
-    public void nominal_test(){
+    public void getAllRestaurants_onObserve_returnPlaceDetailList(){
         LiveDataTestUtils.observeForTesting(restaurantListViewModel.getAllRestaurants(anyString(),anyInt(),anyString()), liveData -> {
             assertEquals(getDefaultPlaceDetailList(),liveData.getValue());
         });
     }
 
     @Test
-    public void error_test(){
+    public void getAutoCompleteNearbyRestaurantList_onObserve_returnPlaceDetailList(){
         MutableLiveData<List<PlaceDetail>> placeDetailList = new MutableLiveData<>();
         placeDetailList.setValue(getDefaultPlaceDetailList());
         given(placeDetailRepository.getNearbyRestaurantListWithAutoComplete(anyString(),anyString(),anyInt())).willReturn(placeDetailList);
@@ -66,7 +66,7 @@ public class RestaurantListViewModelTest {
         });
     }
     @Test
-    public void usersListTest(){
+    public void getUsersList_onObserve_returnUsersList(){
         MutableLiveData<List<User>> userList = new MutableLiveData<>();
         userList.setValue(getDefaultUsersList());
         given(userRepository.getUsersListMutableLiveData()).willReturn(userList);
@@ -76,16 +76,16 @@ public class RestaurantListViewModelTest {
     }
 
     @Test
-    public void setSelected(){
+    public void getSelected_onObserve_returnPlaceDetail(){
         MutableLiveData<PlaceDetail> selected = new MutableLiveData<>();
-        restaurantListViewModel.select(null);
+        restaurantListViewModel.select(placeDetail);
         LiveDataTestUtils.observeForTesting(restaurantListViewModel.getSelected(),liveData -> {
-            assertNull(liveData.getValue());
+            assertEquals(placeDetail,selected.getValue());
         });
     }
 
-    @Mock
-    private PlaceDetail placeDetail = new PlaceDetail();
+
+    private PlaceDetail placeDetail;
 
     private List<User> getDefaultUsersList(){
         List<User> list = new ArrayList<>();
