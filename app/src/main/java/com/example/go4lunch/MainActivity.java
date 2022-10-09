@@ -117,9 +117,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private void initViewModel() {
         restaurantListViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
-        restaurantListViewModel.init();
         restaurantDetailViewModel = new ViewModelProvider(this,ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
-        restaurantDetailViewModel.init();
 
     }
 
@@ -127,8 +125,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private void setupNavigationToRestaurantDetail(){
         if (checkIfUserHasRestaurantChoice()){
             Log.e("userRestaurantChoice",currentAuthenticatedUser.restaurantChoice);
-            restaurantDetailViewModel.searchRestaurantDetail(currentAuthenticatedUser.restaurantChoice);
-            restaurantDetailViewModel.restaurantDetail.observe(this, new Observer<PlaceDetail>() {
+            restaurantDetailViewModel.getRestaurantDetailByUserChoice(currentAuthenticatedUser.restaurantChoice).observe(this, new Observer<PlaceDetail>() {
                 @Override
                 public void onChanged(PlaceDetail placeDetail) {
                     restaurantListViewModel.select(placeDetail);
@@ -136,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     drawer.close();
                 }
             });
-
 
         }else {
             Toast.makeText(this,"You don't have choose a restaurant yet!",Toast.LENGTH_LONG).show();
@@ -199,14 +195,13 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         TextView userEmail = headerView.findViewById(R.id.nav_header_user_email_tv);
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
-            authViewModel.setUid(firebaseUser.getUid());
-            authViewModel.userLiveData.observe(this, user -> {
+            authViewModel.getUserById(firebaseUser.getUid()).observe(this, user -> {
                 currentAuthenticatedUser = user;
                 userName.setText(user.name);
                 userEmail.setText(user.email);
                 Glide.with(this).load(user.urlPicture).circleCrop().into(userPicture);
-
             });
+
         }
 
     }
@@ -221,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
 
     private void initAuthViewModel() {
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AuthViewModel.class);
 
     }
 

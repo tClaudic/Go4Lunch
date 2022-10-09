@@ -1,21 +1,20 @@
-package com.example.go4lunch;
+package com.example.go4lunch.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
 import com.example.go4lunch.Repositories.PlaceDetailRepository;
 import com.example.go4lunch.Rertrofit.Go4LunchStreams;
 import com.example.go4lunch.Rertrofit.GooglePlaceApiCall;
+import com.example.go4lunch.Util.LiveDataTestUtils;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 
 import org.junit.Before;

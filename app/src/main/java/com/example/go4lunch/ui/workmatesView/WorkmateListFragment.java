@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.databinding.FragmentWorkmatesListBinding;
 import com.example.go4lunch.model.User;
+import com.example.go4lunch.ui.ViewModelFactory;
 
 import java.util.List;
 
@@ -36,8 +37,7 @@ public class WorkmateListFragment extends Fragment {
     }
 
     private void initViewModel(){
-        workmatesViewModel = new ViewModelProvider(requireActivity()).get(WorkmatesViewModel.class);
-        workmatesViewModel.init();
+        workmatesViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(WorkmatesViewModel.class);
     }
 
     private void configureWorkmatesRecyclerView(){

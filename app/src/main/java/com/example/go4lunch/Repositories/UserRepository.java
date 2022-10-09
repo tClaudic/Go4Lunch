@@ -1,7 +1,5 @@
 package com.example.go4lunch.Repositories;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -9,7 +7,6 @@ import com.example.go4lunch.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -23,28 +20,30 @@ import java.util.Objects;
 
 public class UserRepository {
 
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore firebaseFirestore;
 
     private static final String COLLECTION_NAME = "users";
     MutableLiveData<List<User>> usersListMutableLiveData;
-    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private CollectionReference usersRef = firebaseFirestore.collection(COLLECTION_NAME);
+    private final FirebaseAuth firebaseAuth;
     MutableLiveData<List<User>> usersFilteredListMutableLiveData = new MutableLiveData<>();
 
+    private static final String SUCCESS = "success";
+    private static final String ERROR = "error";
+    private static final String RESTAURANT_CHOICE = "restaurantChoice";
+    private static final String PLACE_ID = "placeId";
 
-    public UserRepository(FirebaseFirestore firebaseFirestore) {
+
+    public UserRepository(FirebaseFirestore firebaseFirestore, FirebaseAuth firebaseAuth) {
         this.firebaseFirestore = firebaseFirestore;
+        this.firebaseAuth = firebaseAuth;
         usersListMutableLiveData = new MutableLiveData<>();
     }
 
 
-
-
     public MutableLiveData<List<User>> getUsersListMutableLiveData() {
-        usersRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firebaseFirestore.collection(COLLECTION_NAME).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                Log.e("getAllUsersTest", String.valueOf(task.getResult()));
                 List<User> userList = new ArrayList<>();
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                     userList.add(documentSnapshot.toObject(User.class));
@@ -56,66 +55,107 @@ public class UserRepository {
         return usersListMutableLiveData;
     }
 
+
     public MutableLiveData<List<User>> getUsersFilteredListMutableLiveData(String restaurantChoice) {
-        Log.e("testrestochoice", restaurantChoice);
-        usersRef.whereEqualTo("restaurantChoice", restaurantChoice).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo("restaurantChoice", restaurantChoice).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                Log.e("getAllUsersTest", String.valueOf(task.isSuccessful()));
                 List<User> userList = new ArrayList<>();
                 for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                     userList.add(documentSnapshot.toObject(User.class));
                 }
-                Log.e("usersFilterTestoutside", String.valueOf(userList.size()));
-                if (!userList.isEmpty()) {
-                    usersFilteredListMutableLiveData.setValue(userList);
-                    Log.e("usersFilterTest", String.valueOf(userList.size()));
-                }
-
+                usersFilteredListMutableLiveData.setValue(userList);
             }
         });
 
         return usersFilteredListMutableLiveData;
     }
 
-    public void removeUserLike(String userId, String restaurantID) {
 
+    public MutableLiveData<String> removeUserLike(String userId, String restaurantID) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update("likes", FieldValue.arrayRemove(restaurantID)).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                result.setValue(SUCCESS);
+            }
+            if (task.isCanceled()) {
+                result.setValue(ERROR);
+            }
+        });
+        return result;
     }
 
 
     public Task<QuerySnapshot> getUsersByRestaurantChoice(String restaurantId) {
-        return usersRef.whereEqualTo("restaurantChoice", restaurantId).get();
+        return firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo(RESTAURANT_CHOICE, restaurantId).get();
     }
 
-    public void addLike(String userID, String restaurantId) {
-        usersRef.document(userID).update("likes", FieldValue.arrayUnion(restaurantId)).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.e("succesLike", String.valueOf(task.isSuccessful()));
+    public MutableLiveData<String> addLike(String userID, String restaurantId) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        firebaseFirestore.collection(COLLECTION_NAME).document(userID).update("likes", FieldValue.arrayUnion(restaurantId)).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                result.setValue(SUCCESS);
+            }
+            if (task.isCanceled()) {
+                result.setValue(ERROR);
             }
         });
+        return result;
     }
 
-    public void addRestaurant(String userId, String restaurantID) {
-        usersRef.document(userId).update("restaurantChoice", restaurantID).addOnCompleteListener(task -> Log.e("addrestaurant", String.valueOf(task.isSuccessful())));
-    }
+    public MutableLiveData<String> addRestaurant(String userId, String restaurantID) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        String restaurantChoice = "restaurantChoice";
 
-    public void addRestaurantChoiceName(String userId, String restaurantChoiceName) {
-        usersRef.document(userId).update("restaurantChoiceName", restaurantChoiceName).addOnCompleteListener(task -> Log.e("addRestaurantChoiceName", String.valueOf(task.isSuccessful())));
-    }
-
-    public void removeRestaurantChoice(String uid) {
-        usersRef.document(uid).update("placeId", "").addOnCompleteListener(new OnCompleteListener<Void>() {
+        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update(RESTAURANT_CHOICE, restaurantID).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-
+                if (task.isSuccessful()) {
+                    result.setValue(SUCCESS);
+                }
+                if (task.isCanceled()) {
+                    result.setValue(ERROR);
+                }
             }
         });
+        return result;
+    }
+
+
+    public MutableLiveData<String> addRestaurantChoiceName(String userId, String restaurantChoiceName) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update("restaurantChoiceName", restaurantChoiceName).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                result.setValue(SUCCESS);
+            }
+            if (task.isCanceled()) {
+                result.setValue(ERROR);
+            }
+        });
+        return result;
+    }
+
+    public MutableLiveData<String> removeRestaurantChoice(String uid) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        String string = "";
+        firebaseFirestore.collection(COLLECTION_NAME).document(uid).update(PLACE_ID, string).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    result.setValue(SUCCESS);
+                }
+                if (task.isCanceled()) {
+                    result.setValue(ERROR);
+                }
+            }
+        });
+        return result;
     }
 
     public Task<DocumentSnapshot> getAuthenticatedUser() {
 
-        DocumentReference documentReference = usersRef.document(Objects.requireNonNull(firebaseAuth.getUid()));
+        DocumentReference documentReference = firebaseFirestore.collection(COLLECTION_NAME).document(Objects.requireNonNull(firebaseAuth.getUid()));
         return documentReference.get();
 
     }
@@ -124,15 +164,19 @@ public class UserRepository {
     public MutableLiveData<User> getAuthenticatedUserMutableLiveData() {
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
         if (firebaseAuth.getCurrentUser() != null) {
-            DocumentReference documentReference = usersRef.document(Objects.requireNonNull(firebaseAuth.getUid()));
-            documentReference.get().addOnCompleteListener(task -> {
+            String userId = firebaseAuth.getCurrentUser().getUid();
+            firebaseFirestore.collection(COLLECTION_NAME).document(userId).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     User user = task.getResult().toObject(User.class);
                     authenticatedUser.setValue(user);
-                } else {
-                    Log.e("getAuthenticatedUser", Objects.requireNonNull(task.getException()).getMessage());
                 }
+                if (task.isCanceled()) {
+                    authenticatedUser.setValue(null);
+                }
+
             });
+        } else {
+            authenticatedUser.setValue(null);
         }
         return authenticatedUser;
     }

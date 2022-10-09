@@ -248,7 +248,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void initRestaurantListViewModel() {
         restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
-        restaurantListViewModel.init();
 
 
 
@@ -267,7 +266,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void observeNearbyRestaurant(Location location) {
         String userLocation = location.getLatitude() + "," + location.getLongitude();
         Log.e("LocationString", userLocation);
-        restaurantListViewModel.getAllRestaurants(userLocation,5000,"restaurants").observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        restaurantListViewModel.getAllRestaurants(userLocation,5000,"restaurant").observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 updateMapWithRestaurantMarker(placeDetails, userList);

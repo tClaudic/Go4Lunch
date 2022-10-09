@@ -1,11 +1,11 @@
-package com.example.go4lunch;
+package com.example.go4lunch.ui;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.go4lunch.Repositories.PlaceDetailRepository;
 import com.example.go4lunch.Repositories.UserRepository;
+import com.example.go4lunch.Util.LiveDataTestUtils;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
@@ -51,7 +51,7 @@ public class RestaurantListViewModelTest {
 
     @Test
     public void nominal_test(){
-        LiveDataTestUtils.observeForTesting(restaurantListViewModel.getAllRestaurants(anyString(),anyInt(),anyString()),liveData -> {
+        LiveDataTestUtils.observeForTesting(restaurantListViewModel.getAllRestaurants(anyString(),anyInt(),anyString()), liveData -> {
             assertEquals(getDefaultPlaceDetailList(),liveData.getValue());
         });
     }

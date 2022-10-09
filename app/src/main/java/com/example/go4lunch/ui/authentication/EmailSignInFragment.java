@@ -1,7 +1,6 @@
 package com.example.go4lunch.ui.authentication;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,7 @@ import androidx.navigation.Navigation;
 
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentSignInBinding;
-import com.example.go4lunch.model.User;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.go4lunch.ui.ViewModelFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,9 +24,10 @@ import java.util.regex.Pattern;
 public class EmailSignInFragment extends Fragment {
 
     FragmentSignInBinding binding;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private AuthViewModel authViewModel;
     private NavController navController;
+    public static final String SUCCESS = "success";
+    public static final String ERROR = "error";
 
 
     @Nullable
@@ -38,7 +37,6 @@ public class EmailSignInFragment extends Fragment {
         initViewModel();
         setupLoginButton();
         setupNavToSignUp();
-        test();
         return binding.getRoot();
     }
 
@@ -49,41 +47,15 @@ public class EmailSignInFragment extends Fragment {
     }
 
     private void initViewModel() {
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AuthViewModel.class);
     }
 
     public void goToMainFragment(){
         Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_mapView);
     }
 
-    public void test(){
-        authViewModel.testUser.observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if (user.isAuthenticated){
-                    goToMainFragment();
-                }
-                else {
-                    Toast.makeText(getContext(),"Check your email or your password",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
 
-    }
 
-    public void observeLoggedUser(){
-        authViewModel.checkIfUserIsAuthenticated();
-        authViewModel.authenticatedUserLiveData.observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if (user.isAuthenticated){
-                    goToMainFragment();
-                }
-                Log.e("test","LoggedUser" + user.email);
-                goToMainFragment();
-            }
-        });
-    }
 
     private void setupNavToSignUp() {
         binding.tvGoToSignIn.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +73,17 @@ public class EmailSignInFragment extends Fragment {
                 resetErrorMessage();
                 if (emailFormatVerification() && passwordVerification()) {
                     Toast.makeText(getContext(), "all is okay", Toast.LENGTH_LONG).show();
-                    authViewModel.testEmailSignIn(binding.etRegisterEmail.getText().toString(), binding.etRegisterPassword.getText().toString());
+                    authViewModel.signInWithMailAndPassword(binding.etRegisterEmail.getText().toString(), binding.etRegisterPassword.getText().toString()).observe(getViewLifecycleOwner(), new Observer<String>() {
+                        @Override
+                        public void onChanged(String s) {
+                            if (s.equals(SUCCESS)){
+                                goToMainFragment();
+                            }else if (s.equals(ERROR)){
+                                Toast.makeText(requireActivity(),"erro",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
                 }
 
 

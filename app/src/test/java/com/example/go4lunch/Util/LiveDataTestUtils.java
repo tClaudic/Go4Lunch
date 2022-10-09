@@ -1,4 +1,4 @@
-package com.example.go4lunch;
+package com.example.go4lunch.Util;
 
 import static org.junit.Assert.fail;
 

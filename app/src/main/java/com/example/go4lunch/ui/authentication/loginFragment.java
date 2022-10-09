@@ -21,11 +21,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentLoginBinding;
 import com.example.go4lunch.model.User;
+import com.example.go4lunch.ui.ViewModelFactory;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -48,7 +48,7 @@ import com.google.firebase.auth.OAuthProvider;
 
 import java.util.Arrays;
 
-public class loginFragment extends Fragment implements FirebaseAuth.AuthStateListener {
+public class loginFragment extends Fragment {
 
     private static final int RC_SIGN_IN = 123;
     private GoogleSignInClient googleSignInClient;
@@ -58,6 +58,9 @@ public class loginFragment extends Fragment implements FirebaseAuth.AuthStateLis
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private NavHostFragment navHostFragment;
     private NavController navCo;
+
+    public static final String SUCCESS = "success";
+    public static final String ERROR = "error";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,20 +80,25 @@ public class loginFragment extends Fragment implements FirebaseAuth.AuthStateLis
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(getLayoutInflater());
         initSignInButton();
-        initFacebookLogin();
         initGoogleSignInClient();
         setupTwitterLoginButton();
         initAuthViewModel();
         initEmailLogin();
-        checkIfUserIsLogged();
-        firebaseAuth.addAuthStateListener(this);
+
+        //firebaseAuth.addAuthStateListener(this);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initFacebookLogin();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("onresume", "onresume");
+        Log.e("onresume", "onresumeloginframgnet");
     }
 
     private void setupTwitterLoginButton() {
@@ -130,22 +138,15 @@ public class loginFragment extends Fragment implements FirebaseAuth.AuthStateLis
 
     }
 
-    private void checkIfUserIsLogged() {
-        Log.e("test", "test");
-        authViewModel.checkFirebaseUserLiveData();
-        authViewModel.testUser.observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                Log.e("changed", "changed");
-                if (user.isAuthenticated) {
-                    goToMainFragment();
-                }
-            }
-        });
-    }
 
     private void getTwitterCredentialsAndSignIn(AuthCredential authCredential) {
-        authViewModel.twitterTest(authCredential);
+        authViewModel.signInWithAuthCredential(authCredential).observeForever(result -> {
+            if (result.equals(SUCCESS)) {
+                goToMainFragment();
+            } else if (result.equals(ERROR)) {
+                Toast.makeText(requireActivity(), "authentication error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void initFacebookLogin() {
@@ -192,7 +193,7 @@ public class loginFragment extends Fragment implements FirebaseAuth.AuthStateLis
     }
 
     private void initAuthViewModel() {
-        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(AuthViewModel.class);
     }
 
     private void initSignInButton() {
@@ -232,33 +233,22 @@ public class loginFragment extends Fragment implements FirebaseAuth.AuthStateLis
     }
 
     private void signInWithFacebookAuthCredential(AuthCredential authCredential) {
-        authViewModel.signInWithFacebook(authCredential);
-        Log.e("testUser", "testUserBeforeAdded");
-        authViewModel.checkIfUserIsAuthenticated();
-        authViewModel.authenticatedUserLiveData.observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if (user.isNew) {
-                    createNewUser(user);
-                    Log.e("new user", "new user");
-                } else {
-                    Log.e("facebook", "SignInWithFacebookElse");
-                    goToMainFragment();
-                }
+        authViewModel.signInWithAuthCredential(authCredential).observeForever(result -> {
+            if(result.equals(SUCCESS)){
+                goToMainFragment();
+            }else if (result.equals(ERROR)){
+                Toast.makeText(requireActivity(), "authentication error", Toast.LENGTH_LONG).show();
             }
         });
+
     }
 
     private void signInWithGoogleAuthCredential(AuthCredential authCredential) {
-        authViewModel.signInWithGoogle(authCredential);
-        authViewModel.checkIfUserIsAuthenticated();
-        authViewModel.authenticatedUserLiveData.observe(this, authenticatedUser -> {
-            if (authenticatedUser.isNew) {
-                createNewUser(authenticatedUser);
-            } else {
-                Log.e("google", "signInWithGoogleElse");
+        authViewModel.signInWithAuthCredential(authCredential).observe(this, result -> {
+            if(result.equals(SUCCESS)){
                 goToMainFragment();
-
+            }else if (result.equals(ERROR)){
+                Toast.makeText(requireActivity(), "authentication error", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -267,16 +257,6 @@ public class loginFragment extends Fragment implements FirebaseAuth.AuthStateLis
         NavHostFragment.findNavController(this).navigate(R.id.nav_mapView);
 
 
-    }
-
-    private void createNewUser(User authenticatedUser) {
-        authViewModel.createUser(authenticatedUser);
-        authViewModel.createdUserLiveData.observe(this, user -> {
-            if (user.isCreated) {
-                Toast.makeText(getActivity(), "Your account is successfully created", Toast.LENGTH_LONG).show();
-            }
-            goToMainFragment();
-        });
     }
 
 
@@ -289,11 +269,12 @@ public class loginFragment extends Fragment implements FirebaseAuth.AuthStateLis
         super.onStart();
     }
 
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        Log.e("test", "onauthstagechanged");
-        if (firebaseAuth.getCurrentUser() != null) {
-            goToMainFragment();
-        }
-    }
+
+    //@Override
+    //public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+    //    Log.e("test", "onauthstagechanged");
+    //    if (firebaseAuth.getCurrentUser() != null) {
+    //        goToMainFragment();
+    //    }
+    //}
 }

@@ -5,7 +5,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
@@ -23,6 +21,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.WorkManager;
 
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.BuildConfig;
@@ -34,12 +33,9 @@ import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.ViewModelFactory;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
 import com.example.go4lunch.ui.workmatesView.WorkmatesListRecyclerViewAdapter;
-import com.example.go4lunch.ui.workmatesView.WorkmatesViewModel;
-
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 
 public class RestaurantDetailFragment extends Fragment {
 
@@ -51,7 +47,6 @@ public class RestaurantDetailFragment extends Fragment {
     List<User> usersList;
     RecyclerView recyclerView;
     WorkmatesListRecyclerViewAdapter workmatesListRecyclerViewAdapter;
-    WorkmatesViewModel workmatesViewModel;
 
 
     @Nullable
@@ -59,31 +54,21 @@ public class RestaurantDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentRestaurantDetailBinding.inflate(getLayoutInflater());
         initViewModel();
-        initWorkmatesViewModel();
         configureWorkmatesRecyclerView();
         return binding.getRoot();
     }
 
-    private void initWorkmatesViewModel() {
-        workmatesViewModel = new ViewModelProvider(requireActivity()).get(WorkmatesViewModel.class);
-        workmatesViewModel.init();
-    }
-
-
-
 
     private void initViewModel() {
-        restaurantDetailViewModel = new ViewModelProvider(requireActivity(),ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
-        restaurantListViewModel = new ViewModelProvider(requireActivity(),ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
-        restaurantDetailViewModel.init();
+        restaurantDetailViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
+        restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
         restaurantListViewModel.getSelected().observe(getViewLifecycleOwner(),
                 new Observer<PlaceDetail>() {
                     @Override
                     public void onChanged(PlaceDetail placeDetail1) {
                         RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail1);
                         placeDetail = placeDetail1;
-                        workmatesViewModel.getFilteredUsersByRestaurantChoiceName(placeDetail1.getResult().getPlaceId());
-                        workmatesViewModel.getFilteredUsersListLiveData().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+                        restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail1.getResult().getPlaceId()).observe(getViewLifecycleOwner(), new Observer<List<User>>() {
                             @Override
                             public void onChanged(List<User> users) {
                                 workmatesListRecyclerViewAdapter.setUsersList(users);
@@ -92,15 +77,16 @@ public class RestaurantDetailFragment extends Fragment {
                         Log.e("placedetail", placeDetail1.getResult().getPlaceId());
                     }
                 });
-        restaurantDetailViewModel.authenticatedUser.observe(getViewLifecycleOwner(),
-                new Observer<User>() {
-                    @Override
-                    public void onChanged(User user) {
-                        currentUser = user;
-                        updateStarColor(user, placeDetail);
-                        updateRestaurantButton(currentUser);
-                    }
-                });
+
+        restaurantDetailViewModel.getAuthenticatedLiveDataUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                currentUser = user;
+                updateStarColor(user, placeDetail);
+                updateRestaurantButton(currentUser);
+            }
+        });
+
     }
 
     private void updateLayoutWithRestaurantDetailData(PlaceDetail placeDetail) {
@@ -116,16 +102,17 @@ public class RestaurantDetailFragment extends Fragment {
         setLikeBtn(placeDetail);
         setRestaurantChoiceBtn();
     }
-    private void updateRestaurantButton(User user){
-        if (user.restaurantChoice != null && user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())){
+
+    private void updateRestaurantButton(User user) {
+        if (user.restaurantChoice != null && user.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())) {
             DrawableCompat.setTint(
                     binding.btnRestaurantChoice.getDrawable(),
-                    ContextCompat.getColor(requireContext(),R.color.restaurantChoiceBtnColor)
+                    ContextCompat.getColor(requireContext(), R.color.restaurantChoiceBtnColor)
             );
-        }else {
+        } else {
             DrawableCompat.setTint(
                     binding.btnRestaurantChoice.getDrawable(),
-                    ContextCompat.getColor(requireContext(),R.color.secondaryTextColor)
+                    ContextCompat.getColor(requireContext(), R.color.secondaryTextColor)
             );
         }
 
@@ -157,8 +144,10 @@ public class RestaurantDetailFragment extends Fragment {
                     restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
                     restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
                     setupNotification();
-                } else {restaurantDetailViewModel.removePlaceId(currentUser.uid);
-                currentUser.restaurantChoice = "";}
+                } else {
+                    restaurantDetailViewModel.removePlaceId(currentUser.uid);
+                    currentUser.restaurantChoice = "";
+                }
             }
         });
     }
@@ -170,9 +159,11 @@ public class RestaurantDetailFragment extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY , 12);
-        calendar.set(Calendar.MINUTE,56);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, pendingIntent);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 56);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        WorkManager workManager = WorkManager.getInstance(requireActivity());
+        
     }
 
     private void setWebsiteBtn(PlaceDetail placeDetail) {

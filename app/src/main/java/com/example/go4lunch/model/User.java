@@ -71,26 +71,29 @@ public class User implements Serializable {
         this.likes = likes;
     }
 
+    @Exclude
     public boolean isAuthenticated() {
         return isAuthenticated;
     }
-
+    @Exclude
     public void setAuthenticated(boolean authenticated) {
         isAuthenticated = authenticated;
     }
 
+    @Exclude
     public boolean isNew() {
         return isNew;
     }
-
+    @Exclude
     public void setNew(boolean aNew) {
         isNew = aNew;
     }
 
+    @Exclude
     public boolean isCreated() {
         return isCreated;
     }
-
+    @Exclude
     public void setCreated(boolean created) {
         isCreated = created;
     }
