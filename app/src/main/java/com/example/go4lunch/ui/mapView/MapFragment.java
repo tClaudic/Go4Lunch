@@ -60,10 +60,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public FragmentMapBinding binding;
     public FusedLocationProviderClient fusedLocationProviderClient;
     private GoogleMap googleMap;
-    RestaurantListViewModel restaurantListViewModel;
-    RestaurantDetailViewModel restaurantDetailViewModel;
+    private RestaurantListViewModel restaurantListViewModel;
     private List<User> userList;
-    String locationString;
+    public String locationString;
+    public static final Integer RADIUS = 1500;
+    public static final String TYPE = "restaurant";
 
 
     @Nullable
@@ -113,7 +114,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void searchNearbyRestaurantWithAutocomplete(String query) {
-        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,5000).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,RADIUS).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 if (placeDetails != null){
@@ -266,7 +267,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void observeNearbyRestaurant(Location location) {
         String userLocation = location.getLatitude() + "," + location.getLongitude();
         Log.e("LocationString", userLocation);
-        restaurantListViewModel.getAllRestaurants(userLocation,5000,"restaurant").observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        restaurantListViewModel.getAllRestaurants(userLocation,RADIUS,TYPE).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 updateMapWithRestaurantMarker(placeDetails, userList);

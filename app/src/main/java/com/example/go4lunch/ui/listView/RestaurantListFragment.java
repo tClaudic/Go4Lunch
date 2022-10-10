@@ -49,11 +49,11 @@ public class RestaurantListFragment extends Fragment {
     public RecyclerView recyclerView;
     RestaurantListRecyclerViewAdapter restaurantListRecyclerViewAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-
-    public List<PlaceDetail> nearbyRestaurantList = new ArrayList<>();
     public FusedLocationProviderClient fusedLocationProviderClient;
     int SEARCH_QUERY_THRESHOLD = 3;
-    String locationString;
+    public String locationString;
+    public static final Integer RADIUS = 1500;
+    public static final String TYPE = "restaurant";
 
 
 
@@ -105,7 +105,7 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void observeNearbyRestaurantsWithAutoComplete(String query){
-        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,5000).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,RADIUS).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
@@ -178,7 +178,7 @@ public class RestaurantListFragment extends Fragment {
         String userLocation = location.getLatitude() +","+ location.getLongitude();
         Log.e("LocationString",userLocation);
         //restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
-        restaurantListViewModel.getAllRestaurants(userLocation,5000,"restaurant").observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        restaurantListViewModel.getAllRestaurants(userLocation,RADIUS,TYPE).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
