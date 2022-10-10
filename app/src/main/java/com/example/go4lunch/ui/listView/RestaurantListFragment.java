@@ -13,24 +13,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.R;
-
 import com.example.go4lunch.databinding.FragmentListViewBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
@@ -39,7 +37,6 @@ import com.example.go4lunch.util.ItemClickSupport;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantListFragment extends Fragment {
@@ -54,15 +51,14 @@ public class RestaurantListFragment extends Fragment {
     public String locationString;
     public static final Integer RADIUS = 1500;
     public static final String TYPE = "restaurant";
-
-
+    private OnBackPressedCallback callback;
+    private SearchView searchView;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentListViewBinding.inflate(getLayoutInflater());
-
         configureRecyclerView();
         setHasOptionsMenu(true);
         initViewModel();
@@ -71,6 +67,7 @@ public class RestaurantListFragment extends Fragment {
         checkLocationPermissions();
         initOnClickRecyclerView();
         configureOnSwipeFresh();
+        setupOnBackPressedCallback();
         return binding.getRoot();
     }
 
@@ -79,15 +76,15 @@ public class RestaurantListFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        inflater.inflate(R.menu.main,menu);
+        inflater.inflate(R.menu.main, menu);
         MenuItem menuItem = menu.findItem(R.id.action_settings);
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView = (SearchView) menuItem.getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.e("OnQueryTextSubmit","true");
-                if (query.length() >= SEARCH_QUERY_THRESHOLD){
+                Log.e("OnQueryTextSubmit", "true");
+                if (query.length() >= SEARCH_QUERY_THRESHOLD) {
                     observeNearbyRestaurantsWithAutoComplete(query);
                 }
                 return false;
@@ -95,8 +92,8 @@ public class RestaurantListFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.e("OnQeuryTextChange","true");
-                if (newText.length() >= SEARCH_QUERY_THRESHOLD){
+                Log.e("OnQeuryTextChange", "true");
+                if (newText.length() >= SEARCH_QUERY_THRESHOLD) {
                     observeNearbyRestaurantsWithAutoComplete(newText);
                 }
                 return true;
@@ -104,11 +101,24 @@ public class RestaurantListFragment extends Fragment {
         });
     }
 
-    private void observeNearbyRestaurantsWithAutoComplete(String query){
-        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,RADIUS).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+    private void setupOnBackPressedCallback() {
+        callback = new OnBackPressedCallback(true) {
             @Override
-            public void onChanged(List<PlaceDetail> placeDetails) {
+            public void handleOnBackPressed() {
+                if (!searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+    }
+
+    private void observeNearbyRestaurantsWithAutoComplete(String query) {
+        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query, locationString, RADIUS).observe(getViewLifecycleOwner(), placeDetails -> {
+            if (!placeDetails.isEmpty()) {
                 restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
+            } else {
+                Toast.makeText(requireActivity(), R.string.no_restaurant_available, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -120,30 +130,22 @@ public class RestaurantListFragment extends Fragment {
 
     }
 
-    private void initOnClickRecyclerView(){
-        ItemClickSupport.addTo(recyclerView,binding.rcListView.getId())
+    private void initOnClickRecyclerView() {
+        ItemClickSupport.addTo(recyclerView, binding.rcListView.getId())
                 .setOnItemClickListener((recyclerView1, position, v) -> {
-                    Log.e("testclick",restaurantListRecyclerViewAdapter.getPlaceDetail(position).getResult().getName());
-                   restaurantListViewModel.select(restaurantListRecyclerViewAdapter.getPlaceDetail(position));
-                   Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_listView_to_nav_restaurantDetail);
-                    
+                    Log.e("testclick", restaurantListRecyclerViewAdapter.getPlaceDetail(position).getResult().getName());
+                    restaurantListViewModel.select(restaurantListRecyclerViewAdapter.getPlaceDetail(position));
+                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_listView_to_nav_restaurantDetail);
+
                 });
     }
 
-    private void configureOnSwipeFresh(){
+    private void configureOnSwipeFresh() {
         swipeRefreshLayout = binding.srlRestaurantSwipe;
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                restaurantListViewModel.nearbyRestaurantsLiveData.observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
-                    @Override
-                    public void onChanged(List<PlaceDetail> placeDetails) {
-                        restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> restaurantListViewModel.nearbyRestaurantsLiveData.observe(getViewLifecycleOwner(), placeDetails -> {
+            restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
+            swipeRefreshLayout.setRefreshing(false);
+        }));
     }
 
 
@@ -165,25 +167,18 @@ public class RestaurantListFragment extends Fragment {
         }
     }
 
-    private void observeUsersList(){
-        restaurantListViewModel.usersListMutableLiveData.observe(getViewLifecycleOwner(), new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                restaurantListRecyclerViewAdapter.setUsersList(users);
-            }
-        });
+    private void observeUsersList() {
+        restaurantListViewModel.usersListMutableLiveData.observe(getViewLifecycleOwner(), users ->
+                restaurantListRecyclerViewAdapter.setUsersList(users));
     }
 
-    private void observeNearbyRestaurant(Location location){
-        String userLocation = location.getLatitude() +","+ location.getLongitude();
-        Log.e("LocationString",userLocation);
+    private void observeNearbyRestaurant(Location location) {
+        String userLocation = location.getLatitude() + "," + location.getLongitude();
+        Log.e("LocationString", userLocation);
         //restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
-        restaurantListViewModel.getAllRestaurants(userLocation,RADIUS,TYPE).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
-            @Override
-            public void onChanged(List<PlaceDetail> placeDetails) {
-                restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
-                Log.e("onChanged", String.valueOf(placeDetails.size()));
-            }
+        restaurantListViewModel.getAllRestaurants(userLocation, RADIUS, TYPE).observe(getViewLifecycleOwner(), placeDetails -> {
+            restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
+            Log.e("onChanged", String.valueOf(placeDetails.size()));
         });
     }
 
@@ -193,15 +188,15 @@ public class RestaurantListFragment extends Fragment {
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
             Log.e("Lattitude", String.valueOf(location.getLatitude()));
             Log.e("Longitude", String.valueOf(location.getLongitude()));
-            locationString = String.valueOf(location.getLatitude() +","+ location.getLongitude());
-            Log.e("testLocationString",locationString);
+            locationString = String.valueOf(location.getLatitude() + "," + location.getLongitude());
+            Log.e("testLocationString", locationString);
             restaurantListRecyclerViewAdapter.setUserLocation(location);
             observeNearbyRestaurant(location);
         });
     }
 
     private void askLocationPermission() {
-        ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},44);
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
     }
 
 

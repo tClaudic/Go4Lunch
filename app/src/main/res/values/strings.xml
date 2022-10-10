@@ -67,6 +67,7 @@
     <string name="fb_login_protocol_scheme" translatable="false">fb2826630187580441</string>
     <string name="workmate_restaurant_no_choice">hasn\'t decided yet</string>
     <string name="workmate_restaurant_choice">is eating at</string>
+    <string name="no_restaurant_available">No result for this query</string>
 
 
 </resources>

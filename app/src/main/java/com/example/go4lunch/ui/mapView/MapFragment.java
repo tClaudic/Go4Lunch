@@ -20,7 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -65,6 +67,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public String locationString;
     public static final Integer RADIUS = 1500;
     public static final String TYPE = "restaurant";
+    private OnBackPressedCallback callback;
+    private SearchView searchView;
 
 
     @Nullable
@@ -81,6 +85,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         initLocationButton();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
         checkLocationPermissions();
+        setupOnBackPressedCallback();
 
         return binding.getRoot();
     }
@@ -92,7 +97,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         menu.clear();
         inflater.inflate(R.menu.main, menu);
         MenuItem menuItem = menu.findItem(R.id.action_settings);
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView = (SearchView) menuItem.getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -113,14 +118,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void searchNearbyRestaurantWithAutocomplete(String query) {
-        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,RADIUS).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+    private void setupOnBackPressedCallback(){
+        callback = new OnBackPressedCallback(true) {
             @Override
-            public void onChanged(List<PlaceDetail> placeDetails) {
-                if (placeDetails != null){
-                    updateMapWithRestaurantMarker(placeDetails,userList);
-                    updateMapCameraWithAutocompleteResult(placeDetails.get(0));
-                }
+            public void handleOnBackPressed() {
+                      if (!searchView.isIconified()){
+                          searchView.setIconified(true);
+                      }
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
+    }
+
+    private void searchNearbyRestaurantWithAutocomplete(String query) {
+        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,RADIUS).observe(getViewLifecycleOwner(), placeDetails -> {
+            if (!placeDetails.isEmpty()){
+                updateMapWithRestaurantMarker(placeDetails,userList);
+                updateMapCameraWithAutocompleteResult(placeDetails.get(0));
+            }else {
+                Toast.makeText(requireActivity(), R.string.no_restaurant_available, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -153,7 +169,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (location != null) {
                 Log.e("Lattitude", String.valueOf(location.getLatitude()));
                 Log.e("Longitude", String.valueOf(location.getLongitude()));
-                locationString = String.valueOf(location.getLatitude() + "," + location.getLongitude());
+                locationString = location.getLatitude() + "," + location.getLongitude();
                 updateCameraZoomWithNewLocation(location);
                 observeNearbyRestaurant(location);
             }else {
@@ -178,17 +194,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void getCurrentLocation(){
 
         CurrentLocationRequest currentLocationRequest = new CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY).setDurationMillis(3000).build();
-        fusedLocationProviderClient.getCurrentLocation(currentLocationRequest,null).addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                locationString = String.valueOf(location.getLatitude() + "," + location.getLongitude());
-                Log.e("locationRequestTest",locationString);
-                updateCameraZoomWithNewLocation(location);
-                observeNearbyRestaurant(location);
-            }
+        fusedLocationProviderClient.getCurrentLocation(currentLocationRequest,null).addOnSuccessListener(location -> {
+            locationString = location.getLatitude() + "," + location.getLongitude();
+            Log.e("locationRequestTest",locationString);
+            updateCameraZoomWithNewLocation(location);
+            observeNearbyRestaurant(location);
         });
 
     }
+
+
+
 
 
 

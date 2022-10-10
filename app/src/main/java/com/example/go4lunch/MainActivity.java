@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -138,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             Toast.makeText(this,"You don't have choose a restaurant yet!",Toast.LENGTH_LONG).show();
         }
     }
+
+
 
 
 
