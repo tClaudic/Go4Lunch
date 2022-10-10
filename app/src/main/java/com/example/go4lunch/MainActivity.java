@@ -77,18 +77,18 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.nav_restaurantDetail){
-                setupNavigationToRestaurantDetail();}
-                if (item.getItemId() == R.id.nav_logout){
-                    showLogOutDialogFragment();
-                    drawer.close();
-                }
-                return true;
-            }
-        });
+        //navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        //    @Override
+        //    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //        if (item.getItemId() == R.id.nav_restaurantDetail){
+        //        setupNavigationToRestaurantDetail();}
+        //        if (item.getItemId() == R.id.nav_logout){
+        //            showLogOutDialogFragment();
+        //            drawer.close();
+        //        }
+        //        return true;
+        //    }
+        //});
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()) {
 
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     drawer.close();
                     break;
                 case R.id.nav_login:
+                case R.id.nav_settings:
                 case R.id.emailSignUpFragment:
                 case R.id.nav_restaurantDetail:
                 case R.id.nav_splashScreen:

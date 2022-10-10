@@ -68,6 +68,8 @@
     <string name="workmate_restaurant_no_choice">hasn\'t decided yet</string>
     <string name="workmate_restaurant_choice">is eating at</string>
     <string name="no_restaurant_available">No result for this query</string>
+    <string name="notification_setting_header" translatable="false">Notification</string>
+    <string name="notification_setting_title">Enable message notifications</string>
 
 
 </resources>

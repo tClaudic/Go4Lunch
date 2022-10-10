@@ -3,11 +3,14 @@ package com.example.go4lunch.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
+import com.example.go4lunch.R;
 import com.example.go4lunch.Repositories.UserRepository;
 import com.example.go4lunch.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,8 +37,16 @@ public class AlertReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        getAuthenticatedUser();
-        Log.e("Notification", "Notification Happened");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean notificationPreference = sharedPreferences.getBoolean("notification",false);
+        Log.e("test1", Boolean.toString(notificationPreference));
+        if (notificationPreference){
+            getAuthenticatedUser();
+            Log.e("Notification", "Notification Happened");
+        }else {
+            Log.e("Notification false", Boolean.toString(notificationPreference));
+        }
+
     }
 
     public void getAuthenticatedUser() {
