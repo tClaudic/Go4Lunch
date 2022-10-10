@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AlertReceiver extends BroadcastReceiver {
@@ -47,6 +48,7 @@ public class AlertReceiver extends BroadcastReceiver {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                                if (!Objects.equals(queryDocumentSnapshot.toObject(User.class).uid, currentAuthenticatedUser.uid))
                                 usersList.add(queryDocumentSnapshot.toObject(User.class));
                             }
                             Log.e("userListSizeNotificatio", String.valueOf(usersList.size()));
@@ -68,7 +70,8 @@ public class AlertReceiver extends BroadcastReceiver {
 
     public void setupUsersStringForNotification() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            usersListString = usersList.stream().map(User::getName).collect(Collectors.joining(","));
+            usersListString = usersList.stream().map(User::getName).collect(Collectors.joining(" , "));
+
         } else usersListString = usersList.toString();
     }
 

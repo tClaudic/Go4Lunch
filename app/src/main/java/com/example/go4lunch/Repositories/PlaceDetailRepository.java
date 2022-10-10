@@ -3,7 +3,7 @@ package com.example.go4lunch.Repositories;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.go4lunch.Rertrofit.Go4LunchStreams;
+import com.example.go4lunch.Retrofit.Go4LunchStreams;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 
 import java.util.List;

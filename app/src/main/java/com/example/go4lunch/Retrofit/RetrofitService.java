@@ -1,4 +1,4 @@
-package com.example.go4lunch.Rertrofit;
+package com.example.go4lunch.Retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;

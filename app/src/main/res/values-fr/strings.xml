@@ -3,4 +3,8 @@
     <string name="app_name">Go4Lunch</string>
     <string name="workmate_restaurant_no_choice">n\'a pas encore choisi</string>
     <string name="workmate_restaurant_choice">mange à</string>
+
+    /// Notification String ///
+    <string name="notification_title">Vous allez manger à </string>
+    <string name="notification_line">Avec : </string>
 </resources>

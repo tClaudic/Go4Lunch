@@ -12,8 +12,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 
 import com.example.go4lunch.Repositories.PlaceDetailRepository;
-import com.example.go4lunch.Rertrofit.Go4LunchStreams;
-import com.example.go4lunch.Rertrofit.GooglePlaceApiCall;
+import com.example.go4lunch.Retrofit.Go4LunchStreams;
+import com.example.go4lunch.Retrofit.GooglePlaceApiCall;
 import com.example.go4lunch.Util.LiveDataTestUtils;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 

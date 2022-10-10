@@ -41,8 +41,8 @@ public class NotificationHelper extends ContextWrapper {
 
     public NotificationCompat.Builder getChannelNotification(User user, String usersList){
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle()
-                .setBigContentTitle(user.restaurantChoiceName)
-                .addLine(usersList);
+                .setBigContentTitle(getString(R.string.notification_title) + " " +  user.restaurantChoiceName)
+                .addLine(getString(R.string.notification_line) + " " + usersList);
         return new NotificationCompat.Builder(getApplicationContext(),channelID)
                 .setContentTitle(getString(R.string.app_name))
                 .setStyle(inboxStyle)

@@ -1,4 +1,4 @@
-package com.example.go4lunch.Rertrofit;
+package com.example.go4lunch.Retrofit;
 
 import com.example.go4lunch.BuildConfig;
 import com.example.go4lunch.model.NearbySearch.NearbySearch;
