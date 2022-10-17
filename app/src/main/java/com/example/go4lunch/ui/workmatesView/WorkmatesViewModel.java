@@ -14,7 +14,7 @@ public class WorkmatesViewModel extends ViewModel {
     public WorkmatesViewModel(UserRepository userRepository) {
 
         this.userRepository = userRepository;
-        userListMutableLiveData = userRepository.getUsersListMutableLiveData();
+        userListMutableLiveData = userRepository.getUsersListFromFirebase();
     }
 
 

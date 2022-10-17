@@ -32,7 +32,7 @@ public class RestaurantListViewModel extends ViewModel {
 
 
     public LiveData<List<User>> getUsersLists() {
-        usersListMutableLiveData = userRepository.getUsersListMutableLiveData();
+        usersListMutableLiveData = userRepository.getUsersListFromFirebase();
         return usersListMutableLiveData;
     }
 

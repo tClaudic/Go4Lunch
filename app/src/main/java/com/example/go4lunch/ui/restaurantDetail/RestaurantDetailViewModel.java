@@ -28,7 +28,7 @@ public class RestaurantDetailViewModel extends ViewModel {
 
     public LiveData<List<User>> getUsersListFilteredByRestaurantChoice(String placeId) {
         MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
-        usersListMutableLiveData = userRepository.getUsersFilteredListMutableLiveData(placeId);
+        usersListMutableLiveData = userRepository.getUsersFilteredListFromFirebase(placeId);
         return usersListMutableLiveData;
     }
 
@@ -45,13 +45,13 @@ public class RestaurantDetailViewModel extends ViewModel {
 
     public MutableLiveData<String> setPlaceId(String userId, String placeId) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        result = userRepository.addRestaurant(userId, placeId);
+        result = userRepository.addUserRestaurantChoiceInFirebase(userId, placeId);
         return result;
     }
 
     public MutableLiveData<String> setRestaurantChoiceName(String userId, String restaurantName) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        result = userRepository.addRestaurantChoiceName(userId, restaurantName);
+        result = userRepository.addUserRestaurantChoiceNameInFirebase(userId, restaurantName);
         return result;
     }
 
@@ -64,14 +64,14 @@ public class RestaurantDetailViewModel extends ViewModel {
 
     public MutableLiveData<String> addUserRestaurantLike(String userId, String restaurantId) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        result = userRepository.addLike(userId, restaurantId);
+        result = userRepository.addUserLikeInFirebase(userId, restaurantId);
         return result;
     }
 
 
     public MutableLiveData<String> removeUserRestaurantLike(String userId, String restaurantId) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        result = userRepository.removeUserLike(userId, restaurantId);
+        result = userRepository.removeUserLikeInFirebase(userId, restaurantId);
         return result;
     }
 }

@@ -69,7 +69,7 @@ public class RestaurantListViewModelTest {
     public void getUsersList_onObserve_returnUsersList(){
         MutableLiveData<List<User>> userList = new MutableLiveData<>();
         userList.setValue(getDefaultUsersList());
-        given(userRepository.getUsersListMutableLiveData()).willReturn(userList);
+        given(userRepository.getUsersListFromFirebase()).willReturn(userList);
         LiveDataTestUtils.observeForTesting(restaurantListViewModel.getUsersLists(),liveData -> {
             assertEquals(getDefaultUsersList(),liveData.getValue());
         });

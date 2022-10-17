@@ -14,13 +14,12 @@ import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 
 public class PlaceDetailRepository {
 
-    private MutableLiveData<PlaceDetail> nearbySearchMutableLiveData;
+
     private final Go4LunchStreams go4LunchStreams;
 
 
     public PlaceDetailRepository(Go4LunchStreams go4LunchStreams) {
         this.go4LunchStreams = go4LunchStreams;
-        this.nearbySearchMutableLiveData = new MutableLiveData<>();
     }
 
     public MutableLiveData<PlaceDetail> searchNearbyPlace(String placeID) {
@@ -29,28 +28,18 @@ public class PlaceDetailRepository {
             @Override
             public void onNext(@NonNull PlaceDetail placeDetail) {
                 nearbySearchMutableLiveData.postValue(placeDetail);
-
             }
-
             @Override
             public void onError(@NonNull Throwable e) {
                 nearbySearchMutableLiveData.postValue(null);
-
             }
-
             @Override
             public void onComplete() {
-
             }
         });
         return nearbySearchMutableLiveData;
 
     }
-
-    public LiveData<PlaceDetail> getPlaceDetailResponse() {
-        return nearbySearchMutableLiveData;
-    }
-
 
     public MutableLiveData<List<PlaceDetail>> getNearbyRestaurantsLiveData(String location, int Radius, String type) {
         MutableLiveData<List<PlaceDetail>> nearbyRestaurantLiveData = new MutableLiveData<>();
@@ -59,7 +48,6 @@ public class PlaceDetailRepository {
             public void onSuccess(@NonNull List<PlaceDetail> placeDetails) {
                 nearbyRestaurantLiveData.postValue(placeDetails);
             }
-
             @Override
             public void onError(@NonNull Throwable e) {
                 nearbyRestaurantLiveData.postValue(null);
@@ -68,7 +56,6 @@ public class PlaceDetailRepository {
         return nearbyRestaurantLiveData;
     }
 
-
     public MutableLiveData<List<PlaceDetail>> getNearbyRestaurantListWithAutoComplete(String query, String location, int Radius) {
         MutableLiveData<List<PlaceDetail>> nearbySearchAutocompleteLiveData = new MutableLiveData<>();
         go4LunchStreams.streamFetchAutoCompleteRestaurantDetails(query, location, Radius).subscribeWith(new DisposableSingleObserver<List<PlaceDetail>>() {
@@ -76,7 +63,6 @@ public class PlaceDetailRepository {
             public void onSuccess(@NonNull List<PlaceDetail> placeDetails) {
                 nearbySearchAutocompleteLiveData.postValue(placeDetails);
             }
-
             @Override
             public void onError(@NonNull Throwable e) {
                 nearbySearchAutocompleteLiveData.postValue(null);

@@ -8,4 +8,5 @@
     <string name="notification_title">Vous allez manger à </string>
     <string name="notification_line">Avec : </string>
     <string name="no_restaurant_available">Aucun resultat pour cette recherche</string>
+    <string name="notification_setting_title">Activer les notifications</string>
 </resources>

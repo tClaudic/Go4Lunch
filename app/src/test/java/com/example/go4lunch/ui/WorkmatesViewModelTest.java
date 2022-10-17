@@ -35,7 +35,7 @@ public class WorkmatesViewModelTest {
     @Before
     public void setup() {
         MutableLiveData<List<User>> usersMutableLiveData = new MutableLiveData<>();
-        given(userRepository.getUsersListMutableLiveData()).willReturn(usersMutableLiveData);
+        given(userRepository.getUsersListFromFirebase()).willReturn(usersMutableLiveData);
         usersMutableLiveData.setValue(getUsersList());
         workmatesViewModel = new WorkmatesViewModel(userRepository);
     }

@@ -21,26 +21,26 @@ import java.util.Objects;
 public class UserRepository {
 
     private final FirebaseFirestore firebaseFirestore;
+    private final FirebaseAuth firebaseAuth;
+
 
     private static final String COLLECTION_NAME = "users";
-    MutableLiveData<List<User>> usersListMutableLiveData;
-    private final FirebaseAuth firebaseAuth;
-    MutableLiveData<List<User>> usersFilteredListMutableLiveData = new MutableLiveData<>();
-
     private static final String SUCCESS = "success";
     private static final String ERROR = "error";
     private static final String RESTAURANT_CHOICE = "restaurantChoice";
+    private static final String RESTAURANT_CHOICE_NAME = "restaurantChoiceName";
     private static final String PLACE_ID = "placeId";
+    private static final String LIKES = "likes";
 
 
     public UserRepository(FirebaseFirestore firebaseFirestore, FirebaseAuth firebaseAuth) {
         this.firebaseFirestore = firebaseFirestore;
         this.firebaseAuth = firebaseAuth;
-        usersListMutableLiveData = new MutableLiveData<>();
     }
 
 
-    public MutableLiveData<List<User>> getUsersListMutableLiveData() {
+    public MutableLiveData<List<User>> getUsersListFromFirebase() {
+        MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
         firebaseFirestore.collection(COLLECTION_NAME).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -56,9 +56,9 @@ public class UserRepository {
     }
 
 
-    public MutableLiveData<List<User>> getUsersFilteredListMutableLiveData(String restaurantChoice) {
-
-        firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo("restaurantChoice", restaurantChoice).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public MutableLiveData<List<User>> getUsersFilteredListFromFirebase(String restaurantChoice) {
+        MutableLiveData<List<User>> usersFilteredListMutableLiveData = new MutableLiveData<>();
+        firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo(RESTAURANT_CHOICE, restaurantChoice).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<User> userList = new ArrayList<>();
@@ -73,9 +73,9 @@ public class UserRepository {
     }
 
 
-    public MutableLiveData<String> removeUserLike(String userId, String restaurantID) {
+    public MutableLiveData<String> removeUserLikeInFirebase(String userId, String restaurantID) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update("likes", FieldValue.arrayRemove(restaurantID)).addOnCompleteListener(task -> {
+        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update(LIKES, FieldValue.arrayRemove(restaurantID)).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 result.setValue(SUCCESS);
             }
@@ -87,13 +87,9 @@ public class UserRepository {
     }
 
 
-    public Task<QuerySnapshot> getUsersByRestaurantChoice(String restaurantId) {
-        return firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo(RESTAURANT_CHOICE, restaurantId).get();
-    }
-
-    public MutableLiveData<String> addLike(String userID, String restaurantId) {
+    public MutableLiveData<String> addUserLikeInFirebase(String userID, String restaurantId) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        firebaseFirestore.collection(COLLECTION_NAME).document(userID).update("likes", FieldValue.arrayUnion(restaurantId)).addOnCompleteListener(task -> {
+        firebaseFirestore.collection(COLLECTION_NAME).document(userID).update(LIKES, FieldValue.arrayUnion(restaurantId)).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 result.setValue(SUCCESS);
             }
@@ -104,10 +100,8 @@ public class UserRepository {
         return result;
     }
 
-    public MutableLiveData<String> addRestaurant(String userId, String restaurantID) {
+    public MutableLiveData<String> addUserRestaurantChoiceInFirebase(String userId, String restaurantID) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        String restaurantChoice = "restaurantChoice";
-
         firebaseFirestore.collection(COLLECTION_NAME).document(userId).update(RESTAURANT_CHOICE, restaurantID).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -122,10 +116,9 @@ public class UserRepository {
         return result;
     }
 
-
-    public MutableLiveData<String> addRestaurantChoiceName(String userId, String restaurantChoiceName) {
+    public MutableLiveData<String> addUserRestaurantChoiceNameInFirebase(String userId, String restaurantChoiceName) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update("restaurantChoiceName", restaurantChoiceName).addOnCompleteListener(task -> {
+        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update(RESTAURANT_CHOICE_NAME, restaurantChoiceName).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 result.setValue(SUCCESS);
             }
@@ -153,14 +146,6 @@ public class UserRepository {
         return result;
     }
 
-    public Task<DocumentSnapshot> getAuthenticatedUser() {
-
-        DocumentReference documentReference = firebaseFirestore.collection(COLLECTION_NAME).document(Objects.requireNonNull(firebaseAuth.getUid()));
-        return documentReference.get();
-
-    }
-
-
     public MutableLiveData<User> getAuthenticatedUserMutableLiveData() {
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
         if (firebaseAuth.getCurrentUser() != null) {
@@ -179,6 +164,16 @@ public class UserRepository {
             authenticatedUser.setValue(null);
         }
         return authenticatedUser;
+    }
+
+
+    public Task<DocumentSnapshot> getAuthenticatedUser() {
+        DocumentReference documentReference = firebaseFirestore.collection(COLLECTION_NAME).document(Objects.requireNonNull(firebaseAuth.getUid()));
+        return documentReference.get();
+    }
+
+    public Task<QuerySnapshot> getUsersByRestaurantChoice(String restaurantId) {
+        return firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo(RESTAURANT_CHOICE, restaurantId).get();
     }
 
 

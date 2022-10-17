@@ -16,7 +16,6 @@ import com.example.go4lunch.Repositories.UserRepository;
 import com.example.go4lunch.Util.LiveDataTestUtils;
 import com.example.go4lunch.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,8 +36,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -115,7 +112,7 @@ public class UserRepositoryTest {
 
     @Test
     public void getUsersListMutableLiveData_onComplete_returnUsersList() {
-        MutableLiveData<List<User>> result = userRepository.getUsersListMutableLiveData();
+        MutableLiveData<List<User>> result = userRepository.getUsersListFromFirebase();
         verify(firebaseFirestore.collection(anyString()).get()).addOnCompleteListener(argumentCaptor.capture());
         argumentCaptor.getValue().onComplete(mockedTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -125,7 +122,7 @@ public class UserRepositoryTest {
 
     @Test
     public void getUsersFilteredListMutableLiveData() {
-        MutableLiveData<List<User>> result = userRepository.getUsersFilteredListMutableLiveData(anyString());
+        MutableLiveData<List<User>> result = userRepository.getUsersFilteredListFromFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).whereEqualTo(anyString(), anyString()).get()).addOnCompleteListener(argumentCaptor.capture());
         argumentCaptor.getValue().onComplete(mockedTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -136,7 +133,7 @@ public class UserRepositoryTest {
     @Test
     public void removeUserLike_onSuccess_returnSuccessString() {
         when(mockedVoidTask.isSuccessful()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.removeUserLike("", "");
+        MutableLiveData<String> result = userRepository.removeUserLikeInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), FieldValue.arrayRemove(anyString()))).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -147,7 +144,7 @@ public class UserRepositoryTest {
     @Test
     public void removeUserLike_onCanceled_returnErrorString() {
         when(mockedVoidTask.isCanceled()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.removeUserLike("", "");
+        MutableLiveData<String> result = userRepository.removeUserLikeInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), FieldValue.arrayRemove(anyString()))).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -159,7 +156,7 @@ public class UserRepositoryTest {
     @Test
     public void addLike_onSuccess_returnSuccessString(){
         when(mockedVoidTask.isSuccessful()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.addLike("","");
+        MutableLiveData<String> result = userRepository.addUserLikeInFirebase("","");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), FieldValue.arrayUnion(anyString()))).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result,liveData -> {
@@ -170,7 +167,7 @@ public class UserRepositoryTest {
     @Test
     public void addLike_onCanceled_returnErrorString(){
         when(mockedVoidTask.isCanceled()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.addLike("","");
+        MutableLiveData<String> result = userRepository.addUserLikeInFirebase("","");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), FieldValue.arrayUnion(anyString()))).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result,liveData -> {
@@ -181,7 +178,7 @@ public class UserRepositoryTest {
     @Test
     public void addRestaurant_onSuccess_returnSuccessString() {
         when(mockedVoidTask.isSuccessful()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.addRestaurant("", "");
+        MutableLiveData<String> result = userRepository.addUserRestaurantChoiceInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -192,7 +189,7 @@ public class UserRepositoryTest {
     @Test
     public void addRestaurant_onCanceled_returnErrorString() {
         when(mockedVoidTask.isCanceled()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.addRestaurant("", "");
+        MutableLiveData<String> result = userRepository.addUserRestaurantChoiceInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -203,7 +200,7 @@ public class UserRepositoryTest {
     @Test
     public void addRestaurantChoiceName_onSuccess_returnSuccessString() {
         when(mockedVoidTask.isSuccessful()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.addRestaurantChoiceName("", "");
+        MutableLiveData<String> result = userRepository.addUserRestaurantChoiceNameInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -214,7 +211,7 @@ public class UserRepositoryTest {
     @Test
     public void addRestaurantChoiceName_onCanceled_returnErrorString() {
         when(mockedVoidTask.isCanceled()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.addRestaurantChoiceName("", "");
+        MutableLiveData<String> result = userRepository.addUserRestaurantChoiceNameInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {

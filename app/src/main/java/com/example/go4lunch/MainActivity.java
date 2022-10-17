@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()) {
 
+                case R.id.nav_restaurantDetail:
+                    setupNavigationToRestaurantDetail();
                 case R.id.nav_logout:
                     showLogOutDialogFragment();
                     drawer.close();
@@ -99,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 case R.id.nav_login:
                 case R.id.nav_settings:
                 case R.id.emailSignUpFragment:
-                case R.id.nav_restaurantDetail:
                 case R.id.nav_splashScreen:
                 case R.id.nav_SignInFragment:
                     hideBottomNavigationBar();
