@@ -32,11 +32,11 @@ public class AuthViewModel extends ViewModel {
 
 
     public LiveData<String> checkIfUserIsAuthenticated() {
-        return authRepository.checkIfUserIsAuthenticatedInFirebase();
+        return authRepository.getAuthenticatedUserId();
     }
 
     public LiveData<User> getUserById(String uid) {
-        userLiveData = authRepository.getUserById(uid);
+        userLiveData = authRepository.getUserByIdFromFirebase(uid);
         return userLiveData;
     }
 }

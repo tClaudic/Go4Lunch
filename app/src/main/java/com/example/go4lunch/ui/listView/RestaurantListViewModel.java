@@ -26,7 +26,7 @@ public class RestaurantListViewModel extends ViewModel {
     }
 
     public LiveData<List<PlaceDetail>> getAllRestaurants(String location, int Radius, String type) {
-        nearbyRestaurantsLiveData = placeDetailRepository.getNearbyRestaurantsLiveData(location, Radius, type);
+        nearbyRestaurantsLiveData = placeDetailRepository.getNearbyRestaurantsList(location, Radius, type);
         return nearbyRestaurantsLiveData;
     }
 

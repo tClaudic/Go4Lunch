@@ -41,7 +41,7 @@ public class RestaurantListViewModelTest {
     @Before
     public void setup(){
         MutableLiveData<List<PlaceDetail>> placeDetailList = new MutableLiveData<>();
-        given(placeDetailRepository.getNearbyRestaurantsLiveData(anyString(),anyInt(),anyString())).willReturn(placeDetailList);
+        given(placeDetailRepository.getNearbyRestaurantsList(anyString(),anyInt(),anyString())).willReturn(placeDetailList);
         List<PlaceDetail> getDefaultPlaceDetailList = new ArrayList<>();
         placeDetailList.setValue(getDefaultPlaceDetailList);
         given(placeDetailRepository.getNearbyRestaurantListWithAutoComplete(anyString(),anyString(),anyInt())).willReturn(placeDetailList);

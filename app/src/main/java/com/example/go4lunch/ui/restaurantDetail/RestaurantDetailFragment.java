@@ -21,7 +21,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.WorkManager;
 
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.BuildConfig;
@@ -44,7 +43,6 @@ public class RestaurantDetailFragment extends Fragment {
     RestaurantDetailViewModel restaurantDetailViewModel;
     User currentUser;
     PlaceDetail placeDetail;
-    List<User> usersList;
     RecyclerView recyclerView;
     WorkmatesListRecyclerViewAdapter workmatesListRecyclerViewAdapter;
 
@@ -54,30 +52,29 @@ public class RestaurantDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentRestaurantDetailBinding.inflate(getLayoutInflater());
         initViewModel();
+        getSelectedPlaceDetail();
+        getAuthenticatedUser();
         configureWorkmatesRecyclerView();
         return binding.getRoot();
     }
 
-
-    private void initViewModel() {
-        restaurantDetailViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
-        restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
+    private void getSelectedPlaceDetail(){
         restaurantListViewModel.getSelected().observe(getViewLifecycleOwner(),
-                new Observer<PlaceDetail>() {
-                    @Override
-                    public void onChanged(PlaceDetail placeDetail1) {
-                        RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail1);
-                        placeDetail = placeDetail1;
-                        restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail1.getResult().getPlaceId()).observe(getViewLifecycleOwner(), new Observer<List<User>>() {
-                            @Override
-                            public void onChanged(List<User> users) {
-                                workmatesListRecyclerViewAdapter.setUsersList(users);
-                            }
-                        });
-                        Log.e("placedetail", placeDetail1.getResult().getPlaceId());
-                    }
+                placeDetail1 -> {
+                    RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail1);
+                    placeDetail = placeDetail1;
+                    restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail1.getResult().getPlaceId()).observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+                        @Override
+                        public void onChanged(List<User> users) {
+                            workmatesListRecyclerViewAdapter.setUsersList(users);
+                        }
+                    });
+                    Log.e("placedetail", placeDetail1.getResult().getPlaceId());
                 });
+    }
 
+
+    private void getAuthenticatedUser(){
         restaurantDetailViewModel.getAuthenticatedLiveDataUser().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
@@ -86,7 +83,11 @@ public class RestaurantDetailFragment extends Fragment {
                 updateRestaurantButton(currentUser);
             }
         });
+    }
 
+    private void initViewModel() {
+        restaurantDetailViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
+        restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
     }
 
     private void updateLayoutWithRestaurantDetailData(PlaceDetail placeDetail) {
@@ -147,6 +148,7 @@ public class RestaurantDetailFragment extends Fragment {
                 } else {
                     restaurantDetailViewModel.removePlaceId(currentUser.uid);
                     currentUser.restaurantChoice = "";
+                    updateRestaurantButton(currentUser);
                 }
             }
         });

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -36,11 +35,9 @@ import com.example.go4lunch.databinding.FragmentMapBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
-import com.example.go4lunch.ui.restaurantDetail.RestaurantDetailViewModel;
 import com.example.go4lunch.util.RestaurantListHelper;
 import com.google.android.gms.location.CurrentLocationRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -51,10 +48,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
-import java.util.Objects;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
@@ -118,24 +113,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void setupOnBackPressedCallback(){
+    private void setupOnBackPressedCallback() {
         callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                      if (!searchView.isIconified()){
-                          searchView.setIconified(true);
-                      }
+                if (!searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
             }
         };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),callback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
 
     private void searchNearbyRestaurantWithAutocomplete(String query) {
-        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query,locationString,RADIUS).observe(getViewLifecycleOwner(), placeDetails -> {
-            if (!placeDetails.isEmpty()){
-                updateMapWithRestaurantMarker(placeDetails,userList);
+        restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query, locationString, RADIUS).observe(getViewLifecycleOwner(), placeDetails -> {
+            if (!placeDetails.isEmpty()) {
+                updateMapWithRestaurantMarker(placeDetails, userList);
                 updateMapCameraWithAutocompleteResult(placeDetails.get(0));
-            }else {
+            } else {
                 Toast.makeText(requireActivity(), R.string.no_restaurant_available, Toast.LENGTH_SHORT).show();
             }
         });
@@ -144,7 +139,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e("onResume","ONREsume");
+        Log.e("onResume", "ONREsume");
         //getUserLocation();
     }
 
@@ -172,10 +167,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 locationString = location.getLatitude() + "," + location.getLongitude();
                 updateCameraZoomWithNewLocation(location);
                 observeNearbyRestaurant(location);
-            }else {
-                if (!isLocationEnable()){
+            } else {
+                if (!isLocationEnable()) {
                     openLocationDialog();
-                }else {
+                } else {
                     getCurrentLocation();
 
                 }
@@ -185,30 +180,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void updateMapCameraWithAutocompleteResult(PlaceDetail placeDetail){
-        LatLng latLng = new LatLng(placeDetail.getResult().getGeometry().getLocation().getLat(),placeDetail.getResult().getGeometry().getLocation().getLng());
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+    private void updateMapCameraWithAutocompleteResult(PlaceDetail placeDetail) {
+        LatLng latLng = new LatLng(placeDetail.getResult().getGeometry().getLocation().getLat(), placeDetail.getResult().getGeometry().getLocation().getLng());
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
     }
 
     @SuppressLint("MissingPermission")
-    private void getCurrentLocation(){
+    private void getCurrentLocation() {
 
         CurrentLocationRequest currentLocationRequest = new CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY).setDurationMillis(3000).build();
-        fusedLocationProviderClient.getCurrentLocation(currentLocationRequest,null).addOnSuccessListener(location -> {
-            locationString = location.getLatitude() + "," + location.getLongitude();
-            Log.e("locationRequestTest",locationString);
-            updateCameraZoomWithNewLocation(location);
-            observeNearbyRestaurant(location);
+        fusedLocationProviderClient.getCurrentLocation(currentLocationRequest, null).addOnSuccessListener(location -> {
+                locationString = location.getLatitude() + "," + location.getLongitude();
+                Log.e("locationRequestTest", locationString);
+                updateCameraZoomWithNewLocation(location);
+                observeNearbyRestaurant(location);
         });
 
     }
 
 
-
-
-
-
-    private void openLocationDialog(){
+    private void openLocationDialog() {
         new AlertDialog.Builder(requireContext())
                 .setMessage("enable location")
                 .setPositiveButton("open location settings", new DialogInterface.OnClickListener() {
@@ -224,8 +215,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }).show();
     }
 
-    private Boolean isLocationEnable(){
-        LocationManager locationManager  = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+    private Boolean isLocationEnable() {
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
@@ -250,13 +241,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_pin));
             }
             googleMap.addMarker(options).setTag(placeDetail);
-            googleMap.setOnInfoWindowClickListener( marker -> {
+            googleMap.setOnInfoWindowClickListener(marker -> {
                 restaurantListViewModel.select((PlaceDetail) marker.getTag());
                 Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_restaurantDetail);
             });
         }
     }
-
 
 
     private void askLocationPermission() {
@@ -265,7 +255,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void initRestaurantListViewModel() {
         restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
-
 
 
     }
@@ -283,7 +272,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void observeNearbyRestaurant(Location location) {
         String userLocation = location.getLatitude() + "," + location.getLongitude();
         Log.e("LocationString", userLocation);
-        restaurantListViewModel.getAllRestaurants(userLocation,RADIUS,TYPE).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
+        restaurantListViewModel.getAllRestaurants(userLocation, RADIUS, TYPE).observe(getViewLifecycleOwner(), new Observer<List<PlaceDetail>>() {
             @Override
             public void onChanged(List<PlaceDetail> placeDetails) {
                 updateMapWithRestaurantMarker(placeDetails, userList);

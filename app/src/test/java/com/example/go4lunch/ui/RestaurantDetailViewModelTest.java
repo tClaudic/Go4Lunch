@@ -43,7 +43,7 @@ public class RestaurantDetailViewModelTest {
     @Before
     public void setup(){
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
-        given(userRepository.getAuthenticatedUserMutableLiveData()).willReturn(authenticatedUser);
+        given(userRepository.getAuthenticatedUserFromFirebase()).willReturn(authenticatedUser);
         authenticatedUser.setValue(user);
         restaurantDetailViewModel = new RestaurantDetailViewModel(placeDetailRepository,userRepository);
     }
@@ -69,7 +69,7 @@ public class RestaurantDetailViewModelTest {
     public void getAuthenticatedLiveDataUser_onObserve_returnUser(){
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
         authenticatedUser.setValue(user);
-        given(userRepository.getAuthenticatedUserMutableLiveData()).willReturn(authenticatedUser);
+        given(userRepository.getAuthenticatedUserFromFirebase()).willReturn(authenticatedUser);
         LiveDataTestUtils.observeForTesting(restaurantDetailViewModel.getAuthenticatedLiveDataUser(),liveData -> {
             assertEquals(user,liveData.getValue());
         });
@@ -79,7 +79,7 @@ public class RestaurantDetailViewModelTest {
     public void getRestaurantDetailByUserChoice_onObserve_returnPlaceDetail(){
         MutableLiveData<PlaceDetail> placeDetailMutableLiveData = new MutableLiveData<>();
         placeDetailMutableLiveData.setValue(placeDetail);
-        given(placeDetailRepository.searchNearbyPlace(anyString())).willReturn(placeDetailMutableLiveData);
+        given(placeDetailRepository.getPlaceDetailByPlaceId(anyString())).willReturn(placeDetailMutableLiveData);
         LiveDataTestUtils.observeForTesting(restaurantDetailViewModel.getRestaurantDetailByUserChoice(anyString()),liveData -> {
             assertEquals(placeDetail,liveData.getValue());
         });
@@ -127,7 +127,7 @@ public class RestaurantDetailViewModelTest {
     public void removePlaceId_onSuccess_returnLiveDataStringSuccess(){
         MutableLiveData<String> result = new MutableLiveData<>();
         result.setValue("success");
-        given(userRepository.removeRestaurantChoice(anyString())).willReturn(result);
+        given(userRepository.removeRestaurantChoiceInFirebase(anyString())).willReturn(result);
         LiveDataTestUtils.observeForTesting(restaurantDetailViewModel.removePlaceId(anyString()),liveData -> {
             assertEquals("success",liveData.getValue());
         });
@@ -136,7 +136,7 @@ public class RestaurantDetailViewModelTest {
     public void removePlaceId_onError_returnLiveDataStringError(){
         MutableLiveData<String> result = new MutableLiveData<>();
         result.setValue("error");
-        given(userRepository.removeRestaurantChoice(anyString())).willReturn(result);
+        given(userRepository.removeRestaurantChoiceInFirebase(anyString())).willReturn(result);
         LiveDataTestUtils.observeForTesting(restaurantDetailViewModel.removePlaceId(anyString()),liveData -> {
             assertEquals("error",liveData.getValue());
         });

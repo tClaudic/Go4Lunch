@@ -32,7 +32,7 @@ public class Go4LunchStreams {
                 timeout(10, TimeUnit.SECONDS);
     }
 
-    public Observable<PlaceDetail> streamFetchDetails(String placeId) {
+    public Observable<PlaceDetail> streamFetchPlaceDetail(String placeId) {
         return googlePlaceApiCall.getPlaceDetails(placeId).
                 observeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
@@ -49,7 +49,7 @@ public class Go4LunchStreams {
     public  Single<List<PlaceDetail>> streamFetchRestaurantsDetails(String location, int radius, String type) {
         return streamFetchRestaurants(location, radius, type)
                 .flatMapIterable((Function<NearbySearch, List<Result>>) NearbySearch::getResults)
-                .flatMap((Function<Result, Observable<PlaceDetail>>) result -> streamFetchDetails(result.getPlaceId()))
+                .flatMap((Function<Result, Observable<PlaceDetail>>) result -> streamFetchPlaceDetail(result.getPlaceId()))
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers
@@ -59,7 +59,7 @@ public class Go4LunchStreams {
     public  Single<List<PlaceDetail>> streamFetchAutoCompleteRestaurantDetails(String input, String location, int radius) {
         return streamFetchAutocomplete(input, location, radius)
                 .flatMapIterable((Function<PlaceAutocomplete, List<Prediction>>) PlaceAutocomplete::getPredictions)
-                .flatMap((Function<Prediction, ObservableSource<PlaceDetail>>) prediction -> streamFetchDetails(prediction.getPlaceId()))
+                .flatMap((Function<Prediction, ObservableSource<PlaceDetail>>) prediction -> streamFetchPlaceDetail(prediction.getPlaceId()))
                 .filter(placeDetail -> placeDetail.getResult().getTypes().contains("restaurant"))
                 .toList()
                 .subscribeOn(Schedulers.io())

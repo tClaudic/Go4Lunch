@@ -19,11 +19,14 @@ public class RestaurantDetailViewModel extends ViewModel {
     public LiveData<PlaceDetail> restaurantDetail;
     public MutableLiveData<User> authenticatedUser;
 
+
     public RestaurantDetailViewModel(PlaceDetailRepository placeDetailRepository, UserRepository userRepository) {
         this.placeDetailRepository = placeDetailRepository;
         this.userRepository = userRepository;
-        authenticatedUser = userRepository.getAuthenticatedUserMutableLiveData();
+        authenticatedUser = userRepository.getAuthenticatedUserFromFirebase();
     }
+
+
 
 
     public LiveData<List<User>> getUsersListFilteredByRestaurantChoice(String placeId) {
@@ -33,12 +36,12 @@ public class RestaurantDetailViewModel extends ViewModel {
     }
 
     public LiveData<User> getAuthenticatedLiveDataUser() {
-        authenticatedUser = userRepository.getAuthenticatedUserMutableLiveData();
+        authenticatedUser = userRepository.getAuthenticatedUserFromFirebase();
         return authenticatedUser;
     }
 
     public LiveData<PlaceDetail> getRestaurantDetailByUserChoice(String placeId) {
-        restaurantDetail = placeDetailRepository.searchNearbyPlace(placeId);
+        restaurantDetail = placeDetailRepository.getPlaceDetailByPlaceId(placeId);
         return restaurantDetail;
     }
 
@@ -57,7 +60,7 @@ public class RestaurantDetailViewModel extends ViewModel {
 
     public MutableLiveData<String> removePlaceId(String userId) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        result = userRepository.removeRestaurantChoice(userId);
+        result = userRepository.removeRestaurantChoiceInFirebase(userId);
         return result;
     }
 

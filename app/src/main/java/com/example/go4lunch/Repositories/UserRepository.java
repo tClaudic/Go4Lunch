@@ -129,7 +129,7 @@ public class UserRepository {
         return result;
     }
 
-    public MutableLiveData<String> removeRestaurantChoice(String uid) {
+    public MutableLiveData<String> removeRestaurantChoiceInFirebase(String uid) {
         MutableLiveData<String> result = new MutableLiveData<>();
         String string = "";
         firebaseFirestore.collection(COLLECTION_NAME).document(uid).update(PLACE_ID, string).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -146,7 +146,7 @@ public class UserRepository {
         return result;
     }
 
-    public MutableLiveData<User> getAuthenticatedUserMutableLiveData() {
+    public MutableLiveData<User> getAuthenticatedUserFromFirebase() {
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
         if (firebaseAuth.getCurrentUser() != null) {
             String userId = firebaseAuth.getCurrentUser().getUid();
@@ -167,12 +167,12 @@ public class UserRepository {
     }
 
 
-    public Task<DocumentSnapshot> getAuthenticatedUser() {
+    public Task<DocumentSnapshot> getTaskAuthenticatedUserFromFirebase() {
         DocumentReference documentReference = firebaseFirestore.collection(COLLECTION_NAME).document(Objects.requireNonNull(firebaseAuth.getUid()));
         return documentReference.get();
     }
 
-    public Task<QuerySnapshot> getUsersByRestaurantChoice(String restaurantId) {
+    public Task<QuerySnapshot> getTaskUsersByRestaurantChoiceFromFirebase(String restaurantId) {
         return firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo(RESTAURANT_CHOICE, restaurantId).get();
     }
 

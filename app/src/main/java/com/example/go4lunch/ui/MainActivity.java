@@ -1,4 +1,4 @@
-package com.example.go4lunch;
+package com.example.go4lunch.ui;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 
+import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("onStart", "onCreate");
-        initAuthViewModel();
         initViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -92,14 +92,14 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()) {
 
-                case R.id.nav_restaurantDetail:
-                    setupNavigationToRestaurantDetail();
+
                 case R.id.nav_logout:
                     showLogOutDialogFragment();
                     drawer.close();
                     break;
                 case R.id.nav_login:
                 case R.id.nav_settings:
+                case R.id.nav_restaurantDetail:
                 case R.id.emailSignUpFragment:
                 case R.id.nav_splashScreen:
                 case R.id.nav_SignInFragment:
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private void initViewModel() {
         restaurantListViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
         restaurantDetailViewModel = new ViewModelProvider(this,ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
-
+        authViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AuthViewModel.class);
     }
 
 
@@ -215,15 +215,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         final DocumentReference documentReference = rootRef.collection("users").document(firebaseUser.getUid());
         documentReference.addSnapshotListener(this::onEvent);
-
-
     }
 
-
-    private void initAuthViewModel() {
-        authViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AuthViewModel.class);
-
-    }
 
     @Override
     protected void onStart() {

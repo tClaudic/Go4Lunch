@@ -50,8 +50,8 @@ public class AuthRepository {
         MutableLiveData<String> authenticatedUserMutableLiveData = new MutableLiveData<>();
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                if (task.getResult().getAdditionalUserInfo().isNewUser()) {
-                    createUserInFirestoreIfNoExist(task.getResult().getUser(), username);
+                if (Objects.requireNonNull(task.getResult().getAdditionalUserInfo()).isNewUser()) {
+                    createUserInFirestoreIfNoExist(Objects.requireNonNull(task.getResult().getUser()), username);
                 }
                 authenticatedUserMutableLiveData.setValue(SUCCESS);
             } else {
@@ -66,7 +66,7 @@ public class AuthRepository {
         MutableLiveData<String> authenticationResult = new MutableLiveData<>();
         firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                createUserInFirestoreIfNoExist(task.getResult().getUser(), null);
+                createUserInFirestoreIfNoExist(Objects.requireNonNull(task.getResult().getUser()), null);
                 authenticationResult.setValue(SUCCESS);
             } else {
                 authenticationResult.setValue(ERROR);
@@ -120,7 +120,7 @@ public class AuthRepository {
     }
 
 
-    public MutableLiveData<String> checkIfUserIsAuthenticatedInFirebase() {
+    public MutableLiveData<String> getAuthenticatedUserId() {
         MutableLiveData<String> isUserAuthenticateInFirebaseMutableLiveData = new MutableLiveData<>();
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
@@ -131,7 +131,7 @@ public class AuthRepository {
         return isUserAuthenticateInFirebaseMutableLiveData;
     }
 
-    public MutableLiveData<User> getUserById(String uid) {
+    public MutableLiveData<User> getUserByIdFromFirebase(String uid) {
         MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
         firebaseFirestore.collection(USERS).document(uid).get().addOnCompleteListener(userTask -> {
             if (userTask.isSuccessful()) {

@@ -222,7 +222,7 @@ public class UserRepositoryTest {
     @Test
     public void removeRestaurantChoice_onSuccess_returnSuccessString() {
         when(mockedVoidTask.isSuccessful()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.removeRestaurantChoice(anyString());
+        MutableLiveData<String> result = userRepository.removeRestaurantChoiceInFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -232,7 +232,7 @@ public class UserRepositoryTest {
     @Test
     public void removeRestaurantChoice_onCanceled_returnErrorString() {
         when(mockedVoidTask.isCanceled()).thenReturn(true);
-        MutableLiveData<String> result = userRepository.removeRestaurantChoice(anyString());
+        MutableLiveData<String> result = userRepository.removeRestaurantChoiceInFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
         LiveDataTestUtils.observeForTesting(result, liveData -> {
@@ -245,7 +245,7 @@ public class UserRepositoryTest {
         when(firebaseAuth.getCurrentUser()).thenReturn(firebaseUser);
         when(firebaseUser.getUid()).thenReturn("");
         when(mockedTaskDocumentSnapshot.isSuccessful()).thenReturn(true);
-        MutableLiveData<User> result = userRepository.getAuthenticatedUserMutableLiveData();
+        MutableLiveData<User> result = userRepository.getAuthenticatedUserFromFirebase();
         verify(firebaseFirestore.collection(anyString()).document(anyString()).get()).addOnCompleteListener(addOnCompleteListenerDocumentSnapshot.capture());
         addOnCompleteListenerDocumentSnapshot.getValue().onComplete(mockedTaskDocumentSnapshot);
         LiveDataTestUtils.observeForTesting(result,liveData -> {
@@ -257,7 +257,7 @@ public class UserRepositoryTest {
         when(firebaseAuth.getCurrentUser()).thenReturn(firebaseUser);
         when(firebaseUser.getUid()).thenReturn("");
         when(mockedTaskDocumentSnapshot.isCanceled()).thenReturn(true);
-        MutableLiveData<User> result = userRepository.getAuthenticatedUserMutableLiveData();
+        MutableLiveData<User> result = userRepository.getAuthenticatedUserFromFirebase();
         verify(firebaseFirestore.collection(anyString()).document(anyString()).get()).addOnCompleteListener(addOnCompleteListenerDocumentSnapshot.capture());
         addOnCompleteListenerDocumentSnapshot.getValue().onComplete(mockedTaskDocumentSnapshot);
         LiveDataTestUtils.observeForTesting(result,liveData -> {
@@ -268,7 +268,7 @@ public class UserRepositoryTest {
     public void getAuthenticatedUserMutableLiveData_whenFirebaseUserIsNull_returnNull(){
         when(firebaseAuth.getCurrentUser()).thenReturn(null);
         when(firebaseUser.getUid()).thenReturn("");
-        MutableLiveData<User> result = userRepository.getAuthenticatedUserMutableLiveData();
+        MutableLiveData<User> result = userRepository.getAuthenticatedUserFromFirebase();
         LiveDataTestUtils.observeForTesting(result,liveData -> {
             assertNull(liveData.getValue());
         });

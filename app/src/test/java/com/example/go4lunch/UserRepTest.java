@@ -10,15 +10,12 @@ import com.example.go4lunch.Repositories.UserRepository;
 import com.example.go4lunch.Util.LiveDataTestUtils;
 import com.example.go4lunch.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import static org.junit.Assert.assertEquals;
@@ -27,11 +24,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,10 +38,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserRepTest {
@@ -89,7 +81,7 @@ public class UserRepTest {
     public void test(){
 
         when(mockedTaskDocumentSnapshot.isSuccessful()).thenReturn(true);
-        MutableLiveData<User> result = userRepository.getAuthenticatedUserMutableLiveData();
+        MutableLiveData<User> result = userRepository.getAuthenticatedUserFromFirebase();
         verify(firebaseFirestore.collection(anyString()).document(anyString()).get()).addOnCompleteListener(addOnCompleteListenerDocumentSnapshot.capture());
         addOnCompleteListenerDocumentSnapshot.getValue().onComplete(mockedTaskDocumentSnapshot);
         LiveDataTestUtils.observeForTesting(result,liveData -> {

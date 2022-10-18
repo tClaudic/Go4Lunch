@@ -102,7 +102,7 @@ public class AuthViewModelTest {
     public void getUserById_OnSuccess_returnUserLiveData(){
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
         authenticatedUser.setValue(user);
-        given(authRepository.getUserById(anyString())).willReturn(authenticatedUser);
+        given(authRepository.getUserByIdFromFirebase(anyString())).willReturn(authenticatedUser);
         LiveDataTestUtils.observeForTesting(authViewModel.getUserById(anyString()),liveData -> {
             assertEquals(user,liveData.getValue());
         });
@@ -112,7 +112,7 @@ public class AuthViewModelTest {
     public void getUserById_OnError_returnNullLiveData(){
         MutableLiveData<User> authenticatedUser = new MutableLiveData<>();
         authenticatedUser.setValue(null);
-        given(authRepository.getUserById(anyString())).willReturn(authenticatedUser);
+        given(authRepository.getUserByIdFromFirebase(anyString())).willReturn(authenticatedUser);
         LiveDataTestUtils.observeForTesting(authViewModel.getUserById(anyString()),liveData -> {
             assertNull(liveData.getValue());
         });
@@ -122,7 +122,7 @@ public class AuthViewModelTest {
     public void checkIfUserIsAuthenticated_OnSuccess_returnUserId(){
         MutableLiveData<String> result = new MutableLiveData<>();
         result.setValue("userId");
-        given(authRepository.checkIfUserIsAuthenticatedInFirebase()).willReturn(result);
+        given(authRepository.getAuthenticatedUserId()).willReturn(result);
         LiveDataTestUtils.observeForTesting(authViewModel.checkIfUserIsAuthenticated(),liveData -> {
             assertEquals("userId",liveData.getValue());
         });
@@ -131,7 +131,7 @@ public class AuthViewModelTest {
     public void checkIfUserIsAuthenticated_OnSuccess_returnSuccess(){
         MutableLiveData<String> result = new MutableLiveData<>();
         result.setValue("error");
-        given(authRepository.checkIfUserIsAuthenticatedInFirebase()).willReturn(result);
+        given(authRepository.getAuthenticatedUserId()).willReturn(result);
         LiveDataTestUtils.observeForTesting(authViewModel.checkIfUserIsAuthenticated(),liveData -> {
             assertEquals("error",liveData.getValue());
         });

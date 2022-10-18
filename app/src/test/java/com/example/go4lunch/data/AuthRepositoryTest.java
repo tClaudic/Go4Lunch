@@ -99,7 +99,7 @@ public class AuthRepositoryTest {
     public void getAuthenticatedUser_onSuccess_returnAuthenticatedUserId() {
         when(firebaseAuth.getCurrentUser()).thenReturn(firebaseUser);
         when(firebaseUser.getUid()).thenReturn(uid);
-        MutableLiveData<String> result = authRepository.checkIfUserIsAuthenticatedInFirebase();
+        MutableLiveData<String> result = authRepository.getAuthenticatedUserId();
         LiveDataTestUtils.observeForTesting(result, liveData -> {
             assertEquals(uid, liveData.getValue());
         });
@@ -108,7 +108,7 @@ public class AuthRepositoryTest {
     @Test
     public void getAuthenticatedUser_onError_returnNull() {
         when(firebaseAuth.getCurrentUser()).thenReturn(null);
-        MutableLiveData<String> result = authRepository.checkIfUserIsAuthenticatedInFirebase();
+        MutableLiveData<String> result = authRepository.getAuthenticatedUserId();
         LiveDataTestUtils.observeForTesting(result, liveData -> {
             assertEquals("error", liveData.getValue());
         });
@@ -141,7 +141,7 @@ public class AuthRepositoryTest {
     public void getUserById_onTaskSuccessAndDocumentExist_returnUserLiveData() {
         when(task.isSuccessful()).thenReturn(true);
         when(documentSnapshot.exists()).thenReturn(true);
-        MutableLiveData<User> userMutableLiveData = authRepository.getUserById(anyString());
+        MutableLiveData<User> userMutableLiveData = authRepository.getUserByIdFromFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).document(anyString()).get()).addOnCompleteListener(argumentCaptor.capture());
         argumentCaptor.getValue().onComplete(task);
         LiveDataTestUtils.observeForTesting(userMutableLiveData, liveData -> {
@@ -153,7 +153,7 @@ public class AuthRepositoryTest {
     public void getUserById_onTaskSuccessButDocumentDoesntExist_returnNull() {
         when(task.isSuccessful()).thenReturn(true);
         when(documentSnapshot.exists()).thenReturn(false);
-        MutableLiveData<User> userMutableLiveData = authRepository.getUserById(anyString());
+        MutableLiveData<User> userMutableLiveData = authRepository.getUserByIdFromFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).document(anyString()).get()).addOnCompleteListener(argumentCaptor.capture());
         argumentCaptor.getValue().onComplete(task);
         LiveDataTestUtils.observeForTesting(userMutableLiveData, liveData -> {
@@ -165,7 +165,7 @@ public class AuthRepositoryTest {
     @Test
     public void getUserById_onTaskCancelled_returnNull() {
         when(task.isSuccessful()).thenReturn(false);
-        MutableLiveData<User> userMutableLiveData = authRepository.getUserById(anyString());
+        MutableLiveData<User> userMutableLiveData = authRepository.getUserByIdFromFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).document(anyString()).get()).addOnCompleteListener(argumentCaptor.capture());
         argumentCaptor.getValue().onComplete(task);
         LiveDataTestUtils.observeForTesting(userMutableLiveData, liveData -> {
