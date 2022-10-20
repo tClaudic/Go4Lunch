@@ -9,22 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentLoginBinding;
-import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.ViewModelFactory;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -36,11 +31,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -50,14 +42,12 @@ import java.util.Arrays;
 
 public class loginFragment extends Fragment {
 
-    private static final int RC_SIGN_IN = 123;
+
     private GoogleSignInClient googleSignInClient;
     private FragmentLoginBinding binding;
     private AuthViewModel authViewModel;
     private final CallbackManager callbackManager = CallbackManager.Factory.create();
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private NavHostFragment navHostFragment;
-    private NavController navCo;
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
@@ -65,15 +55,8 @@ public class loginFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
-
-    private void setupNavController() {
-        navHostFragment = (NavHostFragment) getParentFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
-        navCo = navHostFragment.getNavController();
-    }
 
     @Nullable
     @Override
@@ -81,61 +64,60 @@ public class loginFragment extends Fragment {
         binding = FragmentLoginBinding.inflate(getLayoutInflater());
         initSignInButton();
         initGoogleSignInClient();
-        setupTwitterLoginButton();
+        initTwitterLoginButton();
+        initFacebookLoginButton();
         initAuthViewModel();
-        initEmailLogin();
-
-        //firebaseAuth.addAuthStateListener(this);
+        initEmailLoginButton();
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initFacebookLogin();
+        handleFacebookLoginResult();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.e("onresume", "onresumeloginframgnet");
+    private void initAuthViewModel() {
+        authViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(AuthViewModel.class);
     }
 
-    private void setupTwitterLoginButton() {
-        binding.btnTwitterLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                initTwitterLogin();
-            }
-        });
+    private void goToMainFragment() {
+        NavHostFragment.findNavController(this).navigate(R.id.nav_mapView);
     }
 
+    private void initTwitterLoginButton() {
+        binding.btnTwitterLogin.setOnClickListener(view -> initTwitterLogin());
+    }
 
-    private void initEmailLogin() {
-        binding.btnEmailLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_SignInFragment);
-            }
-        });
+    private void initSignInButton() {
+        binding.ntmGoogleLogin.setOnClickListener(view -> setGoogleSignInActivityResultLauncher());
+    }
+
+    private void initEmailLoginButton() {
+        binding.btnEmailLogin.setOnClickListener(view -> Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_SignInFragment));
     }
 
 
     private void initTwitterLogin() {
-        OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
-        provider.addCustomParameter("lang", "fr");
-        firebaseAuth.startActivityForSignInWithProvider(requireActivity(), provider.build()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                getTwitterCredentialsAndSignIn(authResult.getCredential());
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("TwitterError", e.getMessage());
-            }
-        });
+        OAuthProvider.Builder provider = OAuthProvider.newBuilder(getString(R.string.twitter_provider_id));
+        provider.addCustomParameter(getString(R.string.ProviderLangKeyParam), getString(R.string.providerFrParamValue));
+        firebaseAuth.startActivityForSignInWithProvider(requireActivity(), provider.build())
+                .addOnSuccessListener(authResult -> getTwitterCredentialsAndSignIn(authResult.getCredential()))
+                .addOnFailureListener(e -> {
+                            Log.e("TwitterError", e.getMessage());
+                            Toast.makeText(requireActivity(),
+                                    R.string.twitter_authentication_error_message,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                );
+    }
 
+    private void initFacebookLoginButton() {
+        binding.btnFacebookLogin.setOnClickListener(view ->
+                LoginManager.getInstance().logInWithReadPermissions(
+                        loginFragment.this,
+                        callbackManager,
+                        Arrays.asList(getString(R.string.facebook_public_profile_permission), getString(R.string.facebook_email_permission))));
     }
 
 
@@ -144,41 +126,48 @@ public class loginFragment extends Fragment {
             if (result.equals(SUCCESS)) {
                 goToMainFragment();
             } else if (result.equals(ERROR)) {
-                Toast.makeText(requireActivity(), "authentication error", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), getString(R.string.error_during_authentication), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    private void initFacebookLogin() {
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+    private void handleFacebookLoginResult() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.e("success", loginResult.getAccessToken().getToken());
                 getFacebookCredential(loginResult.getAccessToken());
             }
 
             @Override
             public void onCancel() {
-                Log.e("cancel", "cancel");
-
+                Toast.makeText(requireActivity(), R.string.Facebook_auth_cancel, Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(@NonNull FacebookException e) {
-                Log.e("error", e.getMessage());
+                Log.e(getString(R.string.FacebookAuthErrorLog), e.getMessage());
             }
         });
-        binding.btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LoginManager.getInstance().logInWithReadPermissions(loginFragment.this, callbackManager, Arrays.asList("public_profile", "email"));
-            }
-        });
+
     }
 
     private void getFacebookCredential(AccessToken token) {
         AuthCredential authCredential = FacebookAuthProvider.getCredential(token.getToken());
         signInWithFacebookAuthCredential(authCredential);
+    }
+
+    private void signInWithFacebookAuthCredential(AuthCredential authCredential) {
+        authViewModel.signInWithAuthCredential(authCredential).observeForever(result -> {
+            if (result.equals(SUCCESS)) {
+                goToMainFragment();
+            } else if (result.equals(ERROR)) {
+                Toast.makeText(requireActivity(),
+                        R.string.facebook_auth_credential_error_message,
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
 
@@ -189,39 +178,26 @@ public class loginFragment extends Fragment {
                 .requestEmail()
                 .build();
 
-        googleSignInClient = GoogleSignIn.getClient(getActivity(), googleSignInOptions);
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions);
     }
 
-    private void initAuthViewModel() {
-        authViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(AuthViewModel.class);
-    }
 
-    private void initSignInButton() {
-        binding.ntmGoogleLogin.setOnClickListener(view -> signIn());
-
-    }
-
-    private void signIn() {
+    private void setGoogleSignInActivityResultLauncher() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
         googleSignInActivityResultLauncher.launch(signInIntent);
-
-
     }
 
-    ActivityResultLauncher<Intent> googleSignInActivityResultLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> googleSignInActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Log.e("Login", "Succesfluyy logged");
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                        GoogleSignInAccount googleSignInAccount = task.getResult();
-                        if (googleSignInAccount != null) {
-                            getGoogleAuthCredential(googleSignInAccount);
-                        }
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                    GoogleSignInAccount googleSignInAccount = task.getResult();
+                    if (googleSignInAccount != null) {
+                        getGoogleAuthCredential(googleSignInAccount);
                     }
-
+                } else {
+                    Toast.makeText(requireActivity(), R.string.google_activity_result_error_message, Toast.LENGTH_LONG).show();
                 }
             }
     );
@@ -232,49 +208,13 @@ public class loginFragment extends Fragment {
         signInWithGoogleAuthCredential(authCredential);
     }
 
-    private void signInWithFacebookAuthCredential(AuthCredential authCredential) {
-        authViewModel.signInWithAuthCredential(authCredential).observeForever(result -> {
-            if(result.equals(SUCCESS)){
-                goToMainFragment();
-            }else if (result.equals(ERROR)){
-                Toast.makeText(requireActivity(), "authentication error", Toast.LENGTH_LONG).show();
-            }
-        });
-
-    }
-
     private void signInWithGoogleAuthCredential(AuthCredential authCredential) {
         authViewModel.signInWithAuthCredential(authCredential).observe(this, result -> {
-            if(result.equals(SUCCESS)){
+            if (result.equals(SUCCESS)) {
                 goToMainFragment();
-            }else if (result.equals(ERROR)){
-                Toast.makeText(requireActivity(), "authentication error", Toast.LENGTH_LONG).show();
+            } else if (result.equals(ERROR)) {
+                Toast.makeText(requireActivity(), R.string.google_activity_result_error_message, Toast.LENGTH_LONG).show();
             }
         });
     }
-
-    private void goToMainFragment() {
-        NavHostFragment.findNavController(this).navigate(R.id.nav_mapView);
-
-
-    }
-
-
-    private void logout() {
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-
-    //@Override
-    //public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-    //    Log.e("test", "onauthstagechanged");
-    //    if (firebaseAuth.getCurrentUser() != null) {
-    //        goToMainFragment();
-    //    }
-    //}
 }

@@ -77,6 +77,16 @@
     <string name="email_does_not_match">Emails are not the same</string>
     <string name="password_lenght_rule">Password must at least contain 8 character</string>
     <string name="password_does_not_match">password are not the same</string>
+    <string name="twitter_provider_id" translatable="false">twitter.com</string>
+    <string name="providerFrParamValue" translatable="false">fr</string>
+    <string name="ProviderLangKeyParam" translatable="false">lang</string>
+    <string name="Facebook_auth_cancel">Facebook authentication canceled</string>
+    <string name="FacebookAuthErrorLog" translatable="false">Facebook auth error</string>
+    <string name="facebook_public_profile_permission" translatable="false">public_profile</string>
+    <string name="facebook_email_permission" translatable="false">email</string>
+    <string name="google_activity_result_error_message">an error occurred during google authentication</string>
+    <string name="facebook_auth_credential_error_message">An error occurred during facebook authentication</string>
+    <string name="twitter_authentication_error_message">An error occurred during twitter login</string>
 
 
 </resources>
