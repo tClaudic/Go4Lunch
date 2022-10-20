@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -22,7 +21,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
-import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.authentication.AuthViewModel;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
@@ -51,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private User currentAuthenticatedUser;
     private RestaurantListViewModel restaurantListViewModel;
     private RestaurantDetailViewModel restaurantDetailViewModel;
+    private NavController navController;
+    private NavigationView navigationView;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         setSupportActionBar(binding.appBarMain.toolbar);
         drawer = binding.drawerLayout;
         bottomNavigationView = findViewById(R.id.bottom_navigation_view);
-        NavigationView navigationView = binding.navView;
+
+        navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_mapView, R.id.nav_listView, R.id.nav_workmatesView, R.id.nav_restaurantDetail)
@@ -71,32 +72,38 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 .build();
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
-        NavController navController = navHostFragment.getNavController();
+        navController = Objects.requireNonNull(navHostFragment).getNavController();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-        //navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-        //    @Override
-        //    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        //        if (item.getItemId() == R.id.nav_restaurantDetail){
-        //        setupNavigationToRestaurantDetail();} 
-        //        if (item.getItemId() == R.id.nav_logout){
-        //            showLogOutDialogFragment();
-        //            drawer.close();
-        //        }
-        //        return true;
-        //    }
-        //});
+        setNavigationViewItemSelected();
+        setupNavControllerOnDestinationChanged();
+
+    }
+
+    private void setNavigationViewItemSelected() {
+        navigationView.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.nav_restaurantDetail) {
+                setupNavigationToRestaurantDetail();
+            }
+            if (item.getItemId() == R.id.nav_logout) {
+                showLogOutDialogFragment();
+                drawer.close();
+            }
+            if (item.getItemId() == R.id.nav_settings) {
+                navController.navigate(R.id.nav_settings);
+                hideBottomNavigationBar();
+                drawer.close();
+            }
+            return true;
+        });
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    private void setupNavControllerOnDestinationChanged() {
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()) {
-
-                case R.id.nav_logout:
-                    showLogOutDialogFragment();
-                    drawer.close();
-                    break;
                 case R.id.nav_login:
-                case R.id.nav_settings:
-                case R.id.nav_restaurantDetail:
                 case R.id.emailSignUpFragment:
                 case R.id.nav_splashScreen:
                 case R.id.nav_SignInFragment:
@@ -107,12 +114,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 default:
                     showBottomNavigationBar();
                     showActionBar();
-
-
             }
-
         });
-
     }
 
     private void initViewModel() {
@@ -127,7 +130,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             Log.e("userRestaurantChoice", currentAuthenticatedUser.restaurantChoice);
             restaurantDetailViewModel.getRestaurantDetailByUserChoice(currentAuthenticatedUser.restaurantChoice).observe(this, placeDetail -> {
                 restaurantListViewModel.select(placeDetail);
-                Navigation.findNavController(getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main).getView()).navigate(R.id.nav_restaurantDetail);
+                navController.navigate(R.id.nav_restaurantDetail);
+                hideBottomNavigationBar();
+                hideToolbar();
                 drawer.close();
             });
 
