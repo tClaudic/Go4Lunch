@@ -16,4 +16,8 @@
     <string name="email_does_not_match">Vos emails ne corresponde pas</string>
     <string name="password_lenght_rule">Votre mot de passe doit contenir au moins 8 characteres</string>
     <string name="password_does_not_match">Vos mots de passes ne corresponde pas</string>
+    <string name="Facebook_auth_cancel">L\'authentification facebook à été interrompu</string>
+    <string name="google_activity_result_error_message">Une erreur c\'est produite durant l\'authentification avec Google</string>
+    <string name="facebook_auth_credential_error_message">Une erreur c\'est produite durant l\'authentification avec Facebook</string>
+    <string name="twitter_authentication_error_message">Une erreur c\'est produite durant l\'authentification avec Twitter</string>
 </resources>

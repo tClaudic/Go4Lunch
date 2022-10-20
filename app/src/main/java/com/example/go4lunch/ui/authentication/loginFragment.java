@@ -43,20 +43,18 @@ import java.util.Arrays;
 public class loginFragment extends Fragment {
 
 
+    public static final String SUCCESS = "success";
+    public static final String ERROR = "error";
+    private final CallbackManager callbackManager = CallbackManager.Factory.create();
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private GoogleSignInClient googleSignInClient;
     private FragmentLoginBinding binding;
     private AuthViewModel authViewModel;
-    private final CallbackManager callbackManager = CallbackManager.Factory.create();
-    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-    public static final String SUCCESS = "success";
-    public static final String ERROR = "error";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Nullable
     @Override
@@ -184,23 +182,22 @@ public class loginFragment extends Fragment {
 
     private void setGoogleSignInActivityResultLauncher() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
+        ActivityResultLauncher<Intent> googleSignInActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                        GoogleSignInAccount googleSignInAccount = task.getResult();
+                        if (googleSignInAccount != null) {
+                            getGoogleAuthCredential(googleSignInAccount);
+                        }
+                    } else {
+                        Toast.makeText(requireActivity(), R.string.google_activity_result_error_message, Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
         googleSignInActivityResultLauncher.launch(signInIntent);
     }
-
-    private final ActivityResultLauncher<Intent> googleSignInActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                    GoogleSignInAccount googleSignInAccount = task.getResult();
-                    if (googleSignInAccount != null) {
-                        getGoogleAuthCredential(googleSignInAccount);
-                    }
-                } else {
-                    Toast.makeText(requireActivity(), R.string.google_activity_result_error_message, Toast.LENGTH_LONG).show();
-                }
-            }
-    );
 
     private void getGoogleAuthCredential(GoogleSignInAccount googleSignInAccount) {
         String googleTokenId = googleSignInAccount.getIdToken();
@@ -209,7 +206,7 @@ public class loginFragment extends Fragment {
     }
 
     private void signInWithGoogleAuthCredential(AuthCredential authCredential) {
-        authViewModel.signInWithAuthCredential(authCredential).observe(this, result -> {
+        authViewModel.signInWithAuthCredential(authCredential).observe(getViewLifecycleOwner(), result -> {
             if (result.equals(SUCCESS)) {
                 goToMainFragment();
             } else if (result.equals(ERROR)) {
