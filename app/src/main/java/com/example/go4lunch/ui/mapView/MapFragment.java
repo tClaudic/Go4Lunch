@@ -62,7 +62,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public String locationString;
     public static final Integer RADIUS = 1500;
     public static final String TYPE = "restaurant";
-    private OnBackPressedCallback callback;
     private SearchView searchView;
 
 
@@ -114,7 +113,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setupOnBackPressedCallback() {
-        callback = new OnBackPressedCallback(true) {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 if (!searchView.isIconified()) {
@@ -136,17 +135,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.e("onResume", "ONREsume");
-        //getUserLocation();
-    }
-
     private void initLocationButton() {
         binding.btnLocation.setOnClickListener(view -> getUserLocation());
     }
-
 
     private void checkLocationPermissions() {
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -174,8 +165,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     getCurrentLocation();
 
                 }
-
-
             }
         });
     }
@@ -190,14 +179,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         CurrentLocationRequest currentLocationRequest = new CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY).setDurationMillis(3000).build();
         fusedLocationProviderClient.getCurrentLocation(currentLocationRequest, null).addOnSuccessListener(location -> {
-                locationString = location.getLatitude() + "," + location.getLongitude();
-                Log.e("locationRequestTest", locationString);
-                updateCameraZoomWithNewLocation(location);
-                observeNearbyRestaurant(location);
+            locationString = location.getLatitude() + "," + location.getLongitude();
+            Log.e("locationRequestTest", locationString);
+            updateCameraZoomWithNewLocation(location);
+            observeNearbyRestaurant(location);
         });
 
     }
-
 
     private void openLocationDialog() {
         new AlertDialog.Builder(requireContext())
@@ -229,9 +217,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (googleMap != null) {
             googleMap.clear();
         }
-
         for (PlaceDetail placeDetail : placeDetails) {
-            Log.e("userlsitmaptest", String.valueOf(userList.contains(placeDetail.getResult().getPlaceId())));
             MarkerOptions options = new MarkerOptions().position(new LatLng(placeDetail.getResult().getGeometry().getLocation().getLat(), placeDetail.getResult().getGeometry().getLocation().getLng()))
                     .title(placeDetail.getResult().getName());
             if (RestaurantListHelper.UserGoIntoRestaurant(placeDetail, userList)) {
@@ -281,7 +267,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
     }
-
 
     @SuppressLint("MissingPermission")
     @Override

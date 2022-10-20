@@ -49,13 +49,8 @@ public class WorkmateListFragment extends Fragment {
     }
 
     private void observeUsersList(){
-        workmatesViewModel.userListMutableLiveData.observe(getViewLifecycleOwner(), new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                workmatesListRecyclerViewAdapter.setUsersList(users);
-                Log.e("userFragmntTEst", String.valueOf(users.size()));
-
-            }
+        workmatesViewModel.userListMutableLiveData.observe(getViewLifecycleOwner(), users -> {
+            workmatesListRecyclerViewAdapter.setUsersList(users);
         });
     }
 }

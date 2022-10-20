@@ -63,25 +63,18 @@ public class RestaurantDetailFragment extends Fragment {
                 placeDetail1 -> {
                     RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail1);
                     placeDetail = placeDetail1;
-                    restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail1.getResult().getPlaceId()).observe(getViewLifecycleOwner(), new Observer<List<User>>() {
-                        @Override
-                        public void onChanged(List<User> users) {
-                            workmatesListRecyclerViewAdapter.setUsersList(users);
-                        }
-                    });
+                    restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail1.getResult().getPlaceId()).observe(getViewLifecycleOwner(), users ->
+                            workmatesListRecyclerViewAdapter.setUsersList(users));
                     Log.e("placedetail", placeDetail1.getResult().getPlaceId());
                 });
     }
 
 
     private void getAuthenticatedUser(){
-        restaurantDetailViewModel.getAuthenticatedLiveDataUser().observe(getViewLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                currentUser = user;
-                updateStarColor(user, placeDetail);
-                updateRestaurantButton(currentUser);
-            }
+        restaurantDetailViewModel.getAuthenticatedLiveDataUser().observe(getViewLifecycleOwner(), user -> {
+            currentUser = user;
+            updateStarColor(user, placeDetail);
+            updateRestaurantButton(currentUser);
         });
     }
 
@@ -138,18 +131,15 @@ public class RestaurantDetailFragment extends Fragment {
     }
 
     private void setRestaurantChoiceBtn() {
-        binding.btnRestaurantChoice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!currentUser.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())) {
-                    restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
-                    restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
-                    setupNotification();
-                } else {
-                    restaurantDetailViewModel.removePlaceId(currentUser.uid);
-                    currentUser.restaurantChoice = "";
-                    updateRestaurantButton(currentUser);
-                }
+        binding.btnRestaurantChoice.setOnClickListener(view -> {
+            if (!currentUser.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())) {
+                restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
+                restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
+                setupNotification();
+            } else {
+                restaurantDetailViewModel.removePlaceId(currentUser.uid);
+                currentUser.restaurantChoice = "";
+                updateRestaurantButton(currentUser);
             }
         });
     }
@@ -184,18 +174,15 @@ public class RestaurantDetailFragment extends Fragment {
     }
 
     private void setLikeBtn(PlaceDetail placeDetail) {
-        binding.btnLikeDetail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!currentUser.likes.contains(placeDetail.getResult().getPlaceId())) {
-                    restaurantDetailViewModel.addUserRestaurantLike(currentUser.uid, placeDetail.getResult().getPlaceId());
-                    currentUser.likes.add(placeDetail.getResult().getPlaceId());
-                } else {
-                    restaurantDetailViewModel.removeUserRestaurantLike(currentUser.uid, placeDetail.getResult().getPlaceId());
-                    currentUser.likes.remove(placeDetail.getResult().getPlaceId());
-                }
-                updateStarColor(currentUser, placeDetail);
+        binding.btnLikeDetail.setOnClickListener(view -> {
+            if (!currentUser.likes.contains(placeDetail.getResult().getPlaceId())) {
+                restaurantDetailViewModel.addUserRestaurantLike(currentUser.uid, placeDetail.getResult().getPlaceId());
+                currentUser.likes.add(placeDetail.getResult().getPlaceId());
+            } else {
+                restaurantDetailViewModel.removeUserRestaurantLike(currentUser.uid, placeDetail.getResult().getPlaceId());
+                currentUser.likes.remove(placeDetail.getResult().getPlaceId());
             }
+            updateStarColor(currentUser, placeDetail);
         });
     }
 }

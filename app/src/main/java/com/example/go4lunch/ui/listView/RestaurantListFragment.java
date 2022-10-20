@@ -51,7 +51,6 @@ public class RestaurantListFragment extends Fragment {
     public String locationString;
     public static final Integer RADIUS = 1500;
     public static final String TYPE = "restaurant";
-    private OnBackPressedCallback callback;
     private SearchView searchView;
 
 
@@ -70,7 +69,6 @@ public class RestaurantListFragment extends Fragment {
         setupOnBackPressedCallback();
         return binding.getRoot();
     }
-
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -102,7 +100,7 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void setupOnBackPressedCallback() {
-        callback = new OnBackPressedCallback(true) {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 if (!searchView.isIconified()) {
@@ -158,8 +156,8 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void checkLocationPermissions() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             getUserLocation();
         } else {
@@ -196,7 +194,7 @@ public class RestaurantListFragment extends Fragment {
     }
 
     private void askLocationPermission() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
     }
 
 

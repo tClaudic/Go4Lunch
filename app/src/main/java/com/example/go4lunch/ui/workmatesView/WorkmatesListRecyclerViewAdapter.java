@@ -27,6 +27,7 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
         this.glide = glide;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setUsersList(List<User> usersList) {
         this.usersList = usersList;
         Log.e("userListRecycler", String.valueOf(usersList.size()));
@@ -34,7 +35,7 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
     }
 
     public boolean getUserChoice(User user){
-        return !user.restaurantChoiceName.isEmpty() && user.restaurantChoiceName != null;
+        return !user.restaurantChoiceName.isEmpty();
     }
 
 

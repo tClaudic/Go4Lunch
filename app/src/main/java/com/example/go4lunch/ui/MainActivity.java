@@ -1,5 +1,6 @@
 package com.example.go4lunch.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         //    @Override
         //    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //        if (item.getItemId() == R.id.nav_restaurantDetail){
-        //        setupNavigationToRestaurantDetail();}
+        //        setupNavigationToRestaurantDetail();} 
         //        if (item.getItemId() == R.id.nav_logout){
         //            showLogOutDialogFragment();
         //            drawer.close();
