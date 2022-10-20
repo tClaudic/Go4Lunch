@@ -73,6 +73,10 @@
     <string name="error_during_authentication">An error occur during authentication. please retry.</string>
     <string name="empty_field">you cannot let this field empty</string>
     <string name="wrong_email_format">Wrong format, please follow as aaaa@aaaa.aa</string>
+    <string name="username_lenght_rule">Your username should contain at least 3 characters</string>
+    <string name="email_does_not_match">Emails are not the same</string>
+    <string name="password_lenght_rule">Password must at least contain 8 character</string>
+    <string name="password_does_not_match">password are not the same</string>
 
 
 </resources>

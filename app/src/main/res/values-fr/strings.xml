@@ -9,4 +9,11 @@
     <string name="notification_line">Avec : </string>
     <string name="no_restaurant_available">Aucun resultat pour cette recherche</string>
     <string name="notification_setting_title">Activer les notifications</string>
+    <string name="error_during_authentication">Une erreur c\'est produite lors de l\'authentification, Veuillez réésayer</string>
+    <string name="empty_field">Ce champ ne peut etre laissé vide</string>
+    <string name="wrong_email_format">Mauvais format, aaaa@aaaa.aa</string>
+    <string name="username_lenght_rule">Votre Identifiant doit contenir au moins 3 characteres</string>
+    <string name="email_does_not_match">Vos emails ne corresponde pas</string>
+    <string name="password_lenght_rule">Votre mot de passe doit contenir au moins 8 characteres</string>
+    <string name="password_does_not_match">Vos mots de passes ne corresponde pas</string>
 </resources>
