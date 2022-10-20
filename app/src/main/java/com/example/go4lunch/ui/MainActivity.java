@@ -1,15 +1,12 @@
 package com.example.go4lunch.ui;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -22,12 +19,10 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
-
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.ActivityMainBinding;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
-import com.example.go4lunch.ui.ViewModelFactory;
 import com.example.go4lunch.ui.authentication.AuthViewModel;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
 import com.example.go4lunch.ui.logout.LogoutConfirmation;
@@ -43,17 +38,16 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
+    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private final FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
+    private BottomNavigationView bottomNavigationView;
+    private DrawerLayout drawer;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    BottomNavigationView bottomNavigationView;
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private AuthViewModel authViewModel;
-    private FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
     private User currentAuthenticatedUser;
     private RestaurantListViewModel restaurantListViewModel;
     private RestaurantDetailViewModel restaurantDetailViewModel;
-    DrawerLayout drawer;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_mapView, R.id.nav_listView, R.id.nav_workmatesView,R.id.nav_restaurantDetail)
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_mapView, R.id.nav_listView, R.id.nav_workmatesView, R.id.nav_restaurantDetail)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -121,14 +115,14 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private void initViewModel() {
         restaurantListViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
-        restaurantDetailViewModel = new ViewModelProvider(this,ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
+        restaurantDetailViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
         authViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AuthViewModel.class);
     }
 
 
-    private void setupNavigationToRestaurantDetail(){
-        if (checkIfUserHasRestaurantChoice()){
-            Log.e("userRestaurantChoice",currentAuthenticatedUser.restaurantChoice);
+    private void setupNavigationToRestaurantDetail() {
+        if (checkIfUserHasRestaurantChoice()) {
+            Log.e("userRestaurantChoice", currentAuthenticatedUser.restaurantChoice);
             restaurantDetailViewModel.getRestaurantDetailByUserChoice(currentAuthenticatedUser.restaurantChoice).observe(this, new Observer<PlaceDetail>() {
                 @Override
                 public void onChanged(PlaceDetail placeDetail) {
@@ -138,16 +132,13 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 }
             });
 
-        }else {
-            Toast.makeText(this,"You don't have choose a restaurant yet!",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "You don't have choose a restaurant yet!", Toast.LENGTH_LONG).show();
         }
     }
 
 
-
-
-
-    private Boolean checkIfUserHasRestaurantChoice(){
+    private Boolean checkIfUserHasRestaurantChoice() {
         return !currentAuthenticatedUser.restaurantChoice.isEmpty();
     }
 
@@ -172,8 +163,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     public void showBottomNavigationBar() {
         bottomNavigationView.setVisibility(View.VISIBLE);
     }
-
-
 
 
     @Override

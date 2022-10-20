@@ -22,10 +22,10 @@ import com.example.go4lunch.ui.ViewModelFactory;
 import java.util.List;
 
 public class WorkmateListFragment extends Fragment {
-    FragmentWorkmatesListBinding binding;
-    WorkmatesViewModel workmatesViewModel;
-    RecyclerView recyclerView;
-    WorkmatesListRecyclerViewAdapter workmatesListRecyclerViewAdapter;
+    private FragmentWorkmatesListBinding binding;
+    private WorkmatesViewModel workmatesViewModel;
+    private WorkmatesListRecyclerViewAdapter workmatesListRecyclerViewAdapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class WorkmateListFragment extends Fragment {
     }
 
     private void configureWorkmatesRecyclerView(){
-        recyclerView = binding.rcWorkmates;
+        RecyclerView recyclerView = binding.rcWorkmates;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         workmatesListRecyclerViewAdapter = new WorkmatesListRecyclerViewAdapter(Glide.with(this));
@@ -49,8 +49,6 @@ public class WorkmateListFragment extends Fragment {
     }
 
     private void observeUsersList(){
-        workmatesViewModel.userListMutableLiveData.observe(getViewLifecycleOwner(), users -> {
-            workmatesListRecyclerViewAdapter.setUsersList(users);
-        });
+        workmatesViewModel.userListMutableLiveData.observe(getViewLifecycleOwner(), users -> workmatesListRecyclerViewAdapter.setUsersList(users));
     }
 }

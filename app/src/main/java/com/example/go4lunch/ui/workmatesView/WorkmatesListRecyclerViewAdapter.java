@@ -51,7 +51,6 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         User user = usersList.get(position);
-        Log.e("urlTest", user.urlPicture);
         glide.load(user.urlPicture).into(viewHolder.ivUserPicture);
         if (getUserChoice(user)){
             String restaurantChoiceString = ((ViewHolder) holder).tvUserChoice.getContext().getString(R.string.workmate_restaurant_choice);

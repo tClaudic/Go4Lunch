@@ -9,10 +9,9 @@ import com.example.go4lunch.model.User;
 import java.util.List;
 
 public class WorkmatesViewModel extends ViewModel {
-    public MutableLiveData<List<User>> userListMutableLiveData = new MutableLiveData<>();
+    public MutableLiveData<List<User>> userListMutableLiveData;
     public final UserRepository userRepository;
     public WorkmatesViewModel(UserRepository userRepository) {
-
         this.userRepository = userRepository;
         userListMutableLiveData = userRepository.getUsersListFromFirebase();
     }
