@@ -41,16 +41,12 @@ public class UserRepository {
 
     public MutableLiveData<List<User>> getUsersListFromFirebase() {
         MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
-        firebaseFirestore.collection(COLLECTION_NAME).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<User> userList = new ArrayList<>();
-                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                    userList.add(documentSnapshot.toObject(User.class));
-                }
-                usersListMutableLiveData.postValue(userList);
+        firebaseFirestore.collection(COLLECTION_NAME).get().addOnCompleteListener(task -> {
+            List<User> userList = new ArrayList<>();
+            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                userList.add(documentSnapshot.toObject(User.class));
             }
-
+            usersListMutableLiveData.setValue(userList);
         });
         return usersListMutableLiveData;
     }
@@ -58,17 +54,13 @@ public class UserRepository {
 
     public MutableLiveData<List<User>> getUsersFilteredListFromFirebase(String restaurantChoice) {
         MutableLiveData<List<User>> usersFilteredListMutableLiveData = new MutableLiveData<>();
-        firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo(RESTAURANT_CHOICE, restaurantChoice).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<User> userList = new ArrayList<>();
-                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                    userList.add(documentSnapshot.toObject(User.class));
-                }
-                usersFilteredListMutableLiveData.setValue(userList);
+        firebaseFirestore.collection(COLLECTION_NAME).whereEqualTo(RESTAURANT_CHOICE, restaurantChoice).get().addOnCompleteListener(task -> {
+            List<User> userList = new ArrayList<>();
+            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                userList.add(documentSnapshot.toObject(User.class));
             }
+            usersFilteredListMutableLiveData.setValue(userList);
         });
-
         return usersFilteredListMutableLiveData;
     }
 
@@ -102,15 +94,12 @@ public class UserRepository {
 
     public MutableLiveData<String> addUserRestaurantChoiceInFirebase(String userId, String restaurantID) {
         MutableLiveData<String> result = new MutableLiveData<>();
-        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update(RESTAURANT_CHOICE, restaurantID).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    result.setValue(SUCCESS);
-                }
-                if (task.isCanceled()) {
-                    result.setValue(ERROR);
-                }
+        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update(RESTAURANT_CHOICE, restaurantID).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                result.setValue(SUCCESS);
+            }
+            if (task.isCanceled()) {
+                result.setValue(ERROR);
             }
         });
         return result;
@@ -132,15 +121,12 @@ public class UserRepository {
     public MutableLiveData<String> removeRestaurantChoiceInFirebase(String uid) {
         MutableLiveData<String> result = new MutableLiveData<>();
         String string = "";
-        firebaseFirestore.collection(COLLECTION_NAME).document(uid).update(PLACE_ID, string).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    result.setValue(SUCCESS);
-                }
-                if (task.isCanceled()) {
-                    result.setValue(ERROR);
-                }
+        firebaseFirestore.collection(COLLECTION_NAME).document(uid).update(PLACE_ID, string).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                result.setValue(SUCCESS);
+            }
+            if (task.isCanceled()) {
+                result.setValue(ERROR);
             }
         });
         return result;
@@ -158,7 +144,6 @@ public class UserRepository {
                 if (task.isCanceled()) {
                     authenticatedUser.setValue(null);
                 }
-
             });
         } else {
             authenticatedUser.setValue(null);
