@@ -31,8 +31,6 @@ public class LogoutConfirmation extends DialogFragment {
                 .create();
     }
 
-
-
     private void signOuFirebase(){
         firebaseAuth.signOut();
     }
