@@ -1,9 +1,9 @@
 package com.example.go4lunch.ui.listView;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +20,13 @@ import com.example.go4lunch.R;
 import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
 import com.example.go4lunch.model.User;
 import com.example.go4lunch.util.RestaurantListHelper;
-import com.google.firebase.database.collection.LLRBNode;
 
 import java.util.List;
 
 public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    List<PlaceDetail> nearbyRestaurantList;
     final RequestManager glide;
+    List<PlaceDetail> nearbyRestaurantList;
     Location userLocation;
     List<User> usersList;
 
@@ -36,9 +35,10 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     }
 
 
-    public PlaceDetail getPlaceDetail(int position){
+    public PlaceDetail getPlaceDetail(int position) {
         return nearbyRestaurantList.get(position);
     }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -49,23 +49,19 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         PlaceDetail placeDetail = nearbyRestaurantList.get(position);
-        if (placeDetail.getResult().getTypes().contains("restaurant")){
-            Log.e("filterTest",placeDetail.getResult().getName());
-        }
-        Log.e("typeTest",placeDetail.getResult().getTypes().toString());
         ViewHolder viewViewHolder = (ViewHolder) holder;
         viewViewHolder.tvRestaurantName.setText(placeDetail.getResult().getName());
         viewViewHolder.tvRestaurantAddress.setText(placeDetail.getResult().getFormattedAddress());
-        viewViewHolder.tvRestaurantContributors.setText("2");
+        //viewViewHolder.tvRestaurantContributors.setText("2");
         viewViewHolder.tvRestaurantRange.setText(RestaurantListHelper.sumDistanceBetweenTwoLocation(userLocation, placeDetail));
         viewViewHolder.rbRestaurantRating.setRating(RestaurantListHelper.divideRatingResultBy3(placeDetail));
-        viewViewHolder.tvRestaurantContributors.setText(RestaurantListHelper.howManyUsersLunchAtThisRestaurant(usersList,placeDetail));
-        if (RestaurantListHelper.formatCloseHour(placeDetail).contains("Closing soon")){
-            viewViewHolder.tvRestaurantOpenStatus.setTypeface(null,Typeface.BOLD);
+        viewViewHolder.tvRestaurantContributors.setText(RestaurantListHelper.howManyUsersLunchAtThisRestaurant(usersList, placeDetail));
+        if (RestaurantListHelper.formatCloseHour(placeDetail).contains("Closing soon")) {
+            viewViewHolder.tvRestaurantOpenStatus.setTypeface(null, Typeface.BOLD);
             viewViewHolder.tvRestaurantOpenStatus.setTextColor(Color.parseColor("#c00000"));
+        } else {
+            viewViewHolder.tvRestaurantOpenStatus.setText(RestaurantListHelper.formatCloseHour(placeDetail));
         }
-        viewViewHolder.tvRestaurantOpenStatus.setText(RestaurantListHelper.formatCloseHour(placeDetail));
-
         if (placeDetail.getResult().getPhotos() != null) {
             glide.load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + placeDetail.getResult().getPhotos().get(0).getPhotoReference() + "&key=" + BuildConfig.MAPS_API_KEY).centerCrop().into(viewViewHolder.ivRestaurantPicture);
         } else {
@@ -81,30 +77,23 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
         } else return 0;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setNearbyRestaurantList(List<PlaceDetail> restaurantList) {
         this.nearbyRestaurantList = restaurantList;
         notifyDataSetChanged();
     }
 
-    public void setUsersList(List<User> usersList){
+    @SuppressLint("NotifyDataSetChanged")
+    public void setUsersList(List<User> usersList) {
         this.usersList = usersList;
         notifyDataSetChanged();
 
     }
 
-
-
     public void setUserLocation(Location userLocation) {
         this.userLocation = userLocation;
     }
 
-
-    public void updateNearbyRestaurantList(final List<PlaceDetail> nearbyRestaurantList) {
-        this.nearbyRestaurantList.clear();
-        this.nearbyRestaurantList = nearbyRestaurantList;
-        notifyDataSetChanged();
-
-    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivRestaurantPicture;
