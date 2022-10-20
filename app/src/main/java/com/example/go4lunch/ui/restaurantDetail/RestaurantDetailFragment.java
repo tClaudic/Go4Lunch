@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,17 +32,15 @@ import com.example.go4lunch.ui.listView.RestaurantListViewModel;
 import com.example.go4lunch.ui.workmatesView.WorkmatesListRecyclerViewAdapter;
 
 import java.util.Calendar;
-import java.util.List;
 
 public class RestaurantDetailFragment extends Fragment {
 
-    FragmentRestaurantDetailBinding binding;
-    RestaurantListViewModel restaurantListViewModel;
-    RestaurantDetailViewModel restaurantDetailViewModel;
-    User currentUser;
-    PlaceDetail placeDetail;
-    RecyclerView recyclerView;
-    WorkmatesListRecyclerViewAdapter workmatesListRecyclerViewAdapter;
+    private FragmentRestaurantDetailBinding binding;
+    private RestaurantListViewModel restaurantListViewModel;
+    private RestaurantDetailViewModel restaurantDetailViewModel;
+    private User currentUser;
+    private PlaceDetail placeDetail;
+    private WorkmatesListRecyclerViewAdapter workmatesListRecyclerViewAdapter;
 
 
     @Nullable
@@ -58,19 +54,24 @@ public class RestaurantDetailFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void getSelectedPlaceDetail(){
+    private void initViewModel() {
+        restaurantDetailViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
+        restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
+    }
+
+    private void getSelectedPlaceDetail() {
         restaurantListViewModel.getSelected().observe(getViewLifecycleOwner(),
-                placeDetail1 -> {
-                    RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail1);
-                    placeDetail = placeDetail1;
-                    restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail1.getResult().getPlaceId()).observe(getViewLifecycleOwner(), users ->
+                placeDetail -> {
+                    RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail);
+                    this.placeDetail = placeDetail;
+                    restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail.getResult().getPlaceId()).observe(getViewLifecycleOwner(), users ->
                             workmatesListRecyclerViewAdapter.setUsersList(users));
-                    Log.e("placedetail", placeDetail1.getResult().getPlaceId());
+
                 });
     }
 
 
-    private void getAuthenticatedUser(){
+    private void getAuthenticatedUser() {
         restaurantDetailViewModel.getAuthenticatedLiveDataUser().observe(getViewLifecycleOwner(), user -> {
             currentUser = user;
             updateStarColor(user, placeDetail);
@@ -78,9 +79,12 @@ public class RestaurantDetailFragment extends Fragment {
         });
     }
 
-    private void initViewModel() {
-        restaurantDetailViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
-        restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
+    private void configureWorkmatesRecyclerView() {
+        RecyclerView recyclerView = binding.rcWorkmatesPlaceDetail;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        workmatesListRecyclerViewAdapter = new WorkmatesListRecyclerViewAdapter(Glide.with(this));
+        recyclerView.setAdapter(workmatesListRecyclerViewAdapter);
     }
 
     private void updateLayoutWithRestaurantDetailData(PlaceDetail placeDetail) {
@@ -115,7 +119,7 @@ public class RestaurantDetailFragment extends Fragment {
     private void setCallBtn(PlaceDetail placeDetail) {
         binding.btnCallDetail.setOnClickListener(view -> {
             if (placeDetail.getResult().getFormattedPhoneNumber() != null) {
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", placeDetail.getResult().getFormattedPhoneNumber(), null));
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(getString(R.string.scheme_tel_string), placeDetail.getResult().getFormattedPhoneNumber(), null));
                 startActivity(intent);
             }
         });
@@ -139,12 +143,13 @@ public class RestaurantDetailFragment extends Fragment {
             } else {
                 restaurantDetailViewModel.removePlaceId(currentUser.uid);
                 currentUser.restaurantChoice = "";
+                //TODO update restaurant choice in firebase
                 updateRestaurantButton(currentUser);
             }
         });
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("UnspecifiedImmutableFlag")
     private void setupNotification() {
         AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getContext(), AlertReceiver.class);
@@ -165,13 +170,6 @@ public class RestaurantDetailFragment extends Fragment {
         });
     }
 
-    private void configureWorkmatesRecyclerView() {
-        recyclerView = binding.rcWorkmatesPlaceDetail;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        workmatesListRecyclerViewAdapter = new WorkmatesListRecyclerViewAdapter(Glide.with(this));
-        recyclerView.setAdapter(workmatesListRecyclerViewAdapter);
-    }
 
     private void setLikeBtn(PlaceDetail placeDetail) {
         binding.btnLikeDetail.setOnClickListener(view -> {

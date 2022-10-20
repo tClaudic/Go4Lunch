@@ -87,6 +87,7 @@
     <string name="google_activity_result_error_message">an error occurred during google authentication</string>
     <string name="facebook_auth_credential_error_message">An error occurred during facebook authentication</string>
     <string name="twitter_authentication_error_message">An error occurred during twitter login</string>
+    <string name="scheme_tel_string" translatable="false">tel</string>
 
 
 </resources>

@@ -85,6 +85,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return binding.getRoot();
     }
 
+    private void askLocationPermission() {
+        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
+    }
+
+    private void initRestaurantListViewModel() {
+        restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
+    }
+
+
     private void setFusedLocationProviderClient(){
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
@@ -226,15 +235,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    private void askLocationPermission() {
-        ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
-    }
-
-    private void initRestaurantListViewModel() {
-        restaurantListViewModel = new ViewModelProvider(requireActivity()).get(RestaurantListViewModel.class);
-
-
-    }
 
     private void observeUsersList() {
         restaurantListViewModel.usersListMutableLiveData.observe(getViewLifecycleOwner(), users -> {
