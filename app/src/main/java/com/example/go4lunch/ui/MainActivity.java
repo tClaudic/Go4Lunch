@@ -1,5 +1,6 @@
 package com.example.go4lunch.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +37,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private RestaurantListViewModel restaurantListViewModel;
     private RestaurantDetailViewModel restaurantDetailViewModel;
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
         drawer = binding.drawerLayout;
-
         bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
@@ -86,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         //});
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()) {
-
 
                 case R.id.nav_logout:
                     showLogOutDialogFragment();
@@ -123,17 +125,16 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private void setupNavigationToRestaurantDetail() {
         if (checkIfUserHasRestaurantChoice()) {
             Log.e("userRestaurantChoice", currentAuthenticatedUser.restaurantChoice);
-            restaurantDetailViewModel.getRestaurantDetailByUserChoice(currentAuthenticatedUser.restaurantChoice).observe(this, new Observer<PlaceDetail>() {
-                @Override
-                public void onChanged(PlaceDetail placeDetail) {
-                    restaurantListViewModel.select(placeDetail);
-                    Navigation.findNavController(getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main).getView()).navigate(R.id.nav_restaurantDetail);
-                    drawer.close();
-                }
+            restaurantDetailViewModel.getRestaurantDetailByUserChoice(currentAuthenticatedUser.restaurantChoice).observe(this, placeDetail -> {
+                restaurantListViewModel.select(placeDetail);
+                Navigation.findNavController(getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main).getView()).navigate(R.id.nav_restaurantDetail);
+                drawer.close();
             });
 
         } else {
-            Toast.makeText(this, "You don't have choose a restaurant yet!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,
+                    R.string.user_no_restaurant_choosen,
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -147,12 +148,12 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     private void showActionBar() {
-        getSupportActionBar().show();
+        Objects.requireNonNull(getSupportActionBar()).show();
     }
 
 
     public void hideToolbar() {
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
     }
 
 
@@ -179,7 +180,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.nav_login);
         } else {
             dbUserEvent();
-            //Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.nav_mapView);
         }
     }
 
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private void dbUserEvent() {
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        final DocumentReference documentReference = rootRef.collection("users").document(firebaseUser.getUid());
+        final DocumentReference documentReference = rootRef.collection("users").document(Objects.requireNonNull(firebaseUser).getUid());
         documentReference.addSnapshotListener(this::onEvent);
     }
 
@@ -211,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("onStart", "onStart");
         firebaseAuth.addAuthStateListener(this);
 
     }

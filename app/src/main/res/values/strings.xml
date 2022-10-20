@@ -88,6 +88,7 @@
     <string name="facebook_auth_credential_error_message">An error occurred during facebook authentication</string>
     <string name="twitter_authentication_error_message">An error occurred during twitter login</string>
     <string name="scheme_tel_string" translatable="false">tel</string>
+    <string name="user_no_restaurant_choosen">You don\'t have choose a restaurant yet!</string>
 
 
 </resources>

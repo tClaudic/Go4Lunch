@@ -20,4 +20,5 @@
     <string name="google_activity_result_error_message">Une erreur c\'est produite durant l\'authentification avec Google</string>
     <string name="facebook_auth_credential_error_message">Une erreur c\'est produite durant l\'authentification avec Facebook</string>
     <string name="twitter_authentication_error_message">Une erreur c\'est produite durant l\'authentification avec Twitter</string>
+    <string name="user_no_restaurant_choosen">Vous n\'avez pas encore choisi de restaurant</string>
 </resources>
