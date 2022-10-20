@@ -63,10 +63,7 @@ public class RestaurantListHelper {
         }
         int restaurantClosedHour = Integer.parseInt(weekDayText);
         int result = restaurantClosedHour - hour;
-        if (result <= 1) {
-            return true;
-        }
-        return false;
+        return result <= 1;
 
     }
 
