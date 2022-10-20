@@ -70,6 +70,9 @@
     <string name="no_restaurant_available">No result for this query</string>
     <string name="notification_setting_header" translatable="false">Notification</string>
     <string name="notification_setting_title">Enable message notifications</string>
+    <string name="error_during_authentication">An error occur during authentication. please retry.</string>
+    <string name="empty_field">you cannot let this field empty</string>
+    <string name="wrong_email_format">Wrong format, please follow as aaaa@aaaa.aa</string>
 
 
 </resources>
