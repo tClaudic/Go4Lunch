@@ -17,20 +17,17 @@ import java.util.List;
 import java.util.Objects;
 
 public class AuthRepository {
-    private static final String USERS = "users";
+
     private final FirebaseAuth firebaseAuth;
     private final FirebaseFirestore firebaseFirestore;
-    public MutableLiveData<User> authenticatedUser;
 
-
+    private static final String USERS = "users";
     private static final String SUCCESS = "success";
     public static final String ERROR = "error";
-
 
     public AuthRepository(FirebaseAuth firebaseAuth, FirebaseFirestore firebaseFirestore) {
         this.firebaseAuth = firebaseAuth;
         this.firebaseFirestore = firebaseFirestore;
-        this.authenticatedUser = new MutableLiveData<>();
     }
 
 
@@ -109,7 +106,6 @@ public class AuthRepository {
                             userCreationResult.setValue(ERROR);
                         }
                     });
-
                 }
             } else {
                 userCreationResult.setValue(ERROR);
