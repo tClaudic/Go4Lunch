@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,27 +29,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.R;
 import com.example.go4lunch.databinding.FragmentListViewBinding;
-import com.example.go4lunch.model.PlaceDetail.PlaceDetail;
-import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.ViewModelFactory;
 import com.example.go4lunch.util.ItemClickSupport;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.List;
-
 public class RestaurantListFragment extends Fragment {
 
-    FragmentListViewBinding binding;
-    RestaurantListViewModel restaurantListViewModel;
-    public RecyclerView recyclerView;
-    RestaurantListRecyclerViewAdapter restaurantListRecyclerViewAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    public FusedLocationProviderClient fusedLocationProviderClient;
-    int SEARCH_QUERY_THRESHOLD = 3;
-    public String locationString;
     public static final Integer RADIUS = 1500;
     public static final String TYPE = "restaurant";
+    public RecyclerView recyclerView;
+    public FusedLocationProviderClient fusedLocationProviderClient;
+    public String locationString;
+    private FragmentListViewBinding binding;
+    private RestaurantListViewModel restaurantListViewModel;
+    private RestaurantListRecyclerViewAdapter restaurantListRecyclerViewAdapter;
+    private final int SEARCH_QUERY_THRESHOLD = 3;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private SearchView searchView;
 
 
@@ -58,17 +53,26 @@ public class RestaurantListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentListViewBinding.inflate(getLayoutInflater());
-        configureRecyclerView();
+        configureRecyclerView(); // init RecyclerView and set adapter to it
         setHasOptionsMenu(true);
         initViewModel();
         observeUsersList();
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+        setFusedLocationProviderClient();
         checkLocationPermissions();
         initOnClickRecyclerView();
         configureOnSwipeFresh();
         setupOnBackPressedCallback();
         return binding.getRoot();
     }
+
+    private void initViewModel() {
+        restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
+    }
+    private void setFusedLocationProviderClient(){
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+    }
+
+
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -81,16 +85,13 @@ public class RestaurantListFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.e("OnQueryTextSubmit", "true");
                 if (query.length() >= SEARCH_QUERY_THRESHOLD) {
                     observeNearbyRestaurantsWithAutoComplete(query);
                 }
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.e("OnQeuryTextChange", "true");
                 if (newText.length() >= SEARCH_QUERY_THRESHOLD) {
                     observeNearbyRestaurantsWithAutoComplete(newText);
                 }
@@ -98,6 +99,8 @@ public class RestaurantListFragment extends Fragment {
             }
         });
     }
+
+
 
     private void setupOnBackPressedCallback() {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
@@ -111,6 +114,11 @@ public class RestaurantListFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
     }
 
+    private void observeUsersList() {
+        restaurantListViewModel.usersListMutableLiveData.observe(getViewLifecycleOwner(), users ->
+                restaurantListRecyclerViewAdapter.setUsersList(users));
+    }
+
     private void observeNearbyRestaurantsWithAutoComplete(String query) {
         restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query, locationString, RADIUS).observe(getViewLifecycleOwner(), placeDetails -> {
             if (!placeDetails.isEmpty()) {
@@ -121,20 +129,22 @@ public class RestaurantListFragment extends Fragment {
         });
     }
 
-
-    private void initViewModel() {
-        restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
-
-
+    private void observeNearbyRestaurant(Location location) {
+        String userLocation = location.getLatitude() + "," + location.getLongitude();
+        Log.e("LocationString", userLocation);
+        //restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
+        restaurantListViewModel.getAllRestaurants(userLocation, RADIUS, TYPE).observe(getViewLifecycleOwner(), placeDetails -> {
+            restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
+            Log.e("onChanged", String.valueOf(placeDetails.size()));
+        });
     }
+
 
     private void initOnClickRecyclerView() {
         ItemClickSupport.addTo(recyclerView, binding.rcListView.getId())
                 .setOnItemClickListener((recyclerView1, position, v) -> {
-                    Log.e("testclick", restaurantListRecyclerViewAdapter.getPlaceDetail(position).getResult().getName());
                     restaurantListViewModel.select(restaurantListRecyclerViewAdapter.getPlaceDetail(position));
                     Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_listView_to_nav_restaurantDetail);
-
                 });
     }
 
@@ -165,29 +175,10 @@ public class RestaurantListFragment extends Fragment {
         }
     }
 
-    private void observeUsersList() {
-        restaurantListViewModel.usersListMutableLiveData.observe(getViewLifecycleOwner(), users ->
-                restaurantListRecyclerViewAdapter.setUsersList(users));
-    }
-
-    private void observeNearbyRestaurant(Location location) {
-        String userLocation = location.getLatitude() + "," + location.getLongitude();
-        Log.e("LocationString", userLocation);
-        //restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
-        restaurantListViewModel.getAllRestaurants(userLocation, RADIUS, TYPE).observe(getViewLifecycleOwner(), placeDetails -> {
-            restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
-            Log.e("onChanged", String.valueOf(placeDetails.size()));
-        });
-    }
-
-
     @SuppressLint("MissingPermission")
     private void getUserLocation() {
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
-            Log.e("Lattitude", String.valueOf(location.getLatitude()));
-            Log.e("Longitude", String.valueOf(location.getLongitude()));
-            locationString = String.valueOf(location.getLatitude() + "," + location.getLongitude());
-            Log.e("testLocationString", locationString);
+            locationString = location.getLatitude() + "," + location.getLongitude();
             restaurantListRecyclerViewAdapter.setUserLocation(location);
             observeNearbyRestaurant(location);
         });

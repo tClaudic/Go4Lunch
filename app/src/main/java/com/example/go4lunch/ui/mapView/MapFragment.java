@@ -176,7 +176,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
-
         CurrentLocationRequest currentLocationRequest = new CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY).setDurationMillis(3000).build();
         fusedLocationProviderClient.getCurrentLocation(currentLocationRequest, null).addOnSuccessListener(location -> {
             locationString = location.getLatitude() + "," + location.getLongitude();
