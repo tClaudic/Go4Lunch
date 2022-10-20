@@ -52,11 +52,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private NavController navController;
     private NavigationView navigationView;
 
-    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("onStart", "onCreate");
         initViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -79,6 +77,12 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         setNavigationViewItemSelected();
         setupNavControllerOnDestinationChanged();
 
+    }
+
+    private void initViewModel() {
+        restaurantListViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
+        restaurantDetailViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
+        authViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AuthViewModel.class);
     }
 
     private void setNavigationViewItemSelected() {
@@ -118,10 +122,23 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         });
     }
 
-    private void initViewModel() {
-        restaurantListViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
-        restaurantDetailViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
-        authViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(AuthViewModel.class);
+
+    private void updateNavHeader() {
+        View headerView = binding.navView.getHeaderView(0);
+        ImageView userPicture = headerView.findViewById(R.id.nav_header_usermane_iv);
+        TextView userName = headerView.findViewById(R.id.nav_header_username_tv);
+        TextView userEmail = headerView.findViewById(R.id.nav_header_user_email_tv);
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            authViewModel.getUserById(firebaseUser.getUid()).observe(this, user -> {
+                currentAuthenticatedUser = user;
+                userName.setText(user.name);
+                userEmail.setText(user.email);
+                Glide.with(this).load(user.urlPicture).circleCrop().into(userPicture);
+            });
+
+        }
+
     }
 
 
@@ -143,6 +160,47 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         }
     }
 
+
+
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null) {
+            Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.nav_login);
+        } else {
+            dbUserEvent();
+        }
+    }
+
+
+    private void dbUserEvent() {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        final DocumentReference documentReference = rootRef.collection("users").document(Objects.requireNonNull(firebaseUser).getUid());
+        documentReference.addSnapshotListener(this::onEvent);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth.addAuthStateListener(this);
+
+    }
+
+    private void onEvent(DocumentSnapshot value, FirebaseFirestoreException error) {
+        if (value != null && value.exists()) {
+            updateNavHeader();
+        }
+    }
 
     private Boolean checkIfUserHasRestaurantChoice() {
         return !currentAuthenticatedUser.restaurantChoice.isEmpty();
@@ -168,62 +226,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     public void showBottomNavigationBar() {
         bottomNavigationView.setVisibility(View.VISIBLE);
-    }
-
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser == null) {
-            Navigation.findNavController(this, R.id.nav_host_fragment_content_main).navigate(R.id.nav_login);
-        } else {
-            dbUserEvent();
-        }
-    }
-
-    private void updateNavHeader() {
-        View headerView = binding.navView.getHeaderView(0);
-        ImageView userPicture = headerView.findViewById(R.id.nav_header_usermane_iv);
-        TextView userName = headerView.findViewById(R.id.nav_header_username_tv);
-        TextView userEmail = headerView.findViewById(R.id.nav_header_user_email_tv);
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            authViewModel.getUserById(firebaseUser.getUid()).observe(this, user -> {
-                currentAuthenticatedUser = user;
-                userName.setText(user.name);
-                userEmail.setText(user.email);
-                Glide.with(this).load(user.urlPicture).circleCrop().into(userPicture);
-            });
-
-        }
-
-    }
-
-    private void dbUserEvent() {
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        final DocumentReference documentReference = rootRef.collection("users").document(Objects.requireNonNull(firebaseUser).getUid());
-        documentReference.addSnapshotListener(this::onEvent);
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        firebaseAuth.addAuthStateListener(this);
-
-    }
-
-    private void onEvent(DocumentSnapshot value, FirebaseFirestoreException error) {
-        if (value != null && value.exists()) {
-            updateNavHeader();
-        }
     }
 
 
