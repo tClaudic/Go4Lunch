@@ -145,6 +145,7 @@ public class loginFragment extends Fragment {
             @Override
             public void onError(@NonNull FacebookException e) {
                 Log.e(getString(R.string.FacebookAuthErrorLog), e.getMessage());
+                Toast.makeText(requireActivity(), R.string.facebook_auth_credential_error_message, Toast.LENGTH_LONG).show();
             }
         });
 
