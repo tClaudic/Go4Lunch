@@ -51,4 +51,11 @@ public class WorkmateListFragment extends Fragment {
     private void observeUsersList(){
         workmatesViewModel.userListMutableLiveData.observe(getViewLifecycleOwner(), users -> workmatesListRecyclerViewAdapter.setUsersList(users));
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("workamtesOnResume","onResume");
+    }
 }

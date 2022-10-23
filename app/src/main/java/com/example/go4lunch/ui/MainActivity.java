@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private void setupNavControllerOnDestinationChanged() {
         navController.addOnDestinationChangedListener((navController1, navDestination, bundle) -> {
             switch (navDestination.getId()) {
+                case R.id.nav_restaurantDetail:
                 case R.id.nav_login:
                 case R.id.emailSignUpFragment:
                 case R.id.nav_splashScreen:
@@ -147,9 +148,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             Log.e("userRestaurantChoice", currentAuthenticatedUser.restaurantChoice);
             restaurantDetailViewModel.getRestaurantDetailByUserChoice(currentAuthenticatedUser.restaurantChoice).observe(this, placeDetail -> {
                 restaurantListViewModel.select(placeDetail);
-                navController.navigate(R.id.nav_restaurantDetail);
                 hideBottomNavigationBar();
                 hideToolbar();
+
+                navController.navigate(R.id.nav_restaurantDetail);
                 drawer.close();
             });
 
@@ -159,9 +161,6 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     Toast.LENGTH_LONG).show();
         }
     }
-
-
-
 
 
     @Override

@@ -58,6 +58,12 @@ public class RestaurantDetailViewModel extends ViewModel {
         return result;
     }
 
+    public MutableLiveData<String> removeRestaurantChoiceName(String userId) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        result = userRepository.removeUserRestaurantChoiceNameInFirebase(userId);
+        return result;
+    }
+
     public MutableLiveData<String> removePlaceId(String userId) {
         MutableLiveData<String> result = new MutableLiveData<>();
         result = userRepository.removeRestaurantChoiceInFirebase(userId);

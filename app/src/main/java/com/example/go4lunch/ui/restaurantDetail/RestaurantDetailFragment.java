@@ -64,9 +64,10 @@ public class RestaurantDetailFragment extends Fragment {
                 placeDetail -> {
                     RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail);
                     this.placeDetail = placeDetail;
-                    restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail.getResult().getPlaceId()).observe(getViewLifecycleOwner(), users ->
-                            workmatesListRecyclerViewAdapter.setUsersList(users));
-
+                    restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail.getResult().getPlaceId()).observe(getViewLifecycleOwner(), users -> {
+                        users.remove(currentUser);
+                        workmatesListRecyclerViewAdapter.setUsersList(users);
+                    });
                 });
     }
 
@@ -139,9 +140,12 @@ public class RestaurantDetailFragment extends Fragment {
             if (!currentUser.restaurantChoice.equalsIgnoreCase(placeDetail.getResult().getPlaceId())) {
                 restaurantDetailViewModel.setPlaceId(currentUser.uid, placeDetail.getResult().getPlaceId());
                 restaurantDetailViewModel.setRestaurantChoiceName(currentUser.uid, placeDetail.getResult().getName());
+                currentUser.restaurantChoice = placeDetail.getResult().getPlaceId();
+                updateRestaurantButton(currentUser);
                 setupNotification();
             } else {
                 restaurantDetailViewModel.removePlaceId(currentUser.uid);
+                restaurantDetailViewModel.removeRestaurantChoiceName(currentUser.uid);
                 currentUser.restaurantChoice = "";
                 //TODO update restaurant choice in firebase
                 updateRestaurantButton(currentUser);

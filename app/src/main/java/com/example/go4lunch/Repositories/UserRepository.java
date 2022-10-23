@@ -118,10 +118,24 @@ public class UserRepository {
         return result;
     }
 
+    public MutableLiveData<String> removeUserRestaurantChoiceNameInFirebase(String userId) {
+        MutableLiveData<String> result = new MutableLiveData<>();
+        String string = "";
+        firebaseFirestore.collection(COLLECTION_NAME).document(userId).update(RESTAURANT_CHOICE_NAME, string).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                result.setValue(SUCCESS);
+            }
+            if (task.isCanceled()) {
+                result.setValue(ERROR);
+            }
+        });
+        return result;
+    }
+
     public MutableLiveData<String> removeRestaurantChoiceInFirebase(String uid) {
         MutableLiveData<String> result = new MutableLiveData<>();
         String string = "";
-        firebaseFirestore.collection(COLLECTION_NAME).document(uid).update(PLACE_ID, string).addOnCompleteListener(task -> {
+        firebaseFirestore.collection(COLLECTION_NAME).document(uid).update(RESTAURANT_CHOICE, string).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 result.setValue(SUCCESS);
             }
