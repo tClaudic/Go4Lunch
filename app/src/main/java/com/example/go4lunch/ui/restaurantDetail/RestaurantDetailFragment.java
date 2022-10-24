@@ -73,7 +73,7 @@ public class RestaurantDetailFragment extends Fragment {
 
 
     private void getAuthenticatedUser() {
-        restaurantDetailViewModel.getAuthenticatedLiveDataUser().observe(getViewLifecycleOwner(), user -> {
+        restaurantDetailViewModel.authenticatedUser.observe(getViewLifecycleOwner(), user ->{
             currentUser = user;
             updateStarColor(user, placeDetail);
             updateRestaurantButton(currentUser);
@@ -147,7 +147,6 @@ public class RestaurantDetailFragment extends Fragment {
                 restaurantDetailViewModel.removePlaceId(currentUser.uid);
                 restaurantDetailViewModel.removeRestaurantChoiceName(currentUser.uid);
                 currentUser.restaurantChoice = "";
-                //TODO update restaurant choice in firebase
                 updateRestaurantButton(currentUser);
             }
         });

@@ -261,4 +261,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireActivity(), R.raw.map_style));
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        restaurantListViewModel.getUsersLists();
+    }
 }

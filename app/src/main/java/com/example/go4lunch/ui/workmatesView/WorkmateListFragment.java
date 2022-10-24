@@ -1,7 +1,6 @@
 package com.example.go4lunch.ui.workmatesView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,17 +8,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.go4lunch.databinding.FragmentWorkmatesListBinding;
-import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.ViewModelFactory;
-
-import java.util.List;
 
 public class WorkmateListFragment extends Fragment {
     private FragmentWorkmatesListBinding binding;
@@ -36,11 +31,11 @@ public class WorkmateListFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void initViewModel(){
+    private void initViewModel() {
         workmatesViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(WorkmatesViewModel.class);
     }
 
-    private void configureWorkmatesRecyclerView(){
+    private void configureWorkmatesRecyclerView() {
         RecyclerView recyclerView = binding.rcWorkmates;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
@@ -48,7 +43,7 @@ public class WorkmateListFragment extends Fragment {
         recyclerView.setAdapter(workmatesListRecyclerViewAdapter);
     }
 
-    private void observeUsersList(){
+    private void observeUsersList() {
         workmatesViewModel.userListMutableLiveData.observe(getViewLifecycleOwner(), users -> workmatesListRecyclerViewAdapter.setUsersList(users));
     }
 
@@ -57,6 +52,5 @@ public class WorkmateListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         workmatesViewModel.getUsersListFromFirebase();
-        Log.e("workamtesOnResume","onResume");
     }
 }

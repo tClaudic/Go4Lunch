@@ -188,5 +188,9 @@ public class RestaurantListFragment extends Fragment {
         ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        restaurantListViewModel.getUsersLists();
+    }
 }
