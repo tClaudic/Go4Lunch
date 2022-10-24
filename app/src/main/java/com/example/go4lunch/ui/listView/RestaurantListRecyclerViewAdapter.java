@@ -52,11 +52,10 @@ public class RestaurantListRecyclerViewAdapter extends RecyclerView.Adapter<Recy
         ViewHolder viewViewHolder = (ViewHolder) holder;
         viewViewHolder.tvRestaurantName.setText(placeDetail.getResult().getName());
         viewViewHolder.tvRestaurantAddress.setText(placeDetail.getResult().getFormattedAddress());
-        //viewViewHolder.tvRestaurantContributors.setText("2");
         viewViewHolder.tvRestaurantRange.setText(RestaurantListHelper.sumDistanceBetweenTwoLocation(userLocation, placeDetail));
         viewViewHolder.rbRestaurantRating.setRating(RestaurantListHelper.divideRatingResultBy3(placeDetail));
         viewViewHolder.tvRestaurantContributors.setText(RestaurantListHelper.howManyUsersLunchAtThisRestaurant(usersList, placeDetail));
-        if (RestaurantListHelper.formatCloseHour(placeDetail).contains("Closing soon")) {
+        if (RestaurantListHelper.formatCloseHour(placeDetail).equals("Closing soon")) {
             viewViewHolder.tvRestaurantOpenStatus.setTypeface(null, Typeface.BOLD);
             viewViewHolder.tvRestaurantOpenStatus.setTextColor(Color.parseColor("#c00000"));
         } else {

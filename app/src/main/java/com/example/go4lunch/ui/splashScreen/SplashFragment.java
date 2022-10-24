@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class SplashFragment extends Fragment {
 
-    public static final String SUCCESS = "success";
+
     public static final String ERROR = "error";
     AuthViewModel authViewModel;
     private FragmentSplashScreenBinding binding;

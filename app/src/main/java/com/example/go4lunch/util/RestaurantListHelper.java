@@ -40,7 +40,6 @@ public class RestaurantListHelper {
                 } else {
                     return getRestaurantClosingTime(placeDetail.getResult().getOpeningHours().getWeekdayText().get(getGoodDayFormatForGetWeekdayText()));
                 }
-
             } else {
                 return "Closed";
             }
@@ -84,7 +83,6 @@ public class RestaurantListHelper {
     }
 
     public static String howManyUsersLunchAtThisRestaurant(List<User> users, PlaceDetail placeDetail) {
-        Log.e("placeDetailTest", String.valueOf(users.size()));
         int result = 0;
         for (User user : users) {
             if (Objects.equals(user.restaurantChoice, placeDetail.getResult().getPlaceId())) {
