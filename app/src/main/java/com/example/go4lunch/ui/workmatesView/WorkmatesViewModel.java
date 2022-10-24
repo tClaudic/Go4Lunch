@@ -11,8 +11,14 @@ import java.util.List;
 public class WorkmatesViewModel extends ViewModel {
     public MutableLiveData<List<User>> userListMutableLiveData;
     public final UserRepository userRepository;
+
+
     public WorkmatesViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
+        userListMutableLiveData = userRepository.getUsersListFromFirebase();
+    }
+
+    public void getUsersListFromFirebase(){
         userListMutableLiveData = userRepository.getUsersListFromFirebase();
     }
 

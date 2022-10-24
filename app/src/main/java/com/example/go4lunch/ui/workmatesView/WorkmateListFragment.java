@@ -56,6 +56,7 @@ public class WorkmateListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        workmatesViewModel.getUsersListFromFirebase();
         Log.e("workamtesOnResume","onResume");
     }
 }

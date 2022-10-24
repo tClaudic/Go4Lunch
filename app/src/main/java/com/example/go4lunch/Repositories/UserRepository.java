@@ -29,7 +29,6 @@ public class UserRepository {
     private static final String ERROR = "error";
     private static final String RESTAURANT_CHOICE = "restaurantChoice";
     private static final String RESTAURANT_CHOICE_NAME = "restaurantChoiceName";
-    private static final String PLACE_ID = "placeId";
     private static final String LIKES = "likes";
 
 
