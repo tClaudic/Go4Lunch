@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">@color/primaryDarkColor</item>
         <item name="colorOnPrimary">@color/primaryTextColor</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondary">@color/primaryColor</item>
         <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <!-- Status bar color. -->
@@ -28,6 +28,7 @@
         <item name="android:src">@drawable/ic_white_search_24</item>
 
     </style>
+
 
     <style name="Theme.Go4Lunch.NoActionBar">
         <item name="windowActionBar">false</item>
