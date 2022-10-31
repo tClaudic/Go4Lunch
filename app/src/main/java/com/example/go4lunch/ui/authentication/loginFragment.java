@@ -51,10 +51,25 @@ public class loginFragment extends Fragment {
     private GoogleSignInClient googleSignInClient;
     private FragmentLoginBinding binding;
     private AuthViewModel authViewModel;
+    private final ActivityResultLauncher<Intent> googleSignInActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                    GoogleSignInAccount googleSignInAccount = task.getResult();
+                    if (googleSignInAccount != null) {
+                        getGoogleAuthCredential(googleSignInAccount);
+                    }
+                } else {
+                    Toast.makeText(requireActivity(), R.string.google_activity_result_error_message, Toast.LENGTH_LONG).show();
+                }
+            }
+    );
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initGoogleSignInClient();
     }
 
     @Nullable
@@ -62,7 +77,6 @@ public class loginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(getLayoutInflater());
         initSignInButton();
-        initGoogleSignInClient();
         initTwitterLoginButton();
         initFacebookLoginButton();
         initAuthViewModel();
@@ -72,16 +86,13 @@ public class loginFragment extends Fragment {
     }
 
 
-
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         handleFacebookLoginResult();
     }
 
-    private void setOnBackPressed(){
+    private void setOnBackPressed() {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -200,20 +211,6 @@ public class loginFragment extends Fragment {
 
     private void setGoogleSignInActivityResultLauncher() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
-        ActivityResultLauncher<Intent> googleSignInActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                        GoogleSignInAccount googleSignInAccount = task.getResult();
-                        if (googleSignInAccount != null) {
-                            getGoogleAuthCredential(googleSignInAccount);
-                        }
-                    } else {
-                        Toast.makeText(requireActivity(), R.string.google_activity_result_error_message, Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
         googleSignInActivityResultLauncher.launch(signInIntent);
     }
 
