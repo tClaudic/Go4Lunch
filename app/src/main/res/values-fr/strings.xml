@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Go4Lunch</string>
     <string name="workmate_restaurant_no_choice">n\'a pas encore choisi</string>
     <string name="workmate_restaurant_choice">mange à</string>
 
@@ -21,4 +20,10 @@
     <string name="facebook_auth_credential_error_message">Une erreur c\'est produite durant l\'authentification avec Facebook</string>
     <string name="twitter_authentication_error_message">Une erreur c\'est produite durant l\'authentification avec Twitter</string>
     <string name="user_no_restaurant_choosen">Vous n\'avez pas encore choisi de restaurant</string>
+    <string name="nav_drawer_second_title" translatable="false">PARAMETRES</string>
+    <string name="nav_drawer_third_title">SE DECONNECTER</string>
+    <string name="workmates_actionbar_title">Collègues</string>
+    <string name="bottom_workmates_btn_text">Collègues</string>
+    <string name="bottom_List_btn_text">Liste</string>
+    <string name="bottom_map_btn_text">Carte</string>
 </resources>

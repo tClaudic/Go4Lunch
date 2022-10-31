@@ -1,7 +1,7 @@
 <resources>
 
     /// Login Page ///
-    <string name="app_name">Go4Lunch</string>
+    <string name="app_name" translatable="false">Go4Lunch</string>
     <string name="app_slogan" translatable="false">Find a nice restaurant and invite your co-workers for lunch!</string>
 
     /// Notification String ///
@@ -9,9 +9,9 @@
     <string name="notification_line">With : </string>
 
     /// Bottom Navigation Bar ///
-    <string name="bottom_map_btn_text" translatable="false">Map View</string>
-    <string name="bottom_List_btn_text" translatable="false">List View</string>
-    <string name="bottom_workmates_btn_text" translatable="false">Workmates</string>
+    <string name="bottom_map_btn_text">Map View</string>
+    <string name="bottom_List_btn_text">List View</string>
+    <string name="bottom_workmates_btn_text">Workmates</string>
 
     /// MAP VIEW ///
     <string name="mapview_actionbar_title" translatable="false">I\'m Hungry!</string>
@@ -20,7 +20,7 @@
     <string name="listview_actionbar_title" translatable="false">I\'m Hungry!</string>
 
     /// Workmates View ///
-    <string name="workmates_actionbar_title" translatable="false">Available workmates</string>
+    <string name="workmates_actionbar_title">Available workmates</string>
 
     /// SearchBar Hint ///
 
@@ -30,8 +30,8 @@
     /// Navigation Drawer ///
 
     <string name="nav_drawer_first_title" translatable="false">YOUR LUNCH</string>
-    <string name="nav_drawer_second_title" translatable="false">SETTINGS</string>
-    <string name="nav_drawer_third_title" translatable="false">LOGOUT</string>
+    <string name="nav_drawer_second_title">SETTINGS</string>
+    <string name="nav_drawer_third_title">LOGOUT</string>
     <string name="title_activity_main" translatable="false">MainActivity</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
