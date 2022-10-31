@@ -65,8 +65,12 @@ public class RestaurantDetailFragment extends Fragment {
                     RestaurantDetailFragment.this.updateLayoutWithRestaurantDetailData(placeDetail);
                     this.placeDetail = placeDetail;
                     restaurantDetailViewModel.getUsersListFilteredByRestaurantChoice(placeDetail.getResult().getPlaceId()).observe(getViewLifecycleOwner(), users -> {
-                        users.remove(currentUser);
-                        workmatesListRecyclerViewAdapter.setUsersList(users);
+                        if (users.size() == 1 && users.contains(currentUser)){
+                            users.clear();
+                        }else {
+                            users.remove(currentUser);
+                            workmatesListRecyclerViewAdapter.setUsersList(users);
+                        }
                     });
                 });
     }
@@ -159,8 +163,8 @@ public class RestaurantDetailFragment extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 16);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 17);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
