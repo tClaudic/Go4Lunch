@@ -142,8 +142,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (!placeDetails.isEmpty()) {
                 updateMapWithRestaurantMarker(placeDetails, userList);
                 updateMapCameraWithAutocompleteResult(placeDetails.get(0));
-            } else {
-                Toast.makeText(requireActivity(), R.string.no_restaurant_available, Toast.LENGTH_SHORT).show();
             }
         });
     }
