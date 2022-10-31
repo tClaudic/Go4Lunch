@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -38,13 +37,13 @@ public class RestaurantListFragment extends Fragment {
 
     public static final Integer RADIUS = 1500;
     public static final String TYPE = "restaurant";
+    private final int SEARCH_QUERY_THRESHOLD = 3;
     public RecyclerView recyclerView;
     public FusedLocationProviderClient fusedLocationProviderClient;
     public String locationString;
     private FragmentListViewBinding binding;
     private RestaurantListViewModel restaurantListViewModel;
     private RestaurantListRecyclerViewAdapter restaurantListRecyclerViewAdapter;
-    private final int SEARCH_QUERY_THRESHOLD = 3;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SearchView searchView;
 
@@ -68,10 +67,10 @@ public class RestaurantListFragment extends Fragment {
     private void initViewModel() {
         restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
     }
-    private void setFusedLocationProviderClient(){
+
+    private void setFusedLocationProviderClient() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
     }
-
 
 
     @Override
@@ -90,16 +89,16 @@ public class RestaurantListFragment extends Fragment {
                 }
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() >= SEARCH_QUERY_THRESHOLD) {
                     observeNearbyRestaurantsWithAutoComplete(newText);
                 }
-                return true;
+                return false;
             }
         });
     }
-
 
 
     private void setupOnBackPressedCallback() {
@@ -123,8 +122,6 @@ public class RestaurantListFragment extends Fragment {
         restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query, locationString, RADIUS).observe(getViewLifecycleOwner(), placeDetails -> {
             if (!placeDetails.isEmpty()) {
                 restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
-            } else {
-                Toast.makeText(requireActivity(), R.string.no_restaurant_available, Toast.LENGTH_SHORT).show();
             }
         });
     }
