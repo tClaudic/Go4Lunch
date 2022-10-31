@@ -5,6 +5,9 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_splashScreen">
 
+
+
+
     <fragment
         android:id="@+id/nav_login"
         android:name="com.example.go4lunch.ui.authentication.loginFragment"
@@ -22,9 +25,8 @@
 
     <fragment
         android:id="@+id/nav_settings"
-        android:label="@string/nav_drawer_second_title"
         android:name="com.example.go4lunch.ui.Setting.SettingFragment"
-         />
+        android:label="@string/nav_drawer_second_title" />
 
 
     <fragment
@@ -37,7 +39,7 @@
         android:id="@+id/nav_listView"
         android:name="com.example.go4lunch.ui.listView.RestaurantListFragment"
         android:label="@string/listview_actionbar_title"
-        tools:layout="@layout/fragment_list_view" >
+        tools:layout="@layout/fragment_list_view">
         <action
             android:id="@+id/action_nav_listView_to_nav_restaurantDetail"
             app:destination="@id/nav_restaurantDetail" />
@@ -61,20 +63,21 @@
     <fragment
         android:id="@+id/nav_splashScreen"
         android:name="com.example.go4lunch.ui.splashScreen.SplashFragment"
-        tools:layout="@layout/fragment_splash_screen"/>
+        tools:layout="@layout/fragment_splash_screen" />
 
     <dialog
         android:id="@+id/nav_logout"
-        android:name="com.example.go4lunch.ui.logout.LogoutConfirmation"/>
+        android:name="com.example.go4lunch.ui.logout.LogoutConfirmation" />
     <fragment
         android:id="@+id/emailSignUpFragment"
         android:name="com.example.go4lunch.ui.authentication.EmailSignUpFragment"
-        tools:layout="@layout/fragment_sign_up"
-        android:label="EmailSignUpFragment" >
+        android:label="EmailSignUpFragment"
+        tools:layout="@layout/fragment_sign_up">
         <action
             android:id="@+id/action_emailSignUpFragment_to_nav_SignInFragment"
             app:destination="@id/nav_SignInFragment" />
     </fragment>
+
 
 
 </navigation>

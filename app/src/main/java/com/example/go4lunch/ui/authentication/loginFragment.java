@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -66,8 +67,13 @@ public class loginFragment extends Fragment {
         initFacebookLoginButton();
         initAuthViewModel();
         initEmailLoginButton();
+        setOnBackPressed();
         return binding.getRoot();
     }
+
+
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -75,11 +81,22 @@ public class loginFragment extends Fragment {
         handleFacebookLoginResult();
     }
 
+    private void setOnBackPressed(){
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+    }
+
     private void initAuthViewModel() {
         authViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(AuthViewModel.class);
     }
 
     private void goToMainFragment() {
+
         NavHostFragment.findNavController(this).navigate(R.id.nav_mapView);
     }
 
