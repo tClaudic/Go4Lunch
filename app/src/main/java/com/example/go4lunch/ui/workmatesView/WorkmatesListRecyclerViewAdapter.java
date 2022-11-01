@@ -34,6 +34,10 @@ public class WorkmatesListRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
         notifyDataSetChanged();
     }
 
+    public User getUser(int position){
+        return usersList.get(position);
+    }
+
     public boolean getUserChoice(User user){
         return !user.restaurantChoiceName.isEmpty();
     }

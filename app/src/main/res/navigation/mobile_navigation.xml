@@ -49,7 +49,11 @@
         android:id="@+id/nav_workmatesView"
         android:name="com.example.go4lunch.ui.workmatesView.WorkmateListFragment"
         android:label="@string/workmates_actionbar_title"
-        tools:layout="@layout/fragment_workmates_list" />
+        tools:layout="@layout/fragment_workmates_list" >
+        <action
+            android:id="@+id/action_nav_workmatesView_to_nav_restaurantDetail"
+            app:destination="@id/nav_restaurantDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_SignInFragment"
