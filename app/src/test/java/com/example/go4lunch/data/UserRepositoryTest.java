@@ -36,6 +36,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -84,10 +87,9 @@ public class UserRepositoryTest {
 
 
 
-
-
     @Before
     public void setup() {
+
 
         when(firebaseFirestore.collection(anyString())).thenReturn(collectionReference);
         when(collectionReference.get()).thenReturn(mockedTask);
@@ -97,7 +99,6 @@ public class UserRepositoryTest {
         when(querySnapshot.iterator()).thenReturn(querySnapshotIterator);
         when(querySnapshot.getDocuments()).thenReturn(queryDocumentSnapshotList);
         when(collectionReference.document(anyString())).thenReturn(documentReference);
-        //when(fieldValue = FieldValue.arrayRemove(anyString())).thenReturn(fieldValue);
         when(documentReference.update(anyString(),anyString())).thenReturn(mockedVoidTask);
         when(mockedVoidTask.getResult()).thenReturn(Tresult);
         when(documentReference.update(anyString(), eq(FieldValue.arrayRemove("")))).thenReturn(mockedVoidTask);
@@ -115,9 +116,7 @@ public class UserRepositoryTest {
         MutableLiveData<List<User>> result = userRepository.getUsersListFromFirebase();
         verify(firebaseFirestore.collection(anyString()).get()).addOnCompleteListener(argumentCaptor.capture());
         argumentCaptor.getValue().onComplete(mockedTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals(usersList, liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals(usersList, liveData.getValue()));
     }
 
     @Test
@@ -125,9 +124,7 @@ public class UserRepositoryTest {
         MutableLiveData<List<User>> result = userRepository.getUsersFilteredListFromFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).whereEqualTo(anyString(), anyString()).get()).addOnCompleteListener(argumentCaptor.capture());
         argumentCaptor.getValue().onComplete(mockedTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals(usersList, liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals(usersList, liveData.getValue()));
     }
 
     @Test
@@ -136,9 +133,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.removeUserLikeInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), FieldValue.arrayRemove(anyString()))).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals("success", liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("success", liveData.getValue()));
     }
 
     @Test
@@ -147,9 +142,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.removeUserLikeInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), FieldValue.arrayRemove(anyString()))).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals("error", liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("error", liveData.getValue()));
 
     }
 
@@ -159,9 +152,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.addUserLikeInFirebase("","");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), FieldValue.arrayUnion(anyString()))).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertEquals("success",liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertEquals("success",liveData.getValue()));
     }
 
     @Test
@@ -170,9 +161,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.addUserLikeInFirebase("","");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), FieldValue.arrayUnion(anyString()))).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertEquals("error",liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertEquals("error",liveData.getValue()));
     }
 
     @Test
@@ -181,9 +170,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.addUserRestaurantChoiceInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals("success", liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("success", liveData.getValue()));
     }
 
     @Test
@@ -192,9 +179,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.addUserRestaurantChoiceInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals("error", liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("error", liveData.getValue()));
     }
 
     @Test
@@ -203,9 +188,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.addUserRestaurantChoiceNameInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals("success", liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("success", liveData.getValue()));
     }
 
     @Test
@@ -214,10 +197,27 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.addUserRestaurantChoiceNameInFirebase("", "");
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals("error", liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("error", liveData.getValue()));
     }
+
+    @Test
+    public void removeRestaurantChoiceName_onSuccess_returnErrorString(){
+        when(mockedVoidTask.isSuccessful()).thenReturn(true);
+        MutableLiveData<String> result = userRepository.removeUserRestaurantChoiceNameInFirebase(anyString());
+        verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
+        voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("success", liveData.getValue()));
+    }
+
+    @Test
+    public void removeRestaurantChoiceName_onError_returnErrorString(){
+        when(mockedVoidTask.isCanceled()).thenReturn(true);
+        MutableLiveData<String> result = userRepository.removeUserRestaurantChoiceNameInFirebase(anyString());
+        verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
+        voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("error", liveData.getValue()));
+    }
+
 
     @Test
     public void removeRestaurantChoice_onSuccess_returnSuccessString() {
@@ -225,9 +225,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.removeRestaurantChoiceInFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals("success", liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("success", liveData.getValue()));
     }
     @Test
     public void removeRestaurantChoice_onCanceled_returnErrorString() {
@@ -235,9 +233,7 @@ public class UserRepositoryTest {
         MutableLiveData<String> result = userRepository.removeRestaurantChoiceInFirebase(anyString());
         verify(firebaseFirestore.collection(anyString()).document(anyString()).update(anyString(), anyString())).addOnCompleteListener(voidArgumentCaptor.capture());
         voidArgumentCaptor.getValue().onComplete(mockedVoidTask);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals("error", liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals("error", liveData.getValue()));
     }
 
     @Test
@@ -248,9 +244,7 @@ public class UserRepositoryTest {
         MutableLiveData<User> result = userRepository.getAuthenticatedUserFromFirebase();
         verify(firebaseFirestore.collection(anyString()).document(anyString()).get()).addOnCompleteListener(addOnCompleteListenerDocumentSnapshot.capture());
         addOnCompleteListenerDocumentSnapshot.getValue().onComplete(mockedTaskDocumentSnapshot);
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertEquals(mockedUser,liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertEquals(mockedUser,liveData.getValue()));
     }
     @Test
     public void getAuthenticatedUserMutableLiveData_onCanceled_returnNull(){
@@ -260,18 +254,14 @@ public class UserRepositoryTest {
         MutableLiveData<User> result = userRepository.getAuthenticatedUserFromFirebase();
         verify(firebaseFirestore.collection(anyString()).document(anyString()).get()).addOnCompleteListener(addOnCompleteListenerDocumentSnapshot.capture());
         addOnCompleteListenerDocumentSnapshot.getValue().onComplete(mockedTaskDocumentSnapshot);
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertNull(liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertNull(liveData.getValue()));
     }
     @Test
     public void getAuthenticatedUserMutableLiveData_whenFirebaseUserIsNull_returnNull(){
         when(firebaseAuth.getCurrentUser()).thenReturn(null);
         when(firebaseUser.getUid()).thenReturn("");
         MutableLiveData<User> result = userRepository.getAuthenticatedUserFromFirebase();
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertNull(liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertNull(liveData.getValue()));
     }
 
 
