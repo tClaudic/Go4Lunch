@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="28dp"
         android:backgroundTint="@android:color/white"
+        app:borderWidth="0dp"
         android:contentDescription="@string/restaurant_reservation_button_desc"
         android:src="@drawable/ic_baseline_check_circle_24"
         app:layout_constraintBottom_toBottomOf="@+id/iv_detail_restaurant_picture"
@@ -33,6 +34,7 @@
         android:id="@+id/cardView3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:cardCornerRadius="0dp"
         app:cardBackgroundColor="@color/primaryColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight="percent"
@@ -85,7 +87,7 @@
 
     </androidx.cardview.widget.CardView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_call_detail"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -99,9 +101,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView3"
         app:layout_constraintWidth="percent"
-        app:layout_constraintWidth_percent="0.333" />
+        app:layout_constraintWidth_percent="0.333"
+        app:cornerRadius="0dp"
+        />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_like_detail"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -111,14 +115,14 @@
         android:text="@string/btn_like_text"
         android:textColor="@color/primaryColor"
         android:textStyle="bold"
-
         app:layout_constraintHeight_percent="0.125"
         app:layout_constraintStart_toEndOf="@+id/btn_call_detail"
         app:layout_constraintTop_toBottomOf="@+id/cardView3"
         app:layout_constraintWidth="percent"
-        app:layout_constraintWidth_percent="0.333" />
+        app:layout_constraintWidth_percent="0.333"
+        app:cornerRadius="0dp"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_website_detail"
         android:backgroundTint="@android:color/white"
         android:drawableTop="@drawable/ic_map_24"
@@ -133,7 +137,8 @@
         app:layout_constraintStart_toEndOf="@+id/btn_like_detail"
         app:layout_constraintTop_toBottomOf="@+id/cardView3"
         app:layout_constraintWidth="percent"
-        app:layout_constraintWidth_percent="0.333" />
+        app:layout_constraintWidth_percent="0.333"
+        app:cornerRadius="0dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rc_workmates_place_detail"

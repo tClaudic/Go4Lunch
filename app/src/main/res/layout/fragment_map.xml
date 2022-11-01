@@ -19,7 +19,7 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/get_location_button"
         android:backgroundTint="@android:color/white"
-        android:background="@android:color/white"
+        app:borderWidth="0dp"
         android:src="@drawable/ic_location_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
