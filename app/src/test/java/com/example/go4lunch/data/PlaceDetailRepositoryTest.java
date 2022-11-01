@@ -59,60 +59,48 @@ public class PlaceDetailRepositoryTest {
     @Test
     public void getNearbyRestaurantDetails_onSuccess_returnLiveDataPlaceDetailList() {
         LiveData<List<PlaceDetail>> result = placeDetailRepository.getNearbyRestaurantsList(anyString(), anyInt(), anyString());
-        verify(go4LunchStreams.streamFetchRestaurantsDetails(anyString(), anyInt(), anyString())).subscribeWith(disposableObserverArgumentCaptor.capture());
+        verify(go4LunchStreams.streamFetchRestaurantsDetails(anyString(), anyInt(), anyString())).subscribe(disposableObserverArgumentCaptor.capture());
         disposableObserverArgumentCaptor.getValue().onSuccess(mockedPlaceDetailList);
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals(mockedPlaceDetailList, liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertEquals(mockedPlaceDetailList, liveData.getValue()));
     }
 
     @Test
     public void getNearbyRestaurantsDetails_onError_returnNull(){
         LiveData<List<PlaceDetail>> result = placeDetailRepository.getNearbyRestaurantsList(anyString(), anyInt(), anyString());
-        verify(go4LunchStreams.streamFetchRestaurantsDetails(anyString(), anyInt(), anyString())).subscribeWith(disposableObserverArgumentCaptor.capture());
+        verify(go4LunchStreams.streamFetchRestaurantsDetails(anyString(), anyInt(), anyString())).subscribe(disposableObserverArgumentCaptor.capture());
         disposableObserverArgumentCaptor.getValue().onError(mock(Throwable.class));
-        LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertNull(liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result, liveData -> assertNull(liveData.getValue()));
     }
     @Test
     public void searchNearbyRestaurantWithAutocomplete_onSuccess_returnLiveDataPlaceDetailList(){
         LiveData<List<PlaceDetail>> result = placeDetailRepository.getNearbyRestaurantListWithAutoComplete(anyString(),anyString(),anyInt());
-        verify(go4LunchStreams.streamFetchAutoCompleteRestaurantDetails(anyString(),anyString(),anyInt())).subscribeWith(disposableObserverArgumentCaptor.capture());
+        verify(go4LunchStreams.streamFetchAutoCompleteRestaurantDetails(anyString(),anyString(),anyInt())).subscribe(disposableObserverArgumentCaptor.capture());
         disposableObserverArgumentCaptor.getValue().onSuccess(mockedPlaceDetailList);
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertEquals(mockedPlaceDetailList,liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertEquals(mockedPlaceDetailList,liveData.getValue()));
     }
 
     @Test
     public void searchNearbyRestaurantWithAutocomplete_onError_returnNull(){
         LiveData<List<PlaceDetail>> result = placeDetailRepository.getNearbyRestaurantListWithAutoComplete(anyString(),anyString(),anyInt());
-        verify(go4LunchStreams.streamFetchAutoCompleteRestaurantDetails(anyString(),anyString(),anyInt())).subscribeWith(disposableObserverArgumentCaptor.capture());
+        verify(go4LunchStreams.streamFetchAutoCompleteRestaurantDetails(anyString(),anyString(),anyInt())).subscribe(disposableObserverArgumentCaptor.capture());
         disposableObserverArgumentCaptor.getValue().onError(mock(Throwable.class));
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertNull(liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertNull(liveData.getValue()));
     }
 
     @Test
     public void searchNearbyPlace_onSuccess_returnLiveDataPlaceDetail(){
         LiveData<PlaceDetail> result = placeDetailRepository.getPlaceDetailByPlaceId(anyString());
-        verify(go4LunchStreams.streamFetchPlaceDetail(anyString())).subscribeWith(observerArgumentCaptor.capture());
+        verify(go4LunchStreams.streamFetchPlaceDetail(anyString())).subscribe(observerArgumentCaptor.capture());
         observerArgumentCaptor.getValue().onNext(mockedPlaceDetailResult);
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertEquals(mockedPlaceDetailResult,liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertEquals(mockedPlaceDetailResult,liveData.getValue()));
     }
 
     @Test
     public void searchNearbyPlace_onError_returnNull(){
         LiveData<PlaceDetail> result = placeDetailRepository.getPlaceDetailByPlaceId(anyString());
-        verify(go4LunchStreams.streamFetchPlaceDetail(anyString())).subscribeWith(observerArgumentCaptor.capture());
+        verify(go4LunchStreams.streamFetchPlaceDetail(anyString())).subscribe(observerArgumentCaptor.capture());
         observerArgumentCaptor.getValue().onError(mock(Throwable.class));
-        LiveDataTestUtils.observeForTesting(result,liveData -> {
-            assertNull(liveData.getValue());
-        });
+        LiveDataTestUtils.observeForTesting(result,liveData -> assertNull(liveData.getValue()));
     }
 
 
