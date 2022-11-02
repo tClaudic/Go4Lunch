@@ -26,7 +26,6 @@ public class WorkmateListFragment extends Fragment {
     private FragmentWorkmatesListBinding binding;
     private WorkmatesViewModel workmatesViewModel;
     private RestaurantListViewModel restaurantListViewModel;
-    private RestaurantDetailViewModel restaurantDetailViewModel;
     private RecyclerView recyclerView;
     private WorkmatesListRecyclerViewAdapter workmatesListRecyclerViewAdapter;
 
@@ -44,7 +43,6 @@ public class WorkmateListFragment extends Fragment {
     private void initViewModel() {
         workmatesViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(WorkmatesViewModel.class);
         restaurantListViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantListViewModel.class);
-        restaurantDetailViewModel = new ViewModelProvider(requireActivity(),ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
 
     }
 
@@ -65,7 +63,7 @@ public class WorkmateListFragment extends Fragment {
                 .setOnItemClickListener((recyclerView1, position, v) -> {
                     User user = workmatesListRecyclerViewAdapter.getUser(position);
                     if (!user.restaurantChoice.isEmpty()){
-                        restaurantDetailViewModel.getRestaurantDetailByUserChoice(user.restaurantChoice).observe(getViewLifecycleOwner(), placeDetail -> {
+                        workmatesViewModel.getPlaceDetailByUserChoice(user.restaurantChoice).observe(getViewLifecycleOwner(), placeDetail -> {
                             restaurantListViewModel.select(placeDetail);
                             Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_workmatesView_to_nav_restaurantDetail);
                         });
