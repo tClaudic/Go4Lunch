@@ -30,7 +30,6 @@ public class AuthViewModel extends ViewModel {
         return authRepository.firebaseSignInWithAuthCredential(authCredential);
     }
 
-
     public LiveData<String> checkIfUserIsAuthenticated() {
         return authRepository.getAuthenticatedUserId();
     }

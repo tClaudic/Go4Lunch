@@ -26,9 +26,6 @@ public class RestaurantDetailViewModel extends ViewModel {
         authenticatedUser = userRepository.getAuthenticatedUserFromFirebase();
     }
 
-
-
-
     public LiveData<List<User>> getUsersListFilteredByRestaurantChoice(String placeId) {
         MutableLiveData<List<User>> usersListMutableLiveData = new MutableLiveData<>();
         usersListMutableLiveData = userRepository.getUsersFilteredListFromFirebase(placeId);
@@ -44,7 +41,6 @@ public class RestaurantDetailViewModel extends ViewModel {
         restaurantDetail = placeDetailRepository.getPlaceDetailByPlaceId(placeId);
         return restaurantDetail;
     }
-
 
     public MutableLiveData<String> setPlaceId(String userId, String placeId) {
         MutableLiveData<String> result = new MutableLiveData<>();
@@ -70,13 +66,11 @@ public class RestaurantDetailViewModel extends ViewModel {
         return result;
     }
 
-
     public MutableLiveData<String> addUserRestaurantLike(String userId, String restaurantId) {
         MutableLiveData<String> result = new MutableLiveData<>();
         result = userRepository.addUserLikeInFirebase(userId, restaurantId);
         return result;
     }
-
 
     public MutableLiveData<String> removeUserRestaurantLike(String userId, String restaurantId) {
         MutableLiveData<String> result = new MutableLiveData<>();

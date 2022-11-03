@@ -13,11 +13,11 @@ import java.util.List;
 
 public class RestaurantListViewModel extends ViewModel {
 
-    public LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
     private final PlaceDetailRepository placeDetailRepository;
     private final UserRepository userRepository;
-    public MutableLiveData<List<User>> usersListMutableLiveData;
     private final MutableLiveData<PlaceDetail> selected = new MutableLiveData<>();
+    public LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
+    public MutableLiveData<List<User>> usersListMutableLiveData;
 
     public RestaurantListViewModel(PlaceDetailRepository placeDetailRepository, UserRepository userRepository) {
         this.placeDetailRepository = placeDetailRepository;
@@ -30,7 +30,6 @@ public class RestaurantListViewModel extends ViewModel {
         return nearbyRestaurantsLiveData;
     }
 
-
     public LiveData<List<User>> getUsersLists() {
         usersListMutableLiveData = userRepository.getUsersListFromFirebase();
         return usersListMutableLiveData;
@@ -39,7 +38,6 @@ public class RestaurantListViewModel extends ViewModel {
     public LiveData<List<PlaceDetail>> getAutoCompleteNearbyRestaurantList(String query, String location, int radius) {
         return placeDetailRepository.getNearbyRestaurantListWithAutoComplete(query, location, radius);
     }
-
 
     public void select(PlaceDetail placeDetail) {
         selected.setValue(placeDetail);

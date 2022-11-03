@@ -97,7 +97,7 @@ public class AuthRepository {
                     String restaurantChoice = "";
                     String restaurantChoiceName = "";
                     List<String> likes = new ArrayList<>();
-                    likes.add("fdffsfsfs");
+                    likes.add("");
                     User user = new User(uid, name, email, urlPicture, restaurantChoice, restaurantChoiceName, likes);
                     firebaseFirestore.collection(USERS).document(firebaseUser.getUid()).set(user).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
