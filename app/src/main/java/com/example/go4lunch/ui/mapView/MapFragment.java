@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 
 import java.util.List;
 import java.util.Objects;
@@ -157,6 +158,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } else {
             askLocationPermission();
         }
+
     }
 
     @SuppressLint("MissingPermission")
@@ -167,13 +169,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 updateCameraZoomWithNewLocation(location);
                 observeNearbyRestaurant(location);
             } else {
-                if (!isLocationEnable()) {
-                    openLocationDialog();
-                } else {
                     getCurrentLocation();
                 }
-            }
-        });
+        }).addOnFailureListener(e -> getUserLocation());
     }
 
     private void updateMapCameraWithAutocompleteResult(PlaceDetail placeDetail) {
@@ -183,7 +181,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
-        CurrentLocationRequest currentLocationRequest = new CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY).setDurationMillis(3000).build();
+        CurrentLocationRequest currentLocationRequest = new CurrentLocationRequest.Builder().setPriority(Priority.PRIORITY_HIGH_ACCURACY).build();
         fusedLocationProviderClient.getCurrentLocation(currentLocationRequest, null).addOnSuccessListener(location -> {
             if (location != null) {
                 locationString = location.getLatitude() + "," + location.getLongitude();
@@ -191,22 +189,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 updateCameraZoomWithNewLocation(location);
                 observeNearbyRestaurant(location);
             } else {
-                Log.e("nolocation", "nolocation");
+                Toast.makeText(requireActivity(),"Check if your GPS is enable",Toast.LENGTH_LONG).show();
             }
-        });
+        }).addOnFailureListener(e -> Toast.makeText(requireActivity(),"Can't access to your location retry later",Toast.LENGTH_LONG).show());
     }
 
-    private void openLocationDialog() {
-        new AlertDialog.Builder(requireContext())
-                .setMessage("enable location")
-                .setPositiveButton("open location settings", (dialogInterface, i) -> requireContext().startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                .setOnDismissListener(DialogInterface::cancel).show();
-    }
 
-    private Boolean isLocationEnable() {
-        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
+
+
 
     private void updateCameraZoomWithNewLocation(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
