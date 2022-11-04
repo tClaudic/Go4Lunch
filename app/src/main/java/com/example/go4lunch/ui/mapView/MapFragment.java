@@ -200,7 +200,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void updateCameraZoomWithNewLocation(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
     }
 
     private void updateMapWithRestaurantMarker(List<PlaceDetail> placeDetails, List<User> userList) {
