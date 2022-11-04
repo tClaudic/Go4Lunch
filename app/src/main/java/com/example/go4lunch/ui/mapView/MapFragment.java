@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -219,12 +221,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
                 Objects.requireNonNull(googleMap.addMarker(options)).setTag(placeDetail);
                 googleMap.setOnInfoWindowClickListener(marker -> {
-                    restaurantListViewModel.select((PlaceDetail) marker.getTag());
-                    Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_restaurantDetail);
+                    if (isNetworkEnable()) {
+                        restaurantListViewModel.select((PlaceDetail) marker.getTag());
+                        Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_restaurantDetail);
+                    }else {
+                        Toast.makeText(requireActivity(),"Check your internet connection",Toast.LENGTH_LONG).show();
+                    }
                 });
 
         }
     }
+    @SuppressLint("MissingPermission")
+    private Boolean isNetworkEnable(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
+    }
+
 
 
     private void observeUsersList() {

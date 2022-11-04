@@ -1,5 +1,6 @@
 package com.example.go4lunch.ui.workmatesView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -81,6 +82,7 @@ public class WorkmateListFragment extends Fragment {
                 });
     }
 
+    @SuppressLint("MissingPermission")
     private Boolean isNetworkEnable(){
         ConnectivityManager connectivityManager = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;

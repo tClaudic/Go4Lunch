@@ -207,6 +207,7 @@ public class RestaurantListFragment extends Fragment {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
+    @SuppressLint("MissingPermission")
     private Boolean isNetworkEnable(){
         ConnectivityManager connectivityManager = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
