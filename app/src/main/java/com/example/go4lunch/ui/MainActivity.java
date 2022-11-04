@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -165,8 +164,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         R.string.user_no_restaurant_choosen,
                         Toast.LENGTH_LONG).show();
             }
-        }else {
-            Toast.makeText(this,"Check your internet connection",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Check your internet connection", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -195,7 +194,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         documentReference.addSnapshotListener(this::onEvent);
     }
 
-    private Boolean isNetworkEnable(){
+    @SuppressLint("MissingPermission")
+    private Boolean isNetworkEnable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
