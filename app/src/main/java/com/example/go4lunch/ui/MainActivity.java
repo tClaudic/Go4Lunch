@@ -1,6 +1,9 @@
 package com.example.go4lunch.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -145,21 +148,25 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
 
     private void setupNavigationToRestaurantDetail() {
-        if (checkIfUserHasRestaurantChoice()) {
-            Log.e("userRestaurantChoice", currentAuthenticatedUser.restaurantChoice);
-            restaurantDetailViewModel.getRestaurantDetailByUserChoice(currentAuthenticatedUser.restaurantChoice).observe(this, placeDetail -> {
-                restaurantListViewModel.select(placeDetail);
-                hideBottomNavigationBar();
-                hideToolbar();
+        if (isNetworkEnable()) {
+            if (checkIfUserHasRestaurantChoice()) {
+                Log.e("userRestaurantChoice", currentAuthenticatedUser.restaurantChoice);
+                restaurantDetailViewModel.getRestaurantDetailByUserChoice(currentAuthenticatedUser.restaurantChoice).observe(this, placeDetail -> {
+                    restaurantListViewModel.select(placeDetail);
+                    hideBottomNavigationBar();
+                    hideToolbar();
 
-                navController.navigate(R.id.nav_restaurantDetail);
-                drawer.close();
-            });
+                    navController.navigate(R.id.nav_restaurantDetail);
+                    drawer.close();
+                });
 
-        } else {
-            Toast.makeText(this,
-                    R.string.user_no_restaurant_choosen,
-                    Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this,
+                        R.string.user_no_restaurant_choosen,
+                        Toast.LENGTH_LONG).show();
+            }
+        }else {
+            Toast.makeText(this,"Check your internet connection",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -186,6 +193,13 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         final DocumentReference documentReference = rootRef.collection("users").document(Objects.requireNonNull(firebaseUser).getUid());
         documentReference.addSnapshotListener(this::onEvent);
+    }
+
+    private Boolean isNetworkEnable(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
 

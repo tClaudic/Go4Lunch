@@ -2,8 +2,12 @@ package com.example.go4lunch.ui.listView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -121,7 +126,7 @@ public class RestaurantListFragment extends Fragment {
 
     private void observeNearbyRestaurantsWithAutoComplete(String query) {
         restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query, locationString, RADIUS).observe(getViewLifecycleOwner(), placeDetails -> {
-            if (!placeDetails.isEmpty()) {
+            if (placeDetails != null) {
                 restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
             }
         });
@@ -129,11 +134,13 @@ public class RestaurantListFragment extends Fragment {
 
     private void observeNearbyRestaurant(Location location) {
         String userLocation = location.getLatitude() + "," + location.getLongitude();
-        Log.e("LocationString", userLocation);
-        //restaurantListViewModel.searchNearbyRestaurants(userLocation,5000,"restaurant");
         restaurantListViewModel.getAllRestaurants(userLocation, RADIUS, TYPE).observe(getViewLifecycleOwner(), placeDetails -> {
-            restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
-            Log.e("onChanged", String.valueOf(placeDetails.size()));
+            if (placeDetails != null) {
+                restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
+                Log.e("onChanged", String.valueOf(placeDetails.size()));
+            }else {
+                Toast.makeText(requireActivity(),"Check your internet connection",Toast.LENGTH_LONG).show();
+            }
         });
     }
 
@@ -141,16 +148,25 @@ public class RestaurantListFragment extends Fragment {
     private void initOnClickRecyclerView() {
         ItemClickSupport.addTo(recyclerView, binding.rcListView.getId())
                 .setOnItemClickListener((recyclerView1, position, v) -> {
-                    restaurantListViewModel.select(restaurantListRecyclerViewAdapter.getPlaceDetail(position));
-                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_listView_to_nav_restaurantDetail);
+                    if (isNetworkEnable()) {
+                        restaurantListViewModel.select(restaurantListRecyclerViewAdapter.getPlaceDetail(position));
+                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_listView_to_nav_restaurantDetail);
+                    }else {
+                        Toast.makeText(requireActivity(),"Check your network connection", Toast.LENGTH_LONG).show();
+                    }
                 });
     }
 
     private void configureOnSwipeFresh() {
         swipeRefreshLayout = binding.srlRestaurantSwipe;
         swipeRefreshLayout.setOnRefreshListener(() -> restaurantListViewModel.nearbyRestaurantsLiveData.observe(getViewLifecycleOwner(), placeDetails -> {
-            restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
-            swipeRefreshLayout.setRefreshing(false);
+            if (placeDetails != null && isLocationEnable() && !locationString.isEmpty()) {
+                restaurantListRecyclerViewAdapter.setNearbyRestaurantList(placeDetails);
+                swipeRefreshLayout.setRefreshing(false);
+            }else {
+                swipeRefreshLayout.setRefreshing(false);
+                getUserLocation();
+            }
         }));
     }
 
@@ -176,10 +192,26 @@ public class RestaurantListFragment extends Fragment {
     @SuppressLint("MissingPermission")
     private void getUserLocation() {
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
-            locationString = location.getLatitude() + "," + location.getLongitude();
-            restaurantListRecyclerViewAdapter.setUserLocation(location);
-            observeNearbyRestaurant(location);
+            if (location != null) {
+                locationString = location.getLatitude() + "," + location.getLongitude();
+                restaurantListRecyclerViewAdapter.setUserLocation(location);
+                observeNearbyRestaurant(location);
+            }else {
+                Toast.makeText(requireActivity(),"Check if your GPS is enable",Toast.LENGTH_LONG).show();
+            }
         });
+    }
+
+    private Boolean isLocationEnable() {
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    private Boolean isNetworkEnable(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+       NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
     private void askLocationPermission() {

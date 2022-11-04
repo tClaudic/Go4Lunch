@@ -16,7 +16,7 @@ public class RestaurantListViewModel extends ViewModel {
     private final PlaceDetailRepository placeDetailRepository;
     private final UserRepository userRepository;
     private final MutableLiveData<PlaceDetail> selected = new MutableLiveData<>();
-    public LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData;
+    public LiveData<List<PlaceDetail>> nearbyRestaurantsLiveData = new MutableLiveData<>();
     public MutableLiveData<List<User>> usersListMutableLiveData;
 
     public RestaurantListViewModel(PlaceDetailRepository placeDetailRepository, UserRepository userRepository) {

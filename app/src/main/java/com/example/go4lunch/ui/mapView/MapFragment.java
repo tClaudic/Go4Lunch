@@ -139,7 +139,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void searchNearbyRestaurantWithAutocomplete(String query) {
         restaurantListViewModel.getAutoCompleteNearbyRestaurantList(query, locationString, RADIUS).observe(getViewLifecycleOwner(), placeDetails -> {
-            if (!placeDetails.isEmpty()) {
+            if (placeDetails != null) {
                 updateMapWithRestaurantMarker(placeDetails, userList);
                 updateMapCameraWithAutocompleteResult(placeDetails.get(0));
             }

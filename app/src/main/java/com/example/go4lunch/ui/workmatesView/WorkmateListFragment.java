@@ -1,9 +1,13 @@
 package com.example.go4lunch.ui.workmatesView;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,14 +65,27 @@ public class WorkmateListFragment extends Fragment {
     private void initOnClickRecyclerView() {
         ItemClickSupport.addTo(recyclerView, binding.rcWorkmates.getId())
                 .setOnItemClickListener((recyclerView1, position, v) -> {
-                    User user = workmatesListRecyclerViewAdapter.getUser(position);
-                    if (!user.restaurantChoice.isEmpty()){
-                        workmatesViewModel.getPlaceDetailByUserChoice(user.restaurantChoice).observe(getViewLifecycleOwner(), placeDetail -> {
-                            restaurantListViewModel.select(placeDetail);
-                            Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_workmatesView_to_nav_restaurantDetail);
-                        });
-                    }
+
+                        User user = workmatesListRecyclerViewAdapter.getUser(position);
+                        if (!user.restaurantChoice.isEmpty()) {
+                            if (isNetworkEnable()) {
+                                workmatesViewModel.getPlaceDetailByUserChoice(user.restaurantChoice).observe(getViewLifecycleOwner(), placeDetail -> {
+                                    restaurantListViewModel.select(placeDetail);
+                                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_workmatesView_to_nav_restaurantDetail);
+                                });
+                            }else {
+                                Toast.makeText(requireActivity(),"Check your internet connection", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
                 });
+    }
+
+    private Boolean isNetworkEnable(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
     }
 
 
