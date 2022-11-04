@@ -2,17 +2,12 @@ package com.example.go4lunch.ui.mapView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,7 +44,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
 
 import java.util.List;
 import java.util.Objects;
@@ -89,6 +83,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private void askLocationPermission() {
         ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 44);
+    }
+
+    private void initLocationButton() {
+        binding.btnLocation.setOnClickListener(view -> getUserLocation());
     }
 
     private void initRestaurantListViewModel() {
@@ -148,9 +146,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void initLocationButton() {
-        binding.btnLocation.setOnClickListener(view -> getUserLocation());
-    }
 
     private void checkLocationPermissions() {
         if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -160,7 +155,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } else {
             askLocationPermission();
         }
+    }
 
+    private void observeUsersList() {
+        restaurantListViewModel.usersListMutableLiveData.observe(getViewLifecycleOwner(), users -> {
+            userList = users;
+            Log.e("usersize", String.valueOf(userList.size()));
+        });
+    }
+
+    private void observeNearbyRestaurant(Location location) {
+        String userLocation = location.getLatitude() + "," + location.getLongitude();
+        Log.e("LocationString", userLocation);
+        restaurantListViewModel.getAllRestaurants(userLocation, RADIUS, TYPE).observe(getViewLifecycleOwner(), placeDetails -> {
+            if (placeDetails != null) {
+                updateMapWithRestaurantMarker(placeDetails, userList);
+            } else {
+                Toast.makeText(requireActivity(), "please check your internet connexion", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
@@ -171,8 +184,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 updateCameraZoomWithNewLocation(location);
                 observeNearbyRestaurant(location);
             } else {
-                    getCurrentLocation();
-                }
+                getCurrentLocation();
+            }
         }).addOnFailureListener(e -> getUserLocation());
     }
 
@@ -191,13 +204,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 updateCameraZoomWithNewLocation(location);
                 observeNearbyRestaurant(location);
             } else {
-                Toast.makeText(requireActivity(),"Check if your GPS is enable",Toast.LENGTH_LONG).show();
+                Toast.makeText(requireActivity(), "Check if your GPS is enable", Toast.LENGTH_LONG).show();
             }
-        }).addOnFailureListener(e -> Toast.makeText(requireActivity(),"Can't access to your location retry later",Toast.LENGTH_LONG).show());
+        }).addOnFailureListener(e -> Toast.makeText(requireActivity(), "Can't access to your location retry later", Toast.LENGTH_LONG).show());
     }
-
-
-
 
 
     private void updateCameraZoomWithNewLocation(Location location) {
@@ -209,57 +219,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (googleMap != null) {
             googleMap.clear();
         }
+        for (PlaceDetail placeDetail : placeDetails) {
+            MarkerOptions options = new MarkerOptions().position(new LatLng(placeDetail.getResult().getGeometry().getLocation().getLat(), placeDetail.getResult().getGeometry().getLocation().getLng()))
+                    .title(placeDetail.getResult().getName());
+            if (RestaurantListHelper.UserGoIntoRestaurant(placeDetail, userList)) {
+                options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_pin_green));
 
-            for (PlaceDetail placeDetail : placeDetails) {
-                MarkerOptions options = new MarkerOptions().position(new LatLng(placeDetail.getResult().getGeometry().getLocation().getLat(), placeDetail.getResult().getGeometry().getLocation().getLng()))
-                        .title(placeDetail.getResult().getName());
-                if (RestaurantListHelper.UserGoIntoRestaurant(placeDetail, userList)) {
-                    options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_pin_green));
-
+            } else {
+                options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_pin));
+            }
+            Objects.requireNonNull(googleMap.addMarker(options)).setTag(placeDetail);
+            googleMap.setOnInfoWindowClickListener(marker -> {
+                if (isNetworkEnable()) {
+                    restaurantListViewModel.select((PlaceDetail) marker.getTag());
+                    Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_restaurantDetail);
                 } else {
-                    options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_pin));
+                    Toast.makeText(requireActivity(), "Check your internet connection", Toast.LENGTH_LONG).show();
                 }
-                Objects.requireNonNull(googleMap.addMarker(options)).setTag(placeDetail);
-                googleMap.setOnInfoWindowClickListener(marker -> {
-                    if (isNetworkEnable()) {
-                        restaurantListViewModel.select((PlaceDetail) marker.getTag());
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.nav_restaurantDetail);
-                    }else {
-                        Toast.makeText(requireActivity(),"Check your internet connection",Toast.LENGTH_LONG).show();
-                    }
-                });
+            });
 
         }
     }
+
     @SuppressLint("MissingPermission")
-    private Boolean isNetworkEnable(){
+    private Boolean isNetworkEnable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
 
-
-
-    private void observeUsersList() {
-        restaurantListViewModel.usersListMutableLiveData.observe(getViewLifecycleOwner(), users -> {
-            userList = users;
-            Log.e("usersize", String.valueOf(userList.size()));
-        });
-    }
-
-    private void observeNearbyRestaurant(Location location) {
-        String userLocation = location.getLatitude() + "," + location.getLongitude();
-        Log.e("LocationString", userLocation);
-        restaurantListViewModel.getAllRestaurants(userLocation, RADIUS, TYPE).observe(getViewLifecycleOwner(), placeDetails -> {
-            if (placeDetails != null) {
-                updateMapWithRestaurantMarker(placeDetails, userList);
-            }else {
-                Toast.makeText(requireActivity(),"please check your internet connexion",Toast.LENGTH_LONG).show();
-            }
-        });
-
-    }
 
     @SuppressLint("MissingPermission")
     @Override

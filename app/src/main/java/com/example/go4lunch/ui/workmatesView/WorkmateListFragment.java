@@ -24,7 +24,6 @@ import com.example.go4lunch.databinding.FragmentWorkmatesListBinding;
 import com.example.go4lunch.model.User;
 import com.example.go4lunch.ui.ViewModelFactory;
 import com.example.go4lunch.ui.listView.RestaurantListViewModel;
-import com.example.go4lunch.ui.restaurantDetail.RestaurantDetailViewModel;
 import com.example.go4lunch.util.ItemClickSupport;
 
 public class WorkmateListFragment extends Fragment {
@@ -67,23 +66,23 @@ public class WorkmateListFragment extends Fragment {
         ItemClickSupport.addTo(recyclerView, binding.rcWorkmates.getId())
                 .setOnItemClickListener((recyclerView1, position, v) -> {
 
-                        User user = workmatesListRecyclerViewAdapter.getUser(position);
-                        if (!user.restaurantChoice.isEmpty()) {
-                            if (isNetworkEnable()) {
-                                workmatesViewModel.getPlaceDetailByUserChoice(user.restaurantChoice).observe(getViewLifecycleOwner(), placeDetail -> {
-                                    restaurantListViewModel.select(placeDetail);
-                                    Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_workmatesView_to_nav_restaurantDetail);
-                                });
-                            }else {
-                                Toast.makeText(requireActivity(),"Check your internet connection", Toast.LENGTH_LONG).show();
-                            }
+                    User user = workmatesListRecyclerViewAdapter.getUser(position);
+                    if (!user.restaurantChoice.isEmpty()) {
+                        if (isNetworkEnable()) {
+                            workmatesViewModel.getPlaceDetailByUserChoice(user.restaurantChoice).observe(getViewLifecycleOwner(), placeDetail -> {
+                                restaurantListViewModel.select(placeDetail);
+                                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_workmatesView_to_nav_restaurantDetail);
+                            });
+                        } else {
+                            Toast.makeText(requireActivity(), "Check your internet connection", Toast.LENGTH_LONG).show();
                         }
+                    }
 
                 });
     }
 
     @SuppressLint("MissingPermission")
-    private Boolean isNetworkEnable(){
+    private Boolean isNetworkEnable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
